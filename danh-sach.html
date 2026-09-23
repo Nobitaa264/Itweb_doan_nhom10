@@ -1,123 +1,464 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
 
-    <meta
-        name="description"
-        content="Danh sách các sản phẩm quần áo đang kinh doanh tại StyleHub."
-    >
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-    <title>Danh sách sản phẩm</title>
+  <meta
+    name="description"
+    content="Danh sách các sản phẩm quần áo đang kinh doanh tại StyleHub.">
+
+  <title>Danh sách sản phẩm - StyleHub</title>
+
+  <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
-    <header>
-        <p>Thời trang cho phong cách riêng của bạn</p>
+  <div class="trang">
+
+
+    <!-- HEADER -->
+
+    <header class="dau-trang">
+
+      <div class="bao">
+
+        <p class="thuong-hieu">
+          StyleHub
+        </p>
+
+        <p class="khau-hieu">
+          Thời trang cho phong cách riêng của bạn
+        </p>
+
+      </div>
+
     </header>
 
-    <nav>
-        <ul>
-            <li><a href="index.html">Trang chủ</a></li>
-            <li><a href="danh-sach.html">Sản phẩm</a></li>
-            <li><a href="chi-tiet.html">Chi tiết</a></li>
-            <li><a href="gioi-thieu.html">Giới thiệu</a></li>
-            <li><a href="lien-he.html">Liên hệ</a></li>
+
+    <!-- MENU -->
+
+    <nav class="menu-chinh"
+         aria-label="Điều hướng chính">
+
+      <div class="bao">
+
+        <ul class="menu-chinh__danh-sach">
+
+          <li>
+            <a href="index.html">
+              Trang chủ
+            </a>
+          </li>
+
+          <li>
+            <a href="danh-sach.html"
+               aria-current="page">
+              Sản phẩm
+            </a>
+          </li>
+
+          <li>
+            <a href="chi-tiet.html">
+              Chi tiết
+            </a>
+          </li>
+
+          <li>
+            <a href="gioi-thieu.html">
+              Giới thiệu
+            </a>
+          </li>
+
+          <li>
+            <a href="lien-he.html">
+              Liên hệ
+            </a>
+          </li>
+
         </ul>
+
+      </div>
+
     </nav>
 
-    <main>
 
-        <h1>Danh sách sản phẩm</h1>
+    <!-- MAIN -->
 
-        <section>
+    <main class="noi-dung">
 
-            <h2>Các sản phẩm đang kinh doanh</h2>
+      <div class="bao">
 
-            <table>
+        <h1 class="tieu-de-trang">
+          Danh sách sản phẩm
+        </h1>
 
-                <caption>
-                    Danh sách sản phẩm
-                </caption>
 
-                <thead>
-                    <tr>
-                        <th scope="col">Mã</th>
-                        <th scope="col">Tên sản phẩm</th>
-                        <th scope="col">Danh mục</th>
-                        <th scope="col">Giá</th>
-                        <th scope="col">Tình trạng</th>
-                    </tr>
-                </thead>
+        <!-- DANH MỤC / THANH LỌC -->
 
-                <tbody>
+        <section class="khu-vuc khu-vuc--dau">
 
-                    <tr>
-                        <td>SH001</td>
+          <h2>
+            Danh mục sản phẩm
+          </h2>
 
-                        <td>
-                            <a href="chi-tiet.html">
-                                Áo sơ mi Basic
-                            </a>
-                        </td>
+          <ul class="danh-muc">
 
-                        <td>Áo</td>
-                        <td>299.000đ</td>
-                        <td>Còn hàng</td>
-                    </tr>
+            <li>
+              <a href="#tat-ca">
+                Tất cả
+              </a>
+            </li>
 
-                    <tr>
-                        <td>SH002</td>
-                        <td>Quần Jeans Classic</td>
-                        <td>Quần</td>
-                        <td>399.000đ</td>
-                        <td>Còn hàng</td>
-                    </tr>
+            <li>
+              <a href="#ao">
+                Áo
+              </a>
+            </li>
 
-                    <tr>
-                        <td>SH003</td>
-                        <td>Váy Midi thanh lịch</td>
-                        <td>Váy</td>
-                        <td>349.000đ</td>
-                        <td>Còn hàng</td>
-                    </tr>
+            <li>
+              <a href="#quan">
+                Quần
+              </a>
+            </li>
 
-                    <tr>
-                        <td>SH004</td>
-                        <td>Áo khoác Street</td>
-                        <td>Áo khoác</td>
-                        <td>499.000đ</td>
-                        <td>Sắp hết hàng</td>
-                    </tr>
+            <li>
+              <a href="#vay">
+                Váy
+              </a>
+            </li>
 
-                </tbody>
+            <li>
+              <a href="#ao-khoac">
+                Áo khoác
+              </a>
+            </li>
+
+            <li>
+              <a href="#phu-kien">
+                Phụ kiện
+              </a>
+            </li>
+
+          </ul>
+
+        </section>
+
+
+        <!-- LƯỚI SẢN PHẨM -->
+
+        <section class="khu-vuc"
+                 id="tat-ca">
+
+          <h2>
+            Sản phẩm nổi bật
+          </h2>
+
+          <div class="luoi-danh-sach">
+
+
+            <!-- ÁO SƠ MI -->
+
+            <article class="the-san-pham"
+                     id="ao">
+
+              <img
+                class="the-san-pham__anh"
+                src="images/somi.jpg"
+                alt="Áo sơ mi Basic màu trắng"
+                width="300"
+                height="300"
+                loading="lazy">
+
+              <div class="the-san-pham__noi-dung">
+
+                <p class="ma-san-pham">
+                  SH001
+                </p>
+
+                <h3>
+                  Áo sơ mi Basic
+                </h3>
+
+                <p>
+                  Thiết kế đơn giản, trẻ trung và dễ
+                  phối với nhiều loại trang phục.
+                </p>
+
+                <p>
+                  <strong>Danh mục:</strong>
+                  Áo
+                </p>
+
+                <p class="gia">
+                  299.000đ
+                </p>
+
+                <p class="tinh-trang">
+                  Còn hàng
+                </p>
+
+                <a class="nut"
+                   href="chi-tiet.html#ao-so-mi">
+                  Xem chi tiết
+                </a>
+
+              </div>
+
+            </article>
+
+
+            <!-- QUẦN JEANS -->
+
+            <article class="the-san-pham"
+                     id="quan">
+
+              <img
+                class="the-san-pham__anh"
+                src="images/quanjeans.jpg"
+                alt="Quần Jeans Classic màu xanh"
+                width="300"
+                height="300"
+                loading="lazy">
+
+              <div class="the-san-pham__noi-dung">
+
+                <p class="ma-san-pham">
+                  SH002
+                </p>
+
+                <h3>
+                  Quần Jeans Classic
+                </h3>
+
+                <p>
+                  Quần jeans phong cách trẻ trung,
+                  hiện đại và phù hợp sử dụng hằng ngày.
+                </p>
+
+                <p>
+                  <strong>Danh mục:</strong>
+                  Quần
+                </p>
+
+                <p class="gia">
+                  399.000đ
+                </p>
+
+                <p class="tinh-trang">
+                  Còn hàng
+                </p>
+
+                <a class="nut"
+                   href="chi-tiet.html#quanjeans">
+                  Xem chi tiết
+                </a>
+
+              </div>
+
+            </article>
+
+
+          </div>
+
+        </section>
+
+
+        <!-- BẢNG DANH SÁCH -->
+
+        <section class="khu-vuc">
+
+          <h2>
+            Thông tin tất cả sản phẩm
+          </h2>
+
+          <div class="bang-cuon">
+
+            <table class="bang-san-pham">
+
+              <caption>
+                Danh sách sản phẩm StyleHub
+              </caption>
+
+              <thead>
+
+                <tr>
+
+                  <th scope="col">
+                    Mã
+                  </th>
+
+                  <th scope="col">
+                    Tên sản phẩm
+                  </th>
+
+                  <th scope="col">
+                    Danh mục
+                  </th>
+
+                  <th scope="col">
+                    Giá
+                  </th>
+
+                  <th scope="col">
+                    Tình trạng
+                  </th>
+
+                </tr>
+
+              </thead>
+
+
+              <tbody>
+
+                <tr>
+
+                  <td>
+                    SH001
+                  </td>
+
+                  <td>
+                    <a href="chi-tiet.html#ao-so-mi">
+                      Áo sơ mi Basic
+                    </a>
+                  </td>
+
+                  <td>
+                    Áo
+                  </td>
+
+                  <td>
+                    299.000đ
+                  </td>
+
+                  <td>
+                    Còn hàng
+                  </td>
+
+                </tr>
+
+
+                <tr>
+
+                  <td>
+                    SH002
+                  </td>
+
+                  <td>
+                    <a href="chi-tiet.html#quanjeans">
+                      Quần Jeans Classic
+                    </a>
+                  </td>
+
+                  <td>
+                    Quần
+                  </td>
+
+                  <td>
+                    399.000đ
+                  </td>
+
+                  <td>
+                    Còn hàng
+                  </td>
+
+                </tr>
+
+
+                <tr id="vay">
+
+                  <td>
+                    SH003
+                  </td>
+
+                  <td>
+                    Váy Midi thanh lịch
+                  </td>
+
+                  <td>
+                    Váy
+                  </td>
+
+                  <td>
+                    349.000đ
+                  </td>
+
+                  <td>
+                    Còn hàng
+                  </td>
+
+                </tr>
+
+
+                <tr id="ao-khoac">
+
+                  <td>
+                    SH004
+                  </td>
+
+                  <td>
+                    Áo khoác Street
+                  </td>
+
+                  <td>
+                    Áo khoác
+                  </td>
+
+                  <td>
+                    499.000đ
+                  </td>
+
+                  <td>
+                    Sắp hết hàng
+                  </td>
+
+                </tr>
+
+              </tbody>
 
             </table>
 
-        </section>
-
-        <section>
-
-            <h2>Danh mục sản phẩm</h2>
-
-            <ul>
-                <li>Áo</li>
-                <li>Quần</li>
-                <li>Váy</li>
-                <li>Áo khoác</li>
-                <li>Phụ kiện</li>
-            </ul>
+          </div>
 
         </section>
+
+
+      </div>
 
     </main>
 
-    <footer>
-        <p>© 2026 Nhóm 10 — Khoa Toán – Tin</p>
+
+    <!-- FOOTER -->
+
+    <footer class="chan-trang">
+
+      <div class="bao">
+
+        <p>
+          © 2026 Nhóm 10 — Khoa Toán – Tin
+        </p>
+
+        <p>
+          Website được xây dựng cho học phần
+          Thiết kế và Lập trình web.
+        </p>
+
+        <p>
+          <a href="lien-he.html">
+            Liên hệ
+          </a>
+        </p>
+
+      </div>
+
     </footer>
+
+
+  </div>
 
 </body>
 

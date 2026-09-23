@@ -2,6 +2,7 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <meta
@@ -9,87 +10,166 @@
       content="Giới thiệu website bán quần áo StyleHub và các thành viên Nhóm 10."
     />
 
-    <title>Giới thiệu</title>
+    <title>Giới thiệu - StyleHub</title>
+
+    <link rel="stylesheet" href="css/style.css" />
   </head>
 
   <body>
-    <header>
-      <p>Thời trang cho phong cách riêng của bạn</p>
-    </header>
+    <div class="trang">
+      <!-- HEADER -->
+      <header class="dau-trang">
+        <div class="bao">
+          <p class="thuong-hieu">StyleHub</p>
 
-    <nav>
-      <ul>
-        <li><a href="index.html">Trang chủ</a></li>
-        <li><a href="danh-sach.html">Sản phẩm</a></li>
-        <li><a href="chi-tiet.html">Chi tiết</a></li>
-        <li><a href="gioi-thieu.html">Giới thiệu</a></li>
-        <li><a href="lien-he.html">Liên hệ</a></li>
-      </ul>
-    </nav>
+          <p class="khau-hieu">Thời trang cho phong cách riêng của bạn</p>
+        </div>
+      </header>
 
-    <main>
-      <h1>Giới thiệu Nhóm 10</h1>
+      <!-- MENU -->
+      <nav class="menu-chinh" aria-label="Điều hướng chính">
+        <div class="bao">
+          <ul class="menu-chinh__danh-sach">
+            <li>
+              <a href="index.html"> Trang chủ </a>
+            </li>
 
-      <section>
-        <h2>Về website</h2>
+            <li>
+              <a href="danh-sach.html"> Sản phẩm </a>
+            </li>
 
-        <p>
-          Nhóm 10 muốn có ý tưởng làm về website bán quần áo được xây dựng trong
-          học phần Thiết kế và Lập trình web.
-        </p>
+            <li>
+              <a href="chi-tiet.html"> Chi tiết </a>
+            </li>
 
-        <p>
-          Website hướng đến việc hỗ trợ người dùng xem danh sách sản phẩm, xem
-          chi tiết, tìm kiếm, lọc theo danh mục, đăng ký, đăng nhập, thêm sản
-          phẩm vào giỏ hàng, đặt hàng và xem lịch sử đơn hàng.
-        </p>
-      </section>
+            <li>
+              <a href="gioi-thieu.html" aria-current="page"> Giới thiệu </a>
+            </li>
 
-      <section>
-        <h2>Chức năng chính</h2>
+            <li>
+              <a href="lien-he.html"> Liên hệ </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
 
-        <ul>
-          <li>Xem danh sách quần áo</li>
-          <li>Xem chi tiết sản phẩm</li>
-          <li>Tìm kiếm sản phẩm</li>
-          <li>Lọc theo danh mục</li>
-          <li>Đăng ký và đăng nhập</li>
-          <li>Thêm sản phẩm vào giỏ hàng</li>
-          <li>Đặt hàng</li>
-          <li>Xem lịch sử đơn hàng</li>
-          <li>Quản trị sản phẩm</li>
-          <li>Quản lý danh mục</li>
-          <li>Quản lý đơn hàng</li>
-        </ul>
-      </section>
+      <!-- MAIN -->
+      <main class="noi-dung">
+        <div class="bao">
+          <h1 class="tieu-de-trang">Giới thiệu Nhóm 10</h1>
 
-      <section>
-        <h2>Thành viên thực hiện</h2>
+          <!-- VỀ WEBSITE -->
+          <section class="khu-vuc-gioi-thieu">
+            <h2>Về website</h2>
 
-        <ul>
-          <li>
-            <a href="thanhvien/minhdat/gioithieu.html">
-              Nguyễn Đình Minh Đạt
-            </a>
-          </li>
+            <div class="van-ban-dai">
+              <p>
+                Nhóm 10 muốn có ý tưởng làm về website bán quần áo được xây dựng
+                trong học phần Thiết kế và Lập trình web.
+              </p>
 
-          <li>
-            <a href="thanhvien/tuan/gioithieu.html"> Nguyễn Hữu Tuấn </a>
-          </li>
+              <p>
+                Website hướng đến việc hỗ trợ người dùng xem danh sách sản phẩm,
+                xem chi tiết, tìm kiếm, lọc theo danh mục, đăng ký, đăng nhập,
+                thêm sản phẩm vào giỏ hàng, đặt hàng và xem lịch sử đơn hàng.
+              </p>
 
-          <li>
-            <a href="thanhvien/phamhoang/gioithieu.html"> Phạm Huy Hoàng </a>
-          </li>
+              <p>
+                StyleHub được xây dựng với mục tiêu tạo ra một giao diện đơn
+                giản, dễ sử dụng và có khả năng hiển thị tốt trên nhiều kích
+                thước màn hình khác nhau.
+              </p>
+            </div>
+          </section>
 
-          <li>
-            <a href="thanhvien/son/gioithieu.html"> Dương Quang Sơn </a>
-          </li>
-        </ul>
-      </section>
-    </main>
+          <!-- CHỨC NĂNG -->
+          <section class="khu-vuc-gioi-thieu">
+            <h2>Chức năng chính</h2>
 
-    <footer>
-      <p>© 2026 Nhóm 10 — Khoa Toán – Tin</p>
-    </footer>
+            <ul class="danh-sach-chuc-nang">
+              <li>Xem danh sách quần áo</li>
+
+              <li>Xem chi tiết sản phẩm</li>
+
+              <li>Tìm kiếm sản phẩm</li>
+
+              <li>Lọc theo danh mục</li>
+
+              <li>Đăng ký và đăng nhập</li>
+
+              <li>Thêm sản phẩm vào giỏ hàng</li>
+
+              <li>Đặt hàng</li>
+
+              <li>Xem lịch sử đơn hàng</li>
+
+              <li>Quản trị sản phẩm</li>
+
+              <li>Quản lý danh mục</li>
+
+              <li>Quản lý đơn hàng</li>
+            </ul>
+          </section>
+
+          <!-- THÀNH VIÊN -->
+          <section class="khu-vuc-gioi-thieu">
+            <h2>Thành viên thực hiện</h2>
+
+            <ul class="danh-sach-thanh-vien">
+              <li class="the-thanh-vien">
+                <h3>Nguyễn Đình Minh Đạt</h3>
+
+                <a class="nut" href="thanhvien/3120224028_dat/gioithieu.html">
+                  Xem trang cá nhân
+                </a>
+              </li>
+
+              <li class="the-thanh-vien">
+                <h3>Nguyễn Hữu Tuấn</h3>
+
+                <a
+                  class="nut"
+                  href="thanhvien/3120224170_nguyenhuutuan/gioithieu.html"
+                >
+                  Xem trang cá nhân
+                </a>
+              </li>
+
+              <li class="the-thanh-vien">
+                <h3>Phạm Huy Hoàng</h3>
+
+                <a
+                  class="nut"
+                  href="thanhvien/3120224062_phamhoang/gioithieu.html"
+                >
+                  Xem trang cá nhân
+                </a>
+              </li>
+
+              <li class="the-thanh-vien">
+                <h3>Dương Quang Sơn</h3>
+
+                <a class="nut" href="thanhvien/3120224123_son/gioithieu.html">
+                  Xem trang cá nhân
+                </a>
+              </li>
+            </ul>
+          </section>
+        </div>
+      </main>
+
+      <!-- FOOTER -->
+      <footer class="chan-trang">
+        <div class="bao">
+          <p>© 2026 Nhóm 10 — Khoa Toán – Tin</p>
+
+          <p>Website được xây dựng cho học phần Thiết kế và Lập trình web.</p>
+
+          <p>
+            <a href="lien-he.html"> Liên hệ </a>
+          </p>
+        </div>
+      </footer>
+    </div>
   </body>
 </html>

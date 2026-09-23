@@ -10,168 +10,240 @@
       content="Trang chủ website thời trang StyleHub với các sản phẩm quần áo nổi bật."
     />
 
-    <title>Trang chủ</title>
+    <title>Trang chủ - StyleHub</title>
+
+    <link rel="stylesheet" href="css/style.css" />
   </head>
 
   <body>
-    <header>
-      <p>Thời trang cho phong cách riêng của bạn</p>
-    </header>
+    <div class="trang">
+      <!-- HEADER -->
 
-    <nav aria-label="Điều hướng chính">
-      <ul>
-        <li>
-          <a href="index.html"> Trang chủ </a>
-        </li>
+      <header class="dau-trang">
+        <div class="bao">
+          <p class="thuong-hieu">StyleHub</p>
 
-        <li>
-          <a href="danh-sach.html"> Sản phẩm </a>
-        </li>
+          <p class="khau-hieu">Thời trang cho phong cách riêng của bạn</p>
+        </div>
+      </header>
 
-        <li>
-          <a href="chi-tiet.html"> Chi tiết </a>
-        </li>
+      <!-- MENU -->
 
-        <li>
-          <a href="gioi-thieu.html"> Giới thiệu </a>
-        </li>
+      <nav class="menu-chinh" aria-label="Điều hướng chính">
+        <div class="bao">
+          <ul class="menu-chinh__danh-sach">
+            <li>
+              <a href="index.html" aria-current="page"> Trang chủ </a>
+            </li>
 
-        <li>
-          <a href="lien-he.html"> Liên hệ </a>
-        </li>
-      </ul>
-    </nav>
+            <li>
+              <a href="danh-sach.html"> Sản phẩm </a>
+            </li>
 
-    <main>
-      <h1>Website thời trang</h1>
+            <li>
+              <a href="chi-tiet.html"> Chi tiết </a>
+            </li>
 
-      <!-- BỘ SƯU TẬP MỚI -->
-      <section>
-        <h2>Bộ sưu tập mới</h2>
+            <li>
+              <a href="gioi-thieu.html"> Giới thiệu </a>
+            </li>
 
-        <img
-          src="images/banner.jpg"
-          alt="Bộ sưu tập thời trang mới của StyleHub"
-          width="800"
-        />
+            <li>
+              <a href="lien-he.html"> Liên hệ </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
 
-        <p>
-          StyleHub mang đến các sản phẩm thời trang trẻ trung, hiện đại và dễ
-          phối đồ.
-        </p>
+      <!-- MAIN -->
 
-        <p>
-          Các sản phẩm được lựa chọn theo phong cách đơn giản, năng động và phù
-          hợp với nhiều nhu cầu như đi học, đi làm hoặc đi chơi.
-        </p>
-      </section>
+      <main class="noi-dung">
+        <div class="bao">
+          <h1 class="tieu-de-trang">Website thời trang</h1>
 
-      <!-- DANH MỤC NỔI BẬT -->
-      <section>
-        <h2>Danh mục nổi bật</h2>
+          <!-- HERO -->
 
-        <ul>
-          <li>Áo</li>
+          <section class="hero">
+            <div class="hero__noi-dung">
+              <h2>Bộ sưu tập mới</h2>
 
-          <li>Quần</li>
+              <p>
+                StyleHub mang đến các sản phẩm thời trang trẻ trung, hiện đại và
+                dễ phối đồ.
+              </p>
 
-          <li>Váy</li>
+              <p>
+                Các sản phẩm được lựa chọn theo phong cách đơn giản, năng động
+                và phù hợp với nhiều nhu cầu như đi học, đi làm hoặc đi chơi.
+              </p>
 
-          <li>Áo khoác</li>
+              <a class="nut nut--chinh" href="danh-sach.html"> Xem sản phẩm </a>
+            </div>
 
-          <li>Phụ kiện</li>
-        </ul>
-      </section>
+            <div class="hero__anh">
+              <img
+                src="images/banner.jpg"
+                alt="Bộ sưu tập thời trang mới của StyleHub"
+                width="800"
+                height="450"
+              />
+            </div>
+          </section>
 
-      <!-- SẢN PHẨM NỔI BẬT -->
-      <section>
-        <h2>Sản phẩm nổi bật</h2>
+          <!-- DANH MỤC NỔI BẬT -->
 
-        <!-- ÁO SƠ MI -->
-        <article>
-          <h3>Áo sơ mi Basic</h3>
+          <section class="khu-vuc">
+            <h2>Danh mục nổi bật</h2>
 
-          <img
-            src="images/somi.jpg"
-            alt="Áo sơ mi Basic màu trắng"
-            width="300"
-          />
+            <ul class="danh-muc">
+              <li><a href="danh-sach.html#ao">Áo</a></li>
+              <li><a href="danh-sach.html#quan">Quần</a></li>
+              <li><a href="danh-sach.html#vay">Váy</a></li>
+              <li><a href="danh-sach.html#ao-khoac">Áo khoác</a></li>
+              <li><a href="danh-sach.html#phu-kien">Phụ kiện</a></li>
+            </ul>
+          </section>
+
+          <!-- BA THẺ GIỚI THIỆU -->
+
+          <section class="khu-vuc">
+            <h2>Khám phá StyleHub</h2>
+
+            <div class="hang-the">
+              <article class="the">
+                <h3>Thời trang trẻ trung</h3>
+
+                <p>
+                  Các sản phẩm có thiết kế hiện đại, đơn giản và phù hợp với
+                  sinh viên, người trẻ.
+                </p>
+              </article>
+
+              <article class="the">
+                <h3>Dễ dàng lựa chọn</h3>
+
+                <p>
+                  Thông tin sản phẩm được trình bày rõ ràng giúp người dùng dễ
+                  tìm kiếm và lựa chọn.
+                </p>
+              </article>
+
+              <article class="the">
+                <h3>Mua sắm thuận tiện</h3>
+
+                <p>
+                  Website hỗ trợ người dùng xem thông tin sản phẩm và tiếp cận
+                  quy trình mua hàng trực tuyến thuận tiện.
+                </p>
+              </article>
+            </div>
+          </section>
+
+          <!-- SẢN PHẨM NỔI BẬT -->
+
+          <section class="khu-vuc">
+            <h2>Sản phẩm nổi bật</h2>
+
+            <div class="luoi-san-pham">
+              <!-- ÁO SƠ MI -->
+
+              <article class="the-san-pham">
+                <img
+                  class="the-san-pham__anh"
+                  src="images/somi.jpg"
+                  alt="Áo sơ mi Basic màu trắng"
+                  width="300"
+                  height="300"
+                  loading="lazy"
+                />
+
+                <div class="the-san-pham__noi-dung">
+                  <h3>Áo sơ mi Basic</h3>
+
+                  <p>
+                    Áo sơ mi Basic có thiết kế đơn giản, trẻ trung và dễ phối
+                    với nhiều loại trang phục.
+                  </p>
+
+                  <p>
+                    Sản phẩm phù hợp sử dụng khi đi học, đi làm hoặc tham gia
+                    các hoạt động thường ngày.
+                  </p>
+
+                  <p class="gia">299.000đ</p>
+
+                  <a class="nut" href="chi-tiet.html#ao-so-mi">
+                    Xem chi tiết
+                  </a>
+                </div>
+              </article>
+
+              <!-- QUẦN JEANS -->
+
+              <article class="the-san-pham">
+                <img
+                  class="the-san-pham__anh"
+                  src="images/quanjeans.jpg"
+                  alt="Quần Jeans Classic màu xanh"
+                  width="300"
+                  height="300"
+                  loading="lazy"
+                />
+
+                <div class="the-san-pham__noi-dung">
+                  <h3>Quần Jeans Classic</h3>
+
+                  <p>
+                    Quần Jeans Classic sử dụng chất liệu denim, mang phong cách
+                    trẻ trung và hiện đại.
+                  </p>
+
+                  <p>
+                    Sản phẩm dễ phối với áo thun, áo sơ mi hoặc áo khoác và phù
+                    hợp sử dụng hằng ngày.
+                  </p>
+
+                  <p class="gia">399.000đ</p>
+
+                  <a class="nut" href="chi-tiet.html#quanjeans">
+                    Xem chi tiết
+                  </a>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <!-- VÌ SAO LỰA CHỌN -->
+
+          <section class="khu-vuc khu-vuc--phu">
+            <h2>Vì sao lựa chọn StyleHub?</h2>
+
+            <ul class="loi-ich">
+              <li>Sản phẩm thời trang đa dạng.</li>
+
+              <li>Thông tin sản phẩm rõ ràng.</li>
+
+              <li>Dễ dàng xem và tìm kiếm sản phẩm.</li>
+
+              <li>Hỗ trợ đặt hàng trực tuyến.</li>
+            </ul>
+          </section>
+        </div>
+      </main>
+
+      <!-- FOOTER -->
+
+      <footer class="chan-trang">
+        <div class="bao">
+          <p>© 2026 Nhóm 10 — Khoa Toán – Tin</p>
+
+          <p>Website được xây dựng cho học phần Thiết kế và Lập trình web.</p>
 
           <p>
-            Áo sơ mi Basic có thiết kế đơn giản, trẻ trung và dễ phối với nhiều
-            loại trang phục.
+            <a href="lien-he.html"> Liên hệ </a>
           </p>
-
-          <p>
-            Sản phẩm phù hợp sử dụng khi đi học, đi làm hoặc tham gia các hoạt
-            động thường ngày.
-          </p>
-
-          <p>
-            <strong>Giá: 299.000đ</strong>
-          </p>
-
-          <p>
-            <a href="chi-tiet.html#ao-so-mi"> Xem chi tiết Áo sơ mi Basic </a>
-          </p>
-        </article>
-
-        <!-- QUẦN JEANS -->
-        <article>
-          <h3>Quần Jeans Classic</h3>
-
-          <img
-            src="images/quanjeans.jpg"
-            alt="Quần Jeans Classic màu xanh"
-            width="300"
-          />
-
-          <p>
-            Quần Jeans Classic sử dụng chất liệu denim, mang phong cách trẻ
-            trung và hiện đại.
-          </p>
-
-          <p>
-            Sản phẩm dễ phối với áo thun, áo sơ mi hoặc áo khoác và phù hợp sử
-            dụng hằng ngày.
-          </p>
-
-          <p>
-            <strong>Giá: 399.000đ</strong>
-          </p>
-
-          <p>
-            <a href="chi-tiet.html#quanjeans">
-              Xem chi tiết Quần Jeans Classic
-            </a>
-          </p>
-        </article>
-      </section>
-
-      <!-- GIỚI THIỆU NGẮN -->
-      <section>
-        <h2>Vì sao lựa chọn StyleHub?</h2>
-
-        <ul>
-          <li>Sản phẩm thời trang đa dạng.</li>
-
-          <li>Thông tin sản phẩm rõ ràng.</li>
-
-          <li>Dễ dàng xem và tìm kiếm sản phẩm.</li>
-
-          <li>Hỗ trợ đặt hàng trực tuyến.</li>
-        </ul>
-      </section>
-    </main>
-
-    <footer>
-      <p>© 2026 Nhóm 10 — Khoa Toán – Tin</p>
-
-      <p>Website được xây dựng cho học phần Thiết kế và Lập trình web.</p>
-
-      <p>
-        <a href="lien-he.html"> Liên hệ </a>
-      </p>
-    </footer>
+        </div>
+      </footer>
+    </div>
   </body>
 </html>

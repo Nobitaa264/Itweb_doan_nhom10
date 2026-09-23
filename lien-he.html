@@ -1,257 +1,425 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
 
-    <meta
-        name="description"
-        content="Trang liên hệ và đăng ký đặt hàng tại website thời trang StyleHub."
-    >
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
 
-    <title>Liên hệ</title>
+  <meta
+    name="description"
+    content="Trang liên hệ và đăng ký đặt hàng tại website thời trang StyleHub.">
+
+  <title>Liên hệ - StyleHub</title>
+
+  <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
-    <header>
-        <p>Thời trang cho phong cách riêng của bạn</p>
+  <div class="trang">
+
+    <!-- HEADER -->
+    <header class="dau-trang">
+
+      <div class="bao">
+
+        <p class="thuong-hieu">
+          StyleHub
+        </p>
+
+        <p class="khau-hieu">
+          Thời trang cho phong cách riêng của bạn
+        </p>
+
+      </div>
+
     </header>
 
-    <nav>
-        <ul>
-            <li><a href="index.html">Trang chủ</a></li>
-            <li><a href="danh-sach.html">Sản phẩm</a></li>
-            <li><a href="chi-tiet.html">Chi tiết</a></li>
-            <li><a href="gioi-thieu.html">Giới thiệu</a></li>
-            <li><a href="lien-he.html">Liên hệ</a></li>
+
+    <!-- MENU -->
+    <nav
+      class="menu-chinh"
+      aria-label="Điều hướng chính">
+
+      <div class="bao">
+
+        <ul class="menu-chinh__danh-sach">
+
+          <li>
+            <a href="index.html">
+              Trang chủ
+            </a>
+          </li>
+
+          <li>
+            <a href="danh-sach.html">
+              Sản phẩm
+            </a>
+          </li>
+
+          <li>
+            <a href="chi-tiet.html">
+              Chi tiết
+            </a>
+          </li>
+
+          <li>
+            <a href="gioi-thieu.html">
+              Giới thiệu
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="lien-he.html"
+              aria-current="page">
+              Liên hệ
+            </a>
+          </li>
+
         </ul>
+
+      </div>
+
     </nav>
 
-    <main>
 
-        <h1>Liên hệ và đăng ký đặt hàng</h1>
+    <!-- MAIN -->
+    <main class="noi-dung">
 
-        <section>
+      <div class="bao">
 
-            <h2>Thông tin liên hệ</h2>
+        <h1 class="tieu-de-trang">
+          Liên hệ và đăng ký đặt hàng
+        </h1>
+
+
+        <!-- KHUNG LIÊN HỆ -->
+        <div class="bo-cuc-lien-he">
+
+
+          <!-- THÔNG TIN LIÊN HỆ -->
+          <section class="thong-tin-lien-he">
+
+            <h2>
+              Thông tin liên hệ
+            </h2>
 
             <p>
-                Nếu cần hỗ trợ về sản phẩm hoặc đơn hàng,
-                khách hàng có thể để lại thông tin bên dưới.
+              Nếu cần hỗ trợ về sản phẩm hoặc đơn hàng,
+              khách hàng có thể để lại thông tin bên dưới.
             </p>
 
             <address>
-                Nhóm 10<br>
-                Khoa Toán - Tin<br>
-                Trường Đại học Sư phạm - Đại học Đà Nẵng<br>
+
+              <p>
+                <strong>Nhóm 10</strong>
+              </p>
+
+              <p>
+                Khoa Toán - Tin
+              </p>
+
+              <p>
+                Trường Đại học Sư phạm - Đại học Đà Nẵng
+              </p>
+
+              <p>
                 Email:
                 <a href="mailto:nhom10@gmail.com">
-                    nhom10@gmail.com
+                  nhom10@gmail.com
                 </a>
+              </p>
+
             </address>
 
-        </section>
+          </section>
 
-        <section>
 
-            <h2>Form đăng ký đặt hàng</h2>
+          <!-- FORM -->
+          <section class="khu-vuc-form">
 
-            <form action="#" method="post">
+            <h2>
+              Form đăng ký đặt hàng
+            </h2>
 
-                <fieldset>
+            <form
+              class="form-lien-he"
+              action="#"
+              method="post">
 
-                    <legend>Thông tin khách hàng</legend>
 
-                    <p>
-                        <label for="ho-ten">Họ và tên:</label>
+              <!-- THÔNG TIN KHÁCH HÀNG -->
+              <fieldset>
 
-                        <input
-                            type="text"
-                            id="ho-ten"
-                            name="ho-ten"
-                            required
-                            minlength="2"
-                            maxlength="50"
-                        >
-                    </p>
+                <legend>
+                  Thông tin khách hàng
+                </legend>
 
-                    <p>
-                        <label for="email">Email:</label>
 
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            required
-                        >
-                    </p>
+                <div class="nhom-form">
 
-                    <p>
-                        <label for="dien-thoai">Số điện thoại:</label>
+                  <label for="ho-ten">
+                    Họ và tên:
+                  </label>
 
-                        <input
-                            type="tel"
-                            id="dien-thoai"
-                            name="dien-thoai"
-                            required
-                            pattern="0[0-9]{9}"
-                            placeholder="Ví dụ: 0912345678"
-                        >
-                    </p>
+                  <input
+                    type="text"
+                    id="ho-ten"
+                    name="ho-ten"
+                    required
+                    minlength="2"
+                    maxlength="50"
+                    autocomplete="name">
 
-                    <p>
-                        <label for="ngay-nhan">
-                            Ngày mong muốn nhận hàng:
-                        </label>
+                </div>
 
-                        <input
-                            type="date"
-                            id="ngay-nhan"
-                            name="ngay-nhan"
-                            required
-                        >
-                    </p>
 
-                    <p>
-                        <label for="so-luong">
-                            Số lượng sản phẩm:
-                        </label>
+                <div class="nhom-form">
 
-                        <input
-                            type="number"
-                            id="so-luong"
-                            name="so-luong"
-                            min="1"
-                            max="10"
-                            value="1"
-                            required
-                        >
-                    </p>
+                  <label for="email">
+                    Email:
+                  </label>
 
-                </fieldset>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    autocomplete="email">
 
-                <fieldset>
+                </div>
 
-                    <legend>Sản phẩm quan tâm</legend>
 
-                    <p>
-                        <label for="danh-muc">
-                            Danh mục:
-                        </label>
+                <div class="nhom-form">
 
-                        <select
-                            id="danh-muc"
-                            name="danh-muc"
-                            required
-                        >
-                            <option value="">
-                                -- Chọn danh mục --
-                            </option>
+                  <label for="dien-thoai">
+                    Số điện thoại:
+                  </label>
 
-                            <option value="ao">
-                                Áo
-                            </option>
+                  <input
+                    type="tel"
+                    id="dien-thoai"
+                    name="dien-thoai"
+                    required
+                    pattern="0[0-9]{9}"
+                    placeholder="Ví dụ: 0912345678"
+                    autocomplete="tel">
 
-                            <option value="quan">
-                                Quần
-                            </option>
+                </div>
 
-                            <option value="vay">
-                                Váy
-                            </option>
 
-                            <option value="phu-kien">
-                                Phụ kiện
-                            </option>
+                <div class="nhom-form">
 
-                        </select>
-                    </p>
+                  <label for="ngay-nhan">
+                    Ngày mong muốn nhận hàng:
+                  </label>
 
-                    <p>
-                        <label for="ghi-chu">
-                            Ghi chú:
-                        </label>
-                    </p>
+                  <input
+                    type="date"
+                    id="ngay-nhan"
+                    name="ngay-nhan"
+                    required>
 
-                    <p>
-                        <textarea
-                            id="ghi-chu"
-                            name="ghi-chu"
-                            rows="5"
-                            cols="40"
-                            maxlength="300"
-                        ></textarea>
-                    </p>
+                </div>
 
-                </fieldset>
 
-                <fieldset>
+                <div class="nhom-form">
 
-                    <legend>Phương thức liên hệ</legend>
+                  <label for="so-luong">
+                    Số lượng sản phẩm:
+                  </label>
 
-                    <p>
-                        <input
-                            type="radio"
-                            id="lien-he-email"
-                            name="phuong-thuc"
-                            value="email"
-                            required
-                        >
+                  <input
+                    type="number"
+                    id="so-luong"
+                    name="so-luong"
+                    min="1"
+                    max="10"
+                    value="1"
+                    required>
 
-                        <label for="lien-he-email">
-                            Email
-                        </label>
-                    </p>
+                </div>
 
-                    <p>
-                        <input
-                            type="radio"
-                            id="lien-he-dien-thoai"
-                            name="phuong-thuc"
-                            value="dien-thoai"
-                        >
+              </fieldset>
 
-                        <label for="lien-he-dien-thoai">
-                            Điện thoại
-                        </label>
-                    </p>
 
-                </fieldset>
+              <!-- SẢN PHẨM QUAN TÂM -->
+              <fieldset>
 
-                <p>
+                <legend>
+                  Sản phẩm quan tâm
+                </legend>
+
+
+                <div class="nhom-form">
+
+                  <label for="danh-muc">
+                    Danh mục:
+                  </label>
+
+                  <select
+                    id="danh-muc"
+                    name="danh-muc"
+                    required>
+
+                    <option value="">
+                      -- Chọn danh mục --
+                    </option>
+
+                    <option value="ao">
+                      Áo
+                    </option>
+
+                    <option value="quan">
+                      Quần
+                    </option>
+
+                    <option value="vay">
+                      Váy
+                    </option>
+
+                    <option value="ao-khoac">
+                      Áo khoác
+                    </option>
+
+                    <option value="phu-kien">
+                      Phụ kiện
+                    </option>
+
+                  </select>
+
+                </div>
+
+
+                <div class="nhom-form">
+
+                  <label for="ghi-chu">
+                    Ghi chú:
+                  </label>
+
+                  <textarea
+                    id="ghi-chu"
+                    name="ghi-chu"
+                    rows="5"
+                    maxlength="300"
+                    placeholder="Nhập yêu cầu hoặc ghi chú của bạn..."></textarea>
+
+                </div>
+
+              </fieldset>
+
+
+              <!-- PHƯƠNG THỨC LIÊN HỆ -->
+              <fieldset>
+
+                <legend>
+                  Phương thức liên hệ
+                </legend>
+
+                <div class="lua-chon">
+
+                  <div class="lua-chon__muc">
+
                     <input
-                        type="checkbox"
-                        id="dong-y"
-                        name="dong-y"
-                        required
-                    >
+                      type="radio"
+                      id="lien-he-email"
+                      name="phuong-thuc"
+                      value="email"
+                      required>
 
-                    <label for="dong-y">
-                        Tôi đồng ý cung cấp thông tin để StyleHub liên hệ.
+                    <label for="lien-he-email">
+                      Email
                     </label>
-                </p>
 
-                <p>
-                    <button type="submit">
-                        Gửi thông tin
-                    </button>
+                  </div>
 
-                    <button type="reset">
-                        Nhập lại
-                    </button>
-                </p>
+
+                  <div class="lua-chon__muc">
+
+                    <input
+                      type="radio"
+                      id="lien-he-dien-thoai"
+                      name="phuong-thuc"
+                      value="dien-thoai">
+
+                    <label for="lien-he-dien-thoai">
+                      Điện thoại
+                    </label>
+
+                  </div>
+
+                </div>
+
+              </fieldset>
+
+
+              <!-- ĐỒNG Ý -->
+              <div class="lua-chon__muc dong-y">
+
+                <input
+                  type="checkbox"
+                  id="dong-y"
+                  name="dong-y"
+                  required>
+
+                <label for="dong-y">
+                  Tôi đồng ý cung cấp thông tin để StyleHub liên hệ.
+                </label>
+
+              </div>
+
+
+              <!-- NÚT -->
+              <div class="nhom-nut-form">
+
+                <button
+                  class="nut-form"
+                  type="submit">
+                  Gửi thông tin
+                </button>
+
+                <button
+                  class="nut-form nut-form--phu"
+                  type="reset">
+                  Nhập lại
+                </button>
+
+              </div>
 
             </form>
 
-        </section>
+          </section>
+
+        </div>
+
+      </div>
 
     </main>
 
-    <footer>
-        <p>© 2026 Nhóm 10 — Khoa Toán – Tin</p>
+
+    <!-- FOOTER -->
+    <footer class="chan-trang">
+
+      <div class="bao">
+
+        <p>
+          © 2026 Nhóm 10 — Khoa Toán – Tin
+        </p>
+
+        <p>
+          Website được xây dựng cho học phần
+          Thiết kế và Lập trình web.
+        </p>
+
+      </div>
+
     </footer>
+
+  </div>
 
 </body>
 
