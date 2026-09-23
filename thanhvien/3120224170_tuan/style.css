@@ -1,0 +1,419 @@
+/* =========================================================
+   1. CSS VARIABLES
+   ========================================================= */
+
+:root {
+  --color-primary: #2563eb;
+  --color-primary-dark: #1d4ed8;
+  --color-primary-light: #dbeafe;
+
+  --color-background: #f5f5f5;
+  --color-white: #ffffff;
+  --color-text: #1f2937;
+  --color-border: #999999;
+  --color-table-header: #e5e7eb;
+
+  --container-width: 1000px;
+
+  --spacing-small: 0.5rem;
+  --spacing-medium: 1rem;
+  --spacing-large: 1.5rem;
+  --spacing-xlarge: 2rem;
+
+  --border-radius: 10px;
+
+  --transition: 0.2s ease;
+}
+
+/* =========================================================
+   2. RESET / CHUẨN HÓA
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+
+  color: var(--color-text);
+  background-color: var(--color-background);
+}
+
+img {
+  display: block;
+
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+}
+
+p {
+  margin-top: 0;
+}
+
+/* =========================================================
+   3. CONTAINER
+   ========================================================= */
+
+.container {
+  width: min(calc(100% - 2rem), var(--container-width));
+
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* =========================================================
+   4. HEADER
+   ========================================================= */
+
+.site-header {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+
+  padding: var(--spacing-large) 0;
+}
+
+.header-content {
+  display: flex;
+
+  flex-direction: column;
+  align-items: center;
+
+  gap: var(--spacing-medium);
+
+  text-align: center;
+}
+
+.site-title {
+  margin: 0;
+
+  font-size: 1.6rem;
+}
+
+/* =========================================================
+   5. MENU
+   ========================================================= */
+
+.main-nav {
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+}
+
+.main-nav__link {
+  display: inline-block;
+
+  padding: 0.5rem 1rem;
+
+  color: var(--color-white);
+  text-decoration: none;
+
+  border-radius: 6px;
+
+  transition:
+    background-color var(--transition),
+    color var(--transition);
+}
+
+/* Hover */
+
+.main-nav__link:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+
+  text-decoration: underline;
+}
+
+/* Active */
+
+.main-nav__link:active {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Focus */
+
+.main-nav__link:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+}
+
+/* =========================================================
+   6. MAIN
+   ========================================================= */
+
+.main-content {
+  display: grid;
+
+  gap: var(--spacing-large);
+
+  margin-top: var(--spacing-large);
+  margin-bottom: var(--spacing-large);
+}
+
+/* =========================================================
+   7. CÁC SECTION
+   ========================================================= */
+
+.content-section {
+  background-color: var(--color-white);
+
+  padding: var(--spacing-large);
+
+  border-radius: var(--border-radius);
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.section-title {
+  margin-top: 0;
+  margin-bottom: var(--spacing-large);
+
+  color: var(--color-primary);
+
+  font-size: 1.4rem;
+
+  border-bottom: 2px solid var(--color-primary);
+
+  padding-bottom: var(--spacing-small);
+}
+
+.sub-title {
+  margin-top: var(--spacing-large);
+
+  color: var(--color-primary-dark);
+}
+
+/* =========================================================
+   8. THÔNG TIN CÁ NHÂN
+   ========================================================= */
+
+.profile {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: var(--spacing-large);
+}
+
+.profile-image {
+  flex-shrink: 0;
+}
+
+.profile-image img {
+  width: 150px;
+  height: 200px;
+
+  object-fit: cover;
+
+  border-radius: var(--border-radius);
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.profile-info {
+  width: 100%;
+}
+
+.profile-info p {
+  margin-bottom: var(--spacing-small);
+}
+
+.description {
+  max-width: 65ch;
+
+  margin-top: var(--spacing-large);
+  margin-bottom: 0;
+}
+
+/* =========================================================
+   9. DANH SÁCH KỸ NĂNG
+   ========================================================= */
+
+.skills-list {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: var(--spacing-small);
+
+  margin: var(--spacing-medium) 0 0;
+
+  padding: 0;
+
+  list-style: none;
+}
+
+.skills-list li {
+  padding: 0.5rem 0.8rem;
+
+  background-color: var(--color-primary-light);
+
+  color: var(--color-primary-dark);
+
+  border-radius: 6px;
+
+  font-weight: 600;
+}
+
+/* =========================================================
+   10. BẢNG THỜI KHÓA BIỂU
+   ========================================================= */
+
+/*
+  Cho phép bảng cuộn ngang bên trong
+  khi màn hình điện thoại quá nhỏ.
+*/
+
+.table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+
+  -webkit-overflow-scrolling: touch;
+}
+
+.schedule-table {
+  width: 100%;
+
+  min-width: 700px;
+
+  border-collapse: collapse;
+
+  margin-top: var(--spacing-medium);
+
+  background-color: var(--color-white);
+}
+
+.schedule-table caption {
+  margin-bottom: var(--spacing-small);
+
+  font-weight: bold;
+
+  text-align: left;
+}
+
+.schedule-table th,
+.schedule-table td {
+  border: 1px solid var(--color-border);
+
+  padding: 0.65rem;
+
+  text-align: center;
+
+  white-space: nowrap;
+}
+
+.schedule-table thead th {
+  background-color: var(--color-table-header);
+}
+
+.schedule-table tbody th {
+  background-color: #f3f4f6;
+}
+
+/* =========================================================
+   11. FOOTER
+   ========================================================= */
+
+.site-footer {
+  background-color: var(--color-primary);
+
+  color: var(--color-white);
+
+  padding: var(--spacing-large) 0;
+
+  text-align: center;
+}
+
+.site-footer p {
+  margin: 0;
+}
+
+/* =========================================================
+   12. RESPONSIVE - TABLET
+   Breakpoint 1
+   ========================================================= */
+
+@media (min-width: 600px) {
+  .container {
+    width: min(calc(100% - 3rem), var(--container-width));
+  }
+
+  .site-title {
+    font-size: 2rem;
+  }
+
+  /*
+    Chuyển thông tin cá nhân từ
+    xếp dọc -> xếp ngang
+  */
+
+  .profile {
+    flex-direction: row;
+
+    align-items: flex-start;
+  }
+
+  .profile-info {
+    flex: 1;
+  }
+
+  .content-section {
+    padding: var(--spacing-xlarge);
+  }
+}
+
+/* =========================================================
+   13. RESPONSIVE - DESKTOP
+   Breakpoint 2
+   ========================================================= */
+
+@media (min-width: 900px) {
+  .container {
+    width: min(calc(100% - 4rem), var(--container-width));
+  }
+
+  .main-content {
+    gap: var(--spacing-xlarge);
+  }
+
+  .site-header {
+    padding: var(--spacing-xlarge) 0;
+  }
+
+  /*
+    Header trên desktop:
+    Tiêu đề bên trái
+    Menu bên phải
+  */
+
+  .header-content {
+    flex-direction: row;
+
+    justify-content: space-between;
+  }
+
+  .site-title {
+    text-align: left;
+  }
+
+  .content-section {
+    padding: var(--spacing-xlarge);
+  }
+}
