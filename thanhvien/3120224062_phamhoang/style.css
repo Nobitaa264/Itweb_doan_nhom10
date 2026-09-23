@@ -1,0 +1,185 @@
+:root {
+    --mau-chinh: #2563eb;
+    --mau-nen: #ffffff;
+    --mau-phu: #f3f4f6;
+    --mau-chu: #222222;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: var(--mau-nen);
+    color: var(--mau-chu);
+}
+
+header {
+    background-color: var(--mau-chinh);
+    color: var(--mau-nen);
+    padding: 24px 16px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0 0 15px;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+nav a {
+    color: var(--mau-nen);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+
+nav a:hover {
+    background-color: var(--mau-nen);
+    color: var(--mau-chinh);
+}
+
+nav a:focus-visible {
+    outline: 3px solid var(--mau-nen);
+    outline-offset: 3px;
+}
+
+main {
+    width: min(100% - 32px, 1000px);
+    margin: 30px auto;
+}
+
+section,
+article {
+    background-color: var(--mau-phu);
+    padding: 24px;
+    margin-bottom: 24px;
+    border-radius: 10px;
+}
+
+h2 {
+    color: var(--mau-chinh);
+}
+
+img {
+    display: block;
+    width: 200px;
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+ul {
+    padding-left: 25px;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    min-width: 700px;
+    border-collapse: collapse;
+    background-color: var(--mau-nen);
+}
+
+th,
+td {
+    border: 1px solid var(--mau-chu);
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background-color: var(--mau-chinh);
+    color: var(--mau-nen);
+}
+
+caption {
+    caption-side: top;
+    padding: 10px;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:focus-visible {
+    outline: 3px solid var(--mau-chinh);
+    outline-offset: 3px;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: var(--mau-phu);
+}
+
+@media (min-width: 768px) {
+    main {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+    }
+
+    main section:last-child {
+        grid-column: 1 / -1;
+    }
+
+    section,
+    article {
+        margin-bottom: 0;
+    }
+}
+
+@media (max-width: 767px) {
+    main {
+        width: 100%;
+        padding: 0 16px;
+    }
+
+    section,
+    article {
+        padding: 16px;
+    }
+
+    header h1 {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 360px) {
+    main {
+        width: 100%;
+        padding: 0 10px;
+    }
+
+    header {
+        padding: 20px 10px;
+    }
+
+    header h1 {
+        font-size: 22px;
+    }
+
+    section,
+    article {
+        padding: 14px;
+    }
+}
