@@ -1,0 +1,88 @@
+/* ==================================================
+   BOOTSTRAP CUSTOM - STYLEHUB
+   ================================================== */
+
+:root {
+  --mau-chinh: #2563eb;
+  --mau-nen: #ffffff;
+  --mau-phu: #f3f4f6;
+  --mau-chu: #222222;
+
+  --bs-primary: #2563eb;
+  --bs-primary-rgb: 37, 99, 235;
+
+  --bs-body-color: #222222;
+  --bs-body-bg: #f3f4f6;
+
+  --bs-border-radius: 10px;
+
+  --co-chu-nho: 0.9rem;
+  --co-chu-vua: 1rem;
+  --co-chu-lon: 1.15rem;
+}
+
+body {
+  color: var(--mau-chu);
+
+  background: var(--mau-phu);
+}
+
+.anh-san-pham {
+  width: 100%;
+
+  height: 280px;
+
+  object-fit: cover;
+}
+
+.khong-co-anh {
+  min-height: 280px;
+
+  background: var(--mau-phu);
+
+  border-bottom: 1px solid var(--mau-chu);
+}
+
+.card {
+  border-color: var(--mau-chu);
+}
+
+.card:focus-within {
+  outline: 3px solid var(--mau-chinh);
+
+  outline-offset: 3px;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--mau-chinh);
+
+  outline-offset: 3px;
+}
+
+.btn,
+.nav-link,
+.page-link {
+  transition:
+    color 0.2s,
+    background-color 0.2s,
+    border-color 0.2s,
+    transform 0.2s;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.table {
+  --bs-table-bg: var(--mau-nen);
+  --bs-table-striped-bg: var(--mau-phu);
+}
+
+@media (min-width: 768px) {
+  .anh-san-pham,
+  .khong-co-anh {
+    height: 300px;
+    min-height: 300px;
+  }
+}
