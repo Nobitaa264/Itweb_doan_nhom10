@@ -1,0 +1,417 @@
+/* ==============================
+   1. BIẾN CSS - BẢNG MÀU NHÓM
+   ============================== */
+
+:root {
+  --mau-chinh: #2563eb;
+  --mau-nen: #ffffff;
+  --mau-phu: #f3f4f6;
+  --mau-chu: #222222;
+
+  --bo-goc: 10px;
+
+  --khoang-nho: 8px;
+  --khoang-vua: 16px;
+  --khoang-lon: 24px;
+
+  --do-rong-trang: 1100px;
+}
+
+
+/* ==============================
+   2. CHUẨN HÓA
+   ============================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  line-height: 1.6;
+
+  color: var(--mau-chu);
+
+  background: var(--mau-phu);
+}
+
+img {
+  display: block;
+
+  max-width: 100%;
+
+  height: auto;
+}
+
+a {
+  color: var(--mau-chinh);
+}
+
+
+/* ==============================
+   3. KHUNG TRANG
+   ============================== */
+
+.trang {
+  min-height: 100vh;
+
+  display: grid;
+
+  grid-template-rows:
+    auto
+    1fr
+    auto;
+}
+
+.bao {
+  width: min(
+    100% - 32px,
+    var(--do-rong-trang)
+  );
+
+  margin-inline: auto;
+}
+
+
+/* ==============================
+   4. HEADER
+   ============================== */
+
+.dau-trang {
+  color: var(--mau-nen);
+
+  background: var(--mau-chinh);
+}
+
+.dau-trang .bao {
+  padding-block: var(--khoang-lon);
+}
+
+.dau-trang h1 {
+  margin-top: 0;
+
+  margin-bottom: var(--khoang-vua);
+
+  font-size: 1.75rem;
+}
+
+
+/* ==============================
+   5. MENU
+   ============================== */
+
+.menu {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: var(--khoang-nho);
+}
+
+.menu a {
+  display: inline-block;
+
+  padding:
+    8px
+    12px;
+
+  border-radius: 6px;
+
+  color: var(--mau-nen);
+
+  text-decoration: none;
+
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.menu a:hover {
+  color: var(--mau-chu);
+
+  background: var(--mau-phu);
+}
+
+.menu a:active {
+  transform: translateY(1px);
+}
+
+.menu a:focus-visible {
+  outline: 3px solid var(--mau-nen);
+
+  outline-offset: 3px;
+}
+
+
+/* ==============================
+   6. NỘI DUNG
+   ============================== */
+
+.noi-dung {
+  padding-block: var(--khoang-lon);
+}
+
+.khoi {
+  margin-bottom: var(--khoang-lon);
+
+  padding: var(--khoang-vua);
+
+  border: 1px solid var(--mau-chu);
+
+  border-radius: var(--bo-goc);
+
+  background: var(--mau-nen);
+}
+
+.khoi h2 {
+  margin-top: 0;
+
+  color: var(--mau-chinh);
+}
+
+.khoi p {
+  max-width: 65ch;
+}
+
+
+/* ==============================
+   7. GIỚI THIỆU
+   ============================== */
+
+.gioi-thieu {
+  display: grid;
+
+  gap: var(--khoang-lon);
+}
+
+.gioi-thieu__anh img {
+  width: 180px;
+
+  aspect-ratio: 1;
+
+  margin-inline: auto;
+
+  border: 4px solid var(--mau-chinh);
+
+  border-radius: 50%;
+
+  object-fit: cover;
+}
+
+
+/* ==============================
+   8. KỸ NĂNG
+   ============================== */
+
+.danh-sach-ky-nang {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: var(--khoang-nho);
+
+  padding-left: 0;
+
+  list-style: none;
+}
+
+.danh-sach-ky-nang li {
+  padding:
+    8px
+    12px;
+
+  border: 1px solid var(--mau-chu);
+
+  border-radius: 20px;
+
+  background: var(--mau-phu);
+}
+
+
+/* ==============================
+   9. THỜI KHÓA BIỂU
+   ============================== */
+
+.bang-cuon {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+
+  min-width: 620px;
+
+  border-collapse: collapse;
+
+  background: var(--mau-nen);
+}
+
+caption {
+  margin-bottom: 10px;
+
+  font-weight: 700;
+
+  text-align: left;
+}
+
+th,
+td {
+  padding: 10px;
+
+  border: 1px solid var(--mau-chu);
+
+  text-align: center;
+}
+
+thead th {
+  color: var(--mau-nen);
+
+  background: var(--mau-chinh);
+}
+
+tbody tr:nth-child(even) {
+  background: var(--mau-phu);
+}
+
+
+/* ==============================
+   10. NÚT / LIÊN KẾT
+   ============================== */
+
+.nhom-lien-ket {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: var(--khoang-nho);
+}
+
+.nut {
+  display: inline-block;
+
+  padding:
+    10px
+    16px;
+
+  border: 2px solid var(--mau-chinh);
+
+  border-radius: 8px;
+
+  color: var(--mau-chinh);
+
+  font-weight: 600;
+
+  text-decoration: none;
+
+  text-align: center;
+
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    transform 0.2s;
+}
+
+.nut:hover {
+  color: var(--mau-nen);
+
+  background: var(--mau-chinh);
+}
+
+.nut:active {
+  transform: scale(0.98);
+}
+
+.nut:focus-visible {
+  outline: 3px solid var(--mau-chu);
+
+  outline-offset: 3px;
+}
+
+
+/* ==============================
+   11. FOOTER
+   ============================== */
+
+.chan-trang {
+  padding-block: var(--khoang-vua);
+
+  color: var(--mau-nen);
+
+  text-align: center;
+
+  background: var(--mau-chinh);
+}
+
+.chan-trang p {
+  margin: 0;
+}
+
+
+/* ==============================
+   12. RESPONSIVE MOBILE-FIRST
+   ============================== */
+
+@media (min-width: 768px) {
+
+  .dau-trang .bao {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: var(--khoang-lon);
+  }
+
+  .dau-trang h1 {
+    margin-bottom: 0;
+  }
+
+  .menu {
+    flex-direction: row;
+  }
+
+  .gioi-thieu {
+    grid-template-columns:
+      220px
+      1fr;
+
+    align-items: center;
+  }
+
+  .gioi-thieu__anh img {
+    width: 200px;
+  }
+
+  .nhom-lien-ket {
+    flex-direction: row;
+  }
+}
+
+
+@media (min-width: 1024px) {
+
+  .khoi {
+    padding: var(--khoang-lon);
+  }
+
+  .dau-trang h1 {
+    font-size: 2rem;
+  }
+}
