@@ -1,463 +1,813 @@
-/* =========================================================
-   1. CSS VARIABLES
-   ========================================================= */
+/* =====================================================
+   STYLE TRANG CÁ NHÂN
+   Responsive + hỗ trợ Dark Mode
+===================================================== */
+
+
 
 :root {
-  --color-primary: #2563eb;
-  --color-primary-dark: #1d4ed8;
-  --color-primary-light: #dbeafe;
 
-  --color-background: #f5f5f5;
-  --color-white: #ffffff;
-  --color-text: #1f2937;
-  --color-border: #999999;
-  --color-table-header: #e5e7eb;
+    --color-primary: #2563eb;
+    --color-primary-dark: #1d4ed8;
 
-  --container-width: 1000px;
+    --color-background: #f5f5f5;
 
-  --spacing-small: 0.5rem;
-  --spacing-medium: 1rem;
-  --spacing-large: 1.5rem;
-  --spacing-xlarge: 2rem;
+    --color-white: #ffffff;
 
-  --border-radius: 10px;
+    --color-text: #1f2937;
 
-  --transition: 0.2s ease;
+    --color-border: #999999;
+
+    --color-table-header: #e5e7eb;
+
+
+    --container-width:1000px;
+
+
+    --spacing-small:0.5rem;
+    --spacing-medium:1rem;
+    --spacing-large:1.5rem;
+    --spacing-xlarge:2rem;
+
+
+    --radius:10px;
+
 }
 
-/* =========================================================
-   2. RESET / CHUẨN HÓA
-   ========================================================= */
+
+
+/* =========================
+RESET
+========================= */
+
 
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
+
+    box-sizing:border-box;
+
 }
+
+
 
 html {
-  scroll-behavior: smooth;
+
+    scroll-behavior:smooth;
+
 }
+
+
 
 body {
-  margin: 0;
 
-  font-family: Arial, sans-serif;
-  font-size: 16px;
-  line-height: 1.6;
 
-  color: var(--color-text);
-  background-color: var(--color-background);
+    margin:0;
+
+
+    font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+
+    font-size:16px;
+
+
+    line-height:1.6;
+
+
+    color:var(--color-text);
+
+
+    background-color:
+    var(--color-background);
+
+
+    transition:
+    background-color .3s,
+    color .3s;
+
 }
+
+
 
 img {
-  display: block;
 
-  max-width: 100%;
-  height: auto;
+    display:block;
+
+    max-width:100%;
+
+    height:auto;
+
 }
+
+
 
 a {
-  color: inherit;
+
+    color:inherit;
+
 }
+
+
 
 p {
-  margin-top: 0;
+
+    margin-top:0;
+
 }
 
-/* =========================================================
-   3. CONTAINER
-   ========================================================= */
+
+
+/* =========================
+CONTAINER
+========================= */
+
 
 .container {
-  width: min(calc(100% - 2rem), var(--container-width));
 
-  margin-left: auto;
-  margin-right: auto;
+
+    width:min(calc(100% - 2rem),
+    var(--container-width));
+
+
+    margin-left:auto;
+
+    margin-right:auto;
+
+
 }
 
-/* =========================================================
-   4. HEADER
-   ========================================================= */
+
+
+/* =========================
+HEADER
+========================= */
+
 
 .site-header {
-  background-color: var(--color-primary);
-  color: var(--color-white);
 
-  padding: var(--spacing-large) 0;
+
+    background-color:
+    var(--color-primary);
+
+
+    color:white;
+
+
+    padding:var(--spacing-large) 0;
+
+
 }
+
+
 
 .header-content {
-  display: flex;
 
-  flex-direction: column;
-  align-items: center;
 
-  gap: var(--spacing-medium);
+    display:flex;
 
-  text-align: center;
+
+    flex-direction:column;
+
+
+    align-items:center;
+
+
+    gap:var(--spacing-medium);
+
+
+    text-align:center;
+
+
 }
+
+
 
 .site-title {
-  margin: 0;
 
-  font-size: 1.6rem;
+
+    margin:0;
+
+
+    font-size:1.6rem;
+
+
 }
 
-/* =========================================================
-   5. MENU
-   ========================================================= */
+
+
 
 .main-nav {
-  display: flex;
 
-  justify-content: center;
-  align-items: center;
+
+    display:flex;
+
+
+    gap:.5rem;
+
+
 }
+
+
 
 .main-nav__link {
-  display: inline-block;
 
-  padding: 0.5rem 1rem;
 
-  color: var(--color-white);
-  text-decoration: none;
+    padding:.5rem 1rem;
 
-  border-radius: 6px;
 
-  transition:
-    background-color var(--transition),
-    color var(--transition);
+    color:white;
+
+
+    text-decoration:none;
+
+
+    border-radius:6px;
+
+
+    transition:.2s;
+
+
 }
 
-/* Hover */
+
 
 .main-nav__link:hover {
-  background-color: rgba(255, 255, 255, 0.2);
 
-  text-decoration: underline;
+
+    background-color:
+    rgba(255,255,255,.2);
+
+
 }
 
-/* Active */
 
-.main-nav__link:active {
-  background-color: rgba(255, 255, 255, 0.3);
-}
-
-/* Focus */
 
 .main-nav__link:focus-visible {
-  outline: 3px solid #ffffff;
-  outline-offset: 3px;
+
+
+    outline:
+    3px solid white;
+
+
 }
 
-/* =========================================================
-   6. MAIN
-   ========================================================= */
+
+
+
+
+/* =========================
+CONTENT
+========================= */
+
 
 .main-content {
-  display: grid;
 
-  gap: var(--spacing-large);
 
-  margin-top: var(--spacing-large);
-  margin-bottom: var(--spacing-large);
+    display:grid;
+
+
+    gap:var(--spacing-large);
+
+
+    margin-top:var(--spacing-large);
+
+
+    margin-bottom:var(--spacing-large);
+
+
 }
 
-/* =========================================================
-   7. CÁC SECTION
-   ========================================================= */
+
 
 .content-section {
-  background-color: var(--color-white);
 
-  padding: var(--spacing-large);
 
-  border-radius: var(--border-radius);
+    background-color:
+    var(--color-white);
 
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+    padding:var(--spacing-large);
+
+
+    border-radius:
+    var(--radius);
+
+
+    box-shadow:
+    0 2px 8px rgba(0,0,0,.08);
+
+
 }
+
+
 
 .section-title {
-  margin-top: 0;
-  margin-bottom: var(--spacing-large);
 
-  color: var(--color-primary);
 
-  font-size: 1.4rem;
+    margin-top:0;
 
-  border-bottom: 2px solid var(--color-primary);
 
-  padding-bottom: var(--spacing-small);
+    color:
+    var(--color-primary);
+
+
+    font-size:1.4rem;
+
+
+    border-bottom:
+    2px solid var(--color-primary);
+
+
+    padding-bottom:.5rem;
+
+
 }
+
+
+
 
 .sub-title {
-  margin-top: var(--spacing-large);
 
-  color: var(--color-primary-dark);
+
+    color:
+    var(--color-primary-dark);
+
+
 }
 
-/* =========================================================
-   8. THÔNG TIN CÁ NHÂN
-   ========================================================= */
+
+
+/* =========================
+PROFILE
+========================= */
+
 
 .profile {
-  display: flex;
 
-  flex-direction: column;
 
-  align-items: center;
+    display:flex;
 
-  gap: var(--spacing-large);
+
+    flex-direction:column;
+
+
+    align-items:center;
+
+
+    gap:var(--spacing-large);
+
+
 }
 
-.profile-image {
-  flex-shrink: 0;
-}
+
 
 .profile-image img {
-  width: 150px;
-  height: 200px;
 
-  object-fit: cover;
 
-  border-radius: var(--border-radius);
+    width:150px;
 
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+    height:200px;
+
+
+    object-fit:cover;
+
+
+    border-radius:
+    var(--radius);
+
+
 }
+
+
 
 .profile-info {
-  width: 100%;
+
+
+    width:100%;
+
+
 }
 
-.profile-info p {
-  margin-bottom: var(--spacing-small);
-}
 
-.description {
-  max-width: 65ch;
 
-  margin-top: var(--spacing-large);
-  margin-bottom: 0;
-}
+/* =========================
+SKILL
+========================= */
 
-/* =========================================================
-   9. DANH SÁCH KỸ NĂNG
-   ========================================================= */
 
 .skills-list {
-  display: flex;
 
-  flex-wrap: wrap;
 
-  gap: var(--spacing-small);
+    display:flex;
 
-  margin: var(--spacing-medium) 0 0;
 
-  padding: 0;
+    flex-wrap:wrap;
 
-  list-style: none;
+
+    gap:.5rem;
+
+
+    list-style:none;
+
+
+    padding:0;
+
+
 }
+
+
 
 .skills-list li {
-  padding: 0.5rem 0.8rem;
 
-  background-color: var(--color-primary-light);
 
-  color: var(--color-primary-dark);
+    padding:.5rem .8rem;
 
-  border-radius: 6px;
 
-  font-weight: 600;
+    background-color:#dbeafe;
+
+
+    color:#1d4ed8;
+
+
+    border-radius:6px;
+
+
+    font-weight:bold;
+
+
 }
 
-/* =========================================================
-   10. BẢNG THỜI KHÓA BIỂU
-   ========================================================= */
 
-/*
-  Cho phép bảng cuộn ngang bên trong
-  khi màn hình điện thoại quá nhỏ.
-*/
+
+/* =========================
+BUTTON JAVASCRIPT
+========================= */
+
+
+button {
+
+
+    padding:.7rem 1rem;
+
+
+    margin-right:.5rem;
+
+
+    margin-bottom:.5rem;
+
+
+    border:none;
+
+
+    border-radius:6px;
+
+
+    background-color:
+    var(--color-primary);
+
+
+    color:white;
+
+
+    cursor:pointer;
+
+
+    font-size:1rem;
+
+
+    transition:.2s;
+
+
+}
+
+
+
+button:hover {
+
+
+    background-color:
+    var(--color-primary-dark);
+
+
+}
+
+
+
+button:focus-visible {
+
+
+    outline:
+    3px solid #000;
+
+
+    outline-offset:3px;
+
+
+}
+
+
+
+#message {
+
+
+    margin-top:1rem;
+
+
+    font-weight:bold;
+
+
+}
+
+
+
+/* =========================
+TABLE
+========================= */
+
 
 .table-wrapper {
-  width: 100%;
 
-  overflow-x: auto;
 
-  -webkit-overflow-scrolling: touch;
+    width:100%;
+
+
+    overflow-x:auto;
+
+
 }
+
+
 
 .schedule-table {
-  width: 100%;
 
-  min-width: 700px;
 
-  border-collapse: collapse;
+    width:100%;
 
-  margin-top: var(--spacing-medium);
 
-  background-color: var(--color-white);
+    min-width:700px;
+
+
+    border-collapse:collapse;
+
+
 }
 
-.schedule-table caption {
-  margin-bottom: var(--spacing-small);
 
-  font-weight: bold;
-
-  text-align: left;
-}
 
 .schedule-table th,
 .schedule-table td {
-  border: 1px solid var(--color-border);
 
-  padding: 0.65rem;
 
-  text-align: center;
+    border:
+    1px solid var(--color-border);
 
-  white-space: nowrap;
+
+    padding:.65rem;
+
+
+    text-align:center;
+
+
 }
+
+
 
 .schedule-table thead th {
-  background-color: var(--color-table-header);
+
+
+    background-color:
+    var(--color-table-header);
+
+
 }
+
+
 
 .schedule-table tbody th {
-  background-color: #f3f4f6;
+
+
+    background-color:#f3f4f6;
+
+
 }
 
-/* =========================================================
-   11. FOOTER
-   ========================================================= */
 
-.site-footer {
-  background-color: var(--color-primary);
 
-  color: var(--color-white);
+/* =========================
+LINK
+========================= */
 
-  padding: var(--spacing-large) 0;
-
-  text-align: center;
-}
-
-.site-footer p {
-  margin: 0;
-}
-
-/* =========================================================
-   12. RESPONSIVE - TABLET
-   Breakpoint 1
-   ========================================================= */
-
-@media (min-width: 600px) {
-  .container {
-    width: min(calc(100% - 3rem), var(--container-width));
-  }
-
-  .site-title {
-    font-size: 2rem;
-  }
-
-  /*
-    Chuyển thông tin cá nhân từ
-    xếp dọc -> xếp ngang
-  */
-
-  .profile {
-    flex-direction: row;
-
-    align-items: flex-start;
-  }
-
-  .profile-info {
-    flex: 1;
-  }
-
-  .content-section {
-    padding: var(--spacing-xlarge);
-  }
-}
-
-/* =========================================================
-   13. RESPONSIVE - DESKTOP
-   Breakpoint 2
-   ========================================================= */
-
-@media (min-width: 900px) {
-  .container {
-    width: min(calc(100% - 4rem), var(--container-width));
-  }
-
-  .main-content {
-    gap: var(--spacing-xlarge);
-  }
-
-  .site-header {
-    padding: var(--spacing-xlarge) 0;
-  }
-
-  /*
-    Header trên desktop:
-    Tiêu đề bên trái
-    Menu bên phải
-  */
-
-  .header-content {
-    flex-direction: row;
-
-    justify-content: space-between;
-  }
-
-  .site-title {
-    text-align: left;
-  }
-
-  .content-section {
-    padding: var(--spacing-xlarge);
-  }
-} /* =========================================================
-   LINK SECTION
-   ========================================================= */
 
 .link-list {
-  display: flex;
 
-  flex-wrap: wrap;
 
-  gap: var(--spacing-small);
+    display:flex;
+
+
+    flex-wrap:wrap;
+
+
+    gap:.5rem;
+
+
 }
+
+
 
 .link-button {
-  display: inline-block;
 
-  padding: 0.6rem 1rem;
 
-  color: var(--color-primary);
+    padding:.6rem 1rem;
 
-  background-color: var(--color-white);
 
-  border: 2px solid var(--color-primary);
+    border:
+    2px solid var(--color-primary);
 
-  border-radius: 6px;
 
-  text-decoration: none;
+    border-radius:6px;
 
-  font-weight: 600;
 
-  transition:
-    background-color var(--transition),
-    color var(--transition);
+    color:var(--color-primary);
+
+
+    text-decoration:none;
+
+
+    font-weight:bold;
+
+
 }
+
+
 
 .link-button:hover {
-  background-color: var(--color-primary);
 
-  color: var(--color-white);
+
+    background-color:
+    var(--color-primary);
+
+
+    color:white;
+
+
 }
 
-.link-button:focus-visible {
-  outline: 3px solid var(--color-primary);
 
-  outline-offset: 3px;
+
+
+/* =========================
+FOOTER
+========================= */
+
+
+.site-footer {
+
+
+    background-color:
+    var(--color-primary);
+
+
+    color:white;
+
+
+    text-align:center;
+
+
+    padding:
+    var(--spacing-large) 0;
+
+
+}
+
+
+
+.site-footer p {
+
+
+    margin:0;
+
+
+}
+
+
+
+/* =========================
+DARK MODE
+========================= */
+
+
+.dark-mode {
+
+
+    --color-background:#111827;
+
+
+    --color-white:#1f2937;
+
+
+    --color-text:#f9fafb;
+
+
+    --color-table-header:#374151;
+
+
+}
+
+
+
+.dark-mode .skills-list li {
+
+
+    background-color:#374151;
+
+
+    color:#bfdbfe;
+
+
+}
+
+
+
+.dark-mode .link-button {
+
+
+    background-color:#1f2937;
+
+
+}
+
+
+
+/* =========================
+RESPONSIVE
+========================= */
+
+
+@media(min-width:600px){
+
+
+    .profile {
+
+
+        flex-direction:row;
+
+
+        align-items:flex-start;
+
+
+    }
+
+
+}
+
+
+
+@media(min-width:900px){
+
+
+    .header-content {
+
+
+        flex-direction:row;
+
+
+        justify-content:space-between;
+
+
+    }
+
+
+
+    .site-title {
+
+
+        text-align:left;
+
+
+    }
+
+
+}
+
+
+
+@media(max-width:360px){
+
+
+    button {
+
+
+        width:100%;
+
+
+        margin-right:0;
+
+
+    }
+
+
 }
