@@ -1,89 +1,61 @@
 /*
     File canhan.js tạo các tương tác cho trang cá nhân.
-    Bao gồm đổi giao diện sáng/tối và sao chép email.
+    Bao gồm đồng hồ thời gian thực và sao chép email.
     Kiểm tra bằng cách nhấn nút trên trang web.
 */
 
 
 // =============================
 // CHỨC NĂNG 1:
-// ĐỔI GIAO DIỆN SÁNG / TỐI
+// ĐỒNG HỒ THỜI GIAN THỰC
 // =============================
 
 
-const btnTheme =
-document.getElementById("btnTheme");
+function updateClock() {
+
+
+    const now = new Date();
+
+
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    let seconds = now.getSeconds();
 
 
 
-const currentTheme =
-localStorage.getItem("theme");
+    // Thêm số 0 phía trước nếu nhỏ hơn 10
+
+    hours = hours < 10 ? "0" + hours : hours;
+
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+
+    seconds = seconds < 10 ? "0" + seconds : seconds;
 
 
 
-if(currentTheme === "dark"){
+    const time =
+        hours + ":" + minutes + ":" + seconds;
 
 
-    document.body.classList.add("dark-mode");
 
-
-    btnTheme.textContent =
-    "☀️ Đổi giao diện sáng";
+    document.getElementById("clock").textContent = time;
 
 
 }
 
 
 
-btnTheme.addEventListener(
-"click",
-function(){
+// Hiển thị ngay khi mở trang
+
+updateClock();
 
 
 
-    document.body.classList.toggle(
-        "dark-mode"
-    );
+// Cập nhật mỗi giây
+
+setInterval(updateClock, 1000);
 
 
-
-    if(
-    document.body.classList.contains(
-        "dark-mode"
-    )
-    ){
-
-
-        localStorage.setItem(
-            "theme",
-            "dark"
-        );
-
-
-        btnTheme.textContent =
-        "☀️ Đổi giao diện sáng";
-
-
-
-    }
-    else{
-
-
-        localStorage.setItem(
-            "theme",
-            "light"
-        );
-
-
-        btnTheme.textContent =
-        "🌙 Đổi giao diện tối";
-
-
-    }
-
-
-
-});
 
 
 
@@ -95,17 +67,15 @@ function(){
 // =============================
 
 
+
 const btnCopyEmail =
-document.getElementById(
-    "btnCopyEmail"
-);
+document.getElementById("btnCopyEmail");
 
 
 
 const message =
-document.getElementById(
-    "message"
-);
+document.getElementById("message");
+
 
 
 
@@ -115,9 +85,11 @@ btnCopyEmail.addEventListener(
 function(){
 
 
-
     const email =
-document.getElementById("userEmail").textContent.trim();
+    document
+    .getElementById("userEmail")
+    .textContent
+    .trim();
 
 
 
@@ -126,29 +98,25 @@ document.getElementById("userEmail").textContent.trim();
 
 
 
-    .then(
-    function(){
+    .then(function(){
 
 
         message.textContent =
-        "Đã sao chép email thành công!";
+        "✅ Đã sao chép email thành công!";
 
 
-    }
-    )
+    })
 
 
 
-    .catch(
-    function(){
+    .catch(function(){
 
 
         message.textContent =
-        "Không thể sao chép email.";
+        "❌ Không thể sao chép email.";
 
 
-    }
-    );
+    });
 
 
 

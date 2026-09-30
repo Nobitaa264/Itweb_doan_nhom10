@@ -1,30 +1,31 @@
 /* =====================================================
    STYLE TRANG CÁ NHÂN
-   Responsive + hỗ trợ Dark Mode
+   Responsive + JavaScript Interaction
 ===================================================== */
 
 
+/* =========================
+   ROOT
+========================= */
 
 :root {
 
-    --color-primary: #2563eb;
-    --color-primary-dark: #1d4ed8;
+    --color-primary:#2563eb;
+    --color-primary-dark:#1d4ed8;
 
-    --color-background: #f5f5f5;
+    --color-background:#f5f5f5;
 
-    --color-white: #ffffff;
+    --color-white:#ffffff;
 
-    --color-text: #1f2937;
+    --color-text:#1f2937;
 
-    --color-border: #999999;
-
-    --color-table-header: #e5e7eb;
+    --color-border:#999999;
 
 
     --container-width:1000px;
 
 
-    --spacing-small:0.5rem;
+    --spacing-small:.5rem;
     --spacing-medium:1rem;
     --spacing-large:1.5rem;
     --spacing-xlarge:2rem;
@@ -61,32 +62,21 @@ html {
 
 body {
 
-
     margin:0;
-
 
     font-family:
     Arial,
     Helvetica,
     sans-serif;
 
-
     font-size:16px;
-
 
     line-height:1.6;
 
-
     color:var(--color-text);
-
 
     background-color:
     var(--color-background);
-
-
-    transition:
-    background-color .3s,
-    color .3s;
 
 }
 
@@ -120,6 +110,8 @@ p {
 
 
 
+
+
 /* =========================
 CONTAINER
 ========================= */
@@ -127,17 +119,19 @@ CONTAINER
 
 .container {
 
-
-    width:min(calc(100% - 2rem),
-    var(--container-width));
+    width:min(
+        calc(100% - 2rem),
+        var(--container-width)
+    );
 
 
     margin-left:auto;
 
     margin-right:auto;
 
-
 }
+
+
 
 
 
@@ -148,16 +142,13 @@ HEADER
 
 .site-header {
 
-
     background-color:
     var(--color-primary);
 
-
     color:white;
 
-
-    padding:var(--spacing-large) 0;
-
+    padding:
+    var(--spacing-large) 0;
 
 }
 
@@ -165,21 +156,15 @@ HEADER
 
 .header-content {
 
-
     display:flex;
-
 
     flex-direction:column;
 
-
     align-items:center;
-
 
     gap:var(--spacing-medium);
 
-
     text-align:center;
-
 
 }
 
@@ -187,26 +172,19 @@ HEADER
 
 .site-title {
 
-
     margin:0;
 
-
     font-size:1.6rem;
-
 
 }
 
 
 
-
 .main-nav {
-
 
     display:flex;
 
-
     gap:.5rem;
-
 
 }
 
@@ -214,21 +192,15 @@ HEADER
 
 .main-nav__link {
 
-
     padding:.5rem 1rem;
-
 
     color:white;
 
-
     text-decoration:none;
-
 
     border-radius:6px;
 
-
     transition:.2s;
-
 
 }
 
@@ -236,21 +208,8 @@ HEADER
 
 .main-nav__link:hover {
 
-
     background-color:
     rgba(255,255,255,.2);
-
-
-}
-
-
-
-.main-nav__link:focus-visible {
-
-
-    outline:
-    3px solid white;
-
 
 }
 
@@ -265,18 +224,15 @@ CONTENT
 
 .main-content {
 
-
     display:grid;
-
 
     gap:var(--spacing-large);
 
+    margin-top:
+    var(--spacing-large);
 
-    margin-top:var(--spacing-large);
-
-
-    margin-bottom:var(--spacing-large);
-
+    margin-bottom:
+    var(--spacing-large);
 
 }
 
@@ -284,12 +240,12 @@ CONTENT
 
 .content-section {
 
-
     background-color:
     var(--color-white);
 
 
-    padding:var(--spacing-large);
+    padding:
+    var(--spacing-large);
 
 
     border-radius:
@@ -299,13 +255,11 @@ CONTENT
     box-shadow:
     0 2px 8px rgba(0,0,0,.08);
 
-
 }
 
 
 
 .section-title {
-
 
     margin-top:0;
 
@@ -323,20 +277,18 @@ CONTENT
 
     padding-bottom:.5rem;
 
-
 }
-
 
 
 
 .sub-title {
 
-
     color:
     var(--color-primary-dark);
 
-
 }
+
+
 
 
 
@@ -347,18 +299,14 @@ PROFILE
 
 .profile {
 
-
     display:flex;
-
 
     flex-direction:column;
 
-
     align-items:center;
 
-
-    gap:var(--spacing-large);
-
+    gap:
+    var(--spacing-large);
 
 }
 
@@ -366,19 +314,14 @@ PROFILE
 
 .profile-image img {
 
-
     width:150px;
-
 
     height:200px;
 
-
     object-fit:cover;
-
 
     border-radius:
     var(--radius);
-
 
 }
 
@@ -386,11 +329,11 @@ PROFILE
 
 .profile-info {
 
-
     width:100%;
 
-
 }
+
+
 
 
 
@@ -401,28 +344,21 @@ SKILL
 
 .skills-list {
 
-
     display:flex;
-
 
     flex-wrap:wrap;
 
-
     gap:.5rem;
-
 
     list-style:none;
 
-
     padding:0;
-
 
 }
 
 
 
 .skills-list li {
-
 
     padding:.5rem .8rem;
 
@@ -438,14 +374,68 @@ SKILL
 
     font-weight:bold;
 
+}
+
+
+
+
+
+/* =========================
+JAVASCRIPT INTERACTION
+========================= */
+
+
+/* Đồng hồ */
+
+
+.clock-box {
+
+
+    display:inline-block;
+
+
+    padding:15px 25px;
+
+
+    margin-bottom:20px;
+
+
+    background-color:#e0f2fe;
+
+
+    border-radius:10px;
+
+
+    font-size:18px;
+
+
+    font-weight:bold;
+
 
 }
 
 
 
-/* =========================
-BUTTON JAVASCRIPT
-========================= */
+#clock {
+
+
+    margin-left:10px;
+
+
+    color:
+    var(--color-primary);
+
+
+    font-size:24px;
+
+
+}
+
+
+
+
+
+/* Button */
 
 
 button {
@@ -497,18 +487,9 @@ button:hover {
 
 
 
-button:focus-visible {
 
 
-    outline:
-    3px solid #000;
-
-
-    outline-offset:3px;
-
-
-}
-
+/* Thông báo */
 
 
 #message {
@@ -520,7 +501,12 @@ button:focus-visible {
     font-weight:bold;
 
 
+    color:green;
+
+
 }
+
+
 
 
 
@@ -579,8 +565,7 @@ TABLE
 .schedule-table thead th {
 
 
-    background-color:
-    var(--color-table-header);
+    background-color:#e5e7eb;
 
 
 }
@@ -594,6 +579,8 @@ TABLE
 
 
 }
+
+
 
 
 
@@ -631,7 +618,8 @@ LINK
     border-radius:6px;
 
 
-    color:var(--color-primary);
+    color:
+    var(--color-primary);
 
 
     text-decoration:none;
@@ -655,6 +643,7 @@ LINK
 
 
 }
+
 
 
 
@@ -695,51 +684,6 @@ FOOTER
 
 
 
-/* =========================
-DARK MODE
-========================= */
-
-
-.dark-mode {
-
-
-    --color-background:#111827;
-
-
-    --color-white:#1f2937;
-
-
-    --color-text:#f9fafb;
-
-
-    --color-table-header:#374151;
-
-
-}
-
-
-
-.dark-mode .skills-list li {
-
-
-    background-color:#374151;
-
-
-    color:#bfdbfe;
-
-
-}
-
-
-
-.dark-mode .link-button {
-
-
-    background-color:#1f2937;
-
-
-}
-
 
 
 /* =========================
@@ -763,6 +707,7 @@ RESPONSIVE
 
 
 }
+
 
 
 
@@ -792,6 +737,8 @@ RESPONSIVE
 
 
 }
+
+
 
 
 
