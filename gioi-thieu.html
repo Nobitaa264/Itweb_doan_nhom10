@@ -12,7 +12,13 @@
 
     <title>Giới thiệu - StyleHub</title>
 
+    <link rel="icon" href="data:," />
+
     <link rel="stylesheet" href="css/style.css" />
+
+    <script type="module" src="js/main.js"></script>
+
+    <script type="module" src="js/yeu-thich.js"></script>
   </head>
 
   <body>
@@ -29,7 +35,17 @@
       <!-- MENU -->
       <nav class="menu-chinh" aria-label="Điều hướng chính">
         <div class="bao">
-          <ul class="menu-chinh__danh-sach">
+          <button
+            class="menu-chinh__nut"
+            id="nut-menu"
+            type="button"
+            aria-expanded="false"
+            aria-controls="danh-sach-menu"
+          >
+            Menu
+          </button>
+
+          <ul class="menu-chinh__danh-sach" id="danh-sach-menu">
             <li>
               <a href="index.html"> Trang chủ </a>
             </li>
@@ -39,15 +55,27 @@
             </li>
 
             <li>
-              <a href="chi-tiet.html"> Chi tiết </a>
+              <a href="chi-tiet.html?id=SH001"> Chi tiết </a>
             </li>
 
             <li>
-              <a href="gioi-thieu.html" aria-current="page"> Giới thiệu </a>
+              <a class="dang-chon" href="gioi-thieu.html" aria-current="page">
+                Giới thiệu
+              </a>
             </li>
 
             <li>
               <a href="lien-he.html"> Liên hệ </a>
+            </li>
+
+            <li>
+              <!-- Sửa từ href="danh-sach.html" thành: -->
+              <a
+                href="danh-sach.html?yeuthich=1"
+                aria-label="Xem các sản phẩm yêu thích"
+              >
+                ♥ Yêu thích (<span data-bo-dem-yeu-thich>0</span>)
+              </a>
             </li>
           </ul>
         </div>
@@ -119,7 +147,7 @@
               <li class="the-thanh-vien">
                 <h3>Nguyễn Đình Minh Đạt</h3>
 
-                <a class="nut" href="thanhvien/3120224028_dat/gioithieu.html">
+                <a class="nut" href="thanhvien/minhdat/gioithieu.html">
                   Xem trang cá nhân
                 </a>
               </li>
@@ -127,10 +155,7 @@
               <li class="the-thanh-vien">
                 <h3>Nguyễn Hữu Tuấn</h3>
 
-                <a
-                  class="nut"
-                  href="thanhvien/3120224170_nguyenhuutuan/gioithieu.html"
-                >
+                <a class="nut" href="thanhvien/tuan/gioithieu.html">
                   Xem trang cá nhân
                 </a>
               </li>
@@ -138,10 +163,7 @@
               <li class="the-thanh-vien">
                 <h3>Phạm Huy Hoàng</h3>
 
-                <a
-                  class="nut"
-                  href="thanhvien/3120224062_phamhoang/gioithieu.html"
-                >
+                <a class="nut" href="thanhvien/phamhoang/gioithieu.html">
                   Xem trang cá nhân
                 </a>
               </li>
