@@ -7,243 +7,231 @@
 
     <meta
       name="description"
-      content="Trang chủ website thời trang StyleHub với các sản phẩm quần áo nổi bật."
+      content="StyleHub - Website thời trang dành cho phong cách riêng của bạn."
     />
 
     <title>Trang chủ - StyleHub</title>
 
+    <link rel="icon" href="data:," />
+
     <link rel="stylesheet" href="css/style.css" />
+
+    <script type="module" src="js/main.js"></script>
+
+    <script type="module" src="js/trang-chu.js"></script>
+
+    <script type="module" src="js/yeu-thich.js"></script>
   </head>
 
   <body>
-    <div class="trang">
-      <!-- HEADER -->
+    <!-- HEADER -->
+    <header class="dau-trang">
+      <div class="bao">
+        <p class="thuong-hieu">StyleHub</p>
 
-      <header class="dau-trang">
-        <div class="bao">
-          <p class="thuong-hieu">StyleHub</p>
+        <p class="khau-hieu">Thời trang cho phong cách riêng của bạn</p>
+      </div>
+    </header>
 
-          <p class="khau-hieu">Thời trang cho phong cách riêng của bạn</p>
-        </div>
-      </header>
+    <!-- MENU -->
+    <nav class="menu-chinh" aria-label="Điều hướng chính">
+      <div class="bao">
+        <button
+          class="menu-chinh__nut"
+          id="nut-menu"
+          type="button"
+          aria-expanded="false"
+          aria-controls="danh-sach-menu"
+        >
+          Menu
+        </button>
 
-      <!-- MENU -->
+        <ul class="menu-chinh__danh-sach" id="danh-sach-menu">
+          <li>
+            <a class="dang-chon" href="index.html" aria-current="page">
+              Trang chủ
+            </a>
+          </li>
 
-      <nav class="menu-chinh" aria-label="Điều hướng chính">
-        <div class="bao">
-          <ul class="menu-chinh__danh-sach">
-            <li>
-              <a href="index.html" aria-current="page"> Trang chủ </a>
-            </li>
+          <li>
+            <a href="danh-sach.html"> Sản phẩm </a>
+          </li>
 
-            <li>
-              <a href="danh-sach.html"> Sản phẩm </a>
-            </li>
+          <li>
+            <a href="chi-tiet.html?id=SH001"> Chi tiết </a>
+          </li>
 
-            <li>
-              <a href="chi-tiet.html"> Chi tiết </a>
-            </li>
+          <li>
+            <a href="gioi-thieu.html"> Giới thiệu </a>
+          </li>
 
-            <li>
-              <a href="gioi-thieu.html"> Giới thiệu </a>
-            </li>
+          <li>
+            <a href="lien-he.html"> Liên hệ </a>
+          </li>
 
-            <li>
-              <a href="lien-he.html"> Liên hệ </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
+          <li>
+            <a
+              href="danh-sach.html?yeuthich=1"
+              aria-label="Xem các sản phẩm yêu thích"
+            >
+              ♥ Yêu thích (<span data-bo-dem-yeu-thich>0</span>)
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
 
-      <!-- MAIN -->
+    <main class="trang" id="noi-dung-chinh">
+      <section class="noi-dung">
+        <h1>Thời trang cho phong cách riêng của bạn</h1>
 
-      <main class="noi-dung">
-        <div class="bao">
-          <h1 class="tieu-de-trang">Website thời trang</h1>
+        <p>
+          Chào mừng bạn đến với StyleHub. Khám phá những sản phẩm thời trang đơn
+          giản, hiện đại và dễ phối đồ.
+        </p>
 
-          <!-- HERO -->
+        <section class="khoi-noi-dung">
+          <h2>Sản phẩm nổi bật</h2>
 
-          <section class="hero">
-            <div class="hero__noi-dung">
-              <h2>Bộ sưu tập mới</h2>
-
-              <p>
-                StyleHub mang đến các sản phẩm thời trang trẻ trung, hiện đại và
-                dễ phối đồ.
-              </p>
-
-              <p>
-                Các sản phẩm được lựa chọn theo phong cách đơn giản, năng động
-                và phù hợp với nhiều nhu cầu như đi học, đi làm hoặc đi chơi.
-              </p>
-
-              <a class="nut nut--chinh" href="danh-sach.html"> Xem sản phẩm </a>
-            </div>
-
-            <div class="hero__anh">
+          <div class="luoi-danh-sach">
+            <article class="the-san-pham">
               <img
-                src="images/banner.jpg"
-                alt="Bộ sưu tập thời trang mới của StyleHub"
-                width="800"
-                height="450"
+                class="the-san-pham__anh"
+                src="images/somi.jpg"
+                alt="Áo sơ mi Basic"
+                width="300"
+                height="300"
               />
-            </div>
-          </section>
 
-          <!-- DANH MỤC NỔI BẬT -->
+              <div class="the-san-pham__noi-dung">
+                <p class="ma-san-pham">SH001</p>
 
-          <section class="khu-vuc">
-            <h2>Danh mục nổi bật</h2>
-
-            <ul class="danh-muc">
-              <li><a href="danh-sach.html#ao">Áo</a></li>
-              <li><a href="danh-sach.html#quan">Quần</a></li>
-              <li><a href="danh-sach.html#vay">Váy</a></li>
-              <li><a href="danh-sach.html#ao-khoac">Áo khoác</a></li>
-              <li><a href="danh-sach.html#phu-kien">Phụ kiện</a></li>
-            </ul>
-          </section>
-
-          <!-- BA THẺ GIỚI THIỆU -->
-
-          <section class="khu-vuc">
-            <h2>Khám phá StyleHub</h2>
-
-            <div class="hang-the">
-              <article class="the">
-                <h3>Thời trang trẻ trung</h3>
+                <h3>Áo sơ mi Basic</h3>
 
                 <p>
-                  Các sản phẩm có thiết kế hiện đại, đơn giản và phù hợp với
-                  sinh viên, người trẻ.
+                  Thiết kế đơn giản, dễ phối đồ và phù hợp với nhiều phong cách.
                 </p>
-              </article>
 
-              <article class="the">
-                <h3>Dễ dàng lựa chọn</h3>
+                <p class="gia">299.000đ</p>
 
-                <p>
-                  Thông tin sản phẩm được trình bày rõ ràng giúp người dùng dễ
-                  tìm kiếm và lựa chọn.
-                </p>
-              </article>
+                <a class="nut" href="chi-tiet.html?id=SH001"> Xem chi tiết </a>
+              </div>
+            </article>
 
-              <article class="the">
-                <h3>Mua sắm thuận tiện</h3>
+            <article class="the-san-pham">
+              <img
+                class="the-san-pham__anh"
+                src="images/quanjeans.jpg"
+                alt="Quần Jeans Classic"
+                width="300"
+                height="300"
+              />
 
-                <p>
-                  Website hỗ trợ người dùng xem thông tin sản phẩm và tiếp cận
-                  quy trình mua hàng trực tuyến thuận tiện.
-                </p>
-              </article>
-            </div>
-          </section>
+              <div class="the-san-pham__noi-dung">
+                <p class="ma-san-pham">JE001</p>
 
-          <!-- SẢN PHẨM NỔI BẬT -->
+                <h3>Quần Jeans Classic</h3>
 
-          <section class="khu-vuc">
-            <h2>Sản phẩm nổi bật</h2>
+                <p>Chất liệu denim bền, kiểu dáng hiện đại và dễ phối đồ.</p>
 
-            <div class="luoi-san-pham">
-              <!-- ÁO SƠ MI -->
+                <p class="gia">399.000đ</p>
 
-              <article class="the-san-pham">
-                <img
-                  class="the-san-pham__anh"
-                  src="images/somi.jpg"
-                  alt="Áo sơ mi Basic màu trắng"
-                  width="300"
-                  height="300"
-                  loading="lazy"
-                />
-
-                <div class="the-san-pham__noi-dung">
-                  <h3>Áo sơ mi Basic</h3>
-
-                  <p>
-                    Áo sơ mi Basic có thiết kế đơn giản, trẻ trung và dễ phối
-                    với nhiều loại trang phục.
-                  </p>
-
-                  <p>
-                    Sản phẩm phù hợp sử dụng khi đi học, đi làm hoặc tham gia
-                    các hoạt động thường ngày.
-                  </p>
-
-                  <p class="gia">299.000đ</p>
-
-                  <a class="nut" href="chi-tiet.html#ao-so-mi">
-                    Xem chi tiết
-                  </a>
-                </div>
-              </article>
-
-              <!-- QUẦN JEANS -->
-
-              <article class="the-san-pham">
-                <img
-                  class="the-san-pham__anh"
-                  src="images/quanjeans.jpg"
-                  alt="Quần Jeans Classic màu xanh"
-                  width="300"
-                  height="300"
-                  loading="lazy"
-                />
-
-                <div class="the-san-pham__noi-dung">
-                  <h3>Quần Jeans Classic</h3>
-
-                  <p>
-                    Quần Jeans Classic sử dụng chất liệu denim, mang phong cách
-                    trẻ trung và hiện đại.
-                  </p>
-
-                  <p>
-                    Sản phẩm dễ phối với áo thun, áo sơ mi hoặc áo khoác và phù
-                    hợp sử dụng hằng ngày.
-                  </p>
-
-                  <p class="gia">399.000đ</p>
-
-                  <a class="nut" href="chi-tiet.html#quanjeans">
-                    Xem chi tiết
-                  </a>
-                </div>
-              </article>
-            </div>
-          </section>
-
-          <!-- VÌ SAO LỰA CHỌN -->
-
-          <section class="khu-vuc khu-vuc--phu">
-            <h2>Vì sao lựa chọn StyleHub?</h2>
-
-            <ul class="loi-ich">
-              <li>Sản phẩm thời trang đa dạng.</li>
-
-              <li>Thông tin sản phẩm rõ ràng.</li>
-
-              <li>Dễ dàng xem và tìm kiếm sản phẩm.</li>
-
-              <li>Hỗ trợ đặt hàng trực tuyến.</li>
-            </ul>
-          </section>
-        </div>
-      </main>
-
-      <!-- FOOTER -->
-
-      <footer class="chan-trang">
-        <div class="bao">
-          <p>© 2026 Nhóm 10 — Khoa Toán – Tin</p>
-
-          <p>Website được xây dựng cho học phần Thiết kế và Lập trình web.</p>
+                <a class="nut" href="chi-tiet.html?id=JE001"> Xem chi tiết </a>
+              </div>
+            </article>
+          </div>
 
           <p>
-            <a href="lien-he.html"> Liên hệ </a>
+            <a class="nut" href="danh-sach.html"> Xem tất cả sản phẩm </a>
           </p>
-        </div>
-      </footer>
-    </div>
+        </section>
+
+        <section class="khoi-noi-dung" aria-labelledby="tieu-de-tin">
+          <h2 id="tieu-de-tin">Tin mới từ cộng đồng</h2>
+
+          <p>
+            Nội dung dưới đây được tải từ một REST API công khai bằng Fetch API.
+          </p>
+
+          <p
+            id="trang-thai-tin"
+            class="trang-thai-tin"
+            role="status"
+            aria-live="polite"
+          >
+            Đang tải nội dung mới...
+          </p>
+
+          <div id="danh-sach-tin" class="danh-sach-tin">
+            <!-- JavaScript tạo nội dung API tại đây -->
+          </div>
+
+          <noscript>
+            <p>
+              JavaScript đang bị tắt nên nội dung từ REST API không thể được
+              tải.
+            </p>
+
+            <p>
+              Bạn vẫn có thể xem sản phẩm nổi bật, danh mục và các nội dung tĩnh
+              khác của StyleHub.
+            </p>
+          </noscript>
+        </section>
+
+        <section class="khoi-noi-dung" aria-labelledby="tieu-de-video">
+          <h2 id="tieu-de-video">Video giới thiệu</h2>
+
+          <p>Xem video giới thiệu về phong cách thời trang của StyleHub.</p>
+
+          <button
+            class="nut"
+            id="nut-xem-video"
+            type="button"
+            aria-controls="khu-vuc-video"
+          >
+            Xem video giới thiệu
+          </button>
+
+          <div id="khu-vuc-video" class="video-lien-ket">
+            <noscript>
+              <p>
+                Trình duyệt đang tắt JavaScript. Bạn vẫn có thể sử dụng các nội
+                dung và liên kết chính của StyleHub.
+              </p>
+            </noscript>
+          </div>
+        </section>
+      </section>
+
+      <aside class="thanh-ben">
+        <section class="khoi-noi-dung">
+          <h2>Khám phá StyleHub</h2>
+
+          <p>Tìm kiếm và lựa chọn sản phẩm phù hợp với phong cách của bạn.</p>
+
+          <p>
+            <a class="nut" href="danh-sach.html"> Khám phá sản phẩm </a>
+          </p>
+        </section>
+
+        <section class="khoi-noi-dung">
+          <h2>Danh mục</h2>
+
+          <ul>
+            <li>Áo sơ mi</li>
+            <li>Quần Jeans</li>
+          </ul>
+        </section>
+      </aside>
+    </main>
+
+    <footer class="chan-trang">
+      <div class="bao">
+        <p>&copy; 2026 StyleHub - Nhóm 10</p>
+
+        <p>Lớp 24CNTT2 - Khoa Toán - Tin</p>
+      </div>
+    </footer>
   </body>
 </html>
