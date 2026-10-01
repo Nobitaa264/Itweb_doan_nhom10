@@ -11,7 +11,7 @@
     <header>
       <h1>Trang giới thiệu thành viên</h1>
 
-      <nav>
+      <nav aria-label="Điều hướng chính">
         <a href="../../index.html">Trang chủ</a>
         |
         <a href="../../gioi-thieu.html">Giới thiệu nhóm</a>
@@ -22,11 +22,17 @@
       <section>
         <h2>Giới thiệu bản thân</h2>
 
-        <img
-          class="profile-image"
-          src="image.jpg"
-          alt="Ảnh chân dung Nguyễn Đình Minh Đạt"
-        />
+        <button
+          class="profile-image-button"
+          type="button"
+          aria-label="Mở ảnh chân dung của Nguyễn Đình Minh Đạt"
+        >
+          <img
+            class="profile-image"
+            src="image.jpg"
+            alt="Ảnh chân dung Nguyễn Đình Minh Đạt"
+          />
+        </button>
 
         <p><strong>Họ và tên:</strong> Nguyễn Đình Minh Đạt</p>
         <p><strong>Lớp:</strong> 24CNTT2</p>
@@ -54,7 +60,7 @@
 
         <h3>Kỹ năng</h3>
 
-        <ul class="skills">
+        <ul class="skills" aria-label="Danh sách kỹ năng">
           <li>HTML</li>
           <li>CSS</li>
           <li>PHP</li>
@@ -125,5 +131,7 @@
     </main>
 
     <footer>© 2026 Nhóm 10 — Khoa Toán – Tin</footer>
+
+    <script src="js/canhan.js"></script>
   </body>
 </html>
