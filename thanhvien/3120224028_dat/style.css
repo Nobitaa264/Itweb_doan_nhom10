@@ -3,10 +3,15 @@
   --mau-nen: #ffffff;
   --mau-phu: #f3f4f6;
   --mau-chu: #222222;
+  --mau-focus: #111827;
 }
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -18,7 +23,6 @@ body {
   line-height: 1.6;
 }
 
-/* Khung chính */
 header,
 main,
 footer {
@@ -56,15 +60,17 @@ nav a:hover {
 }
 
 nav a:focus-visible {
-  outline: 3px solid var(--mau-chinh);
-  outline-offset: 2px;
+  outline: 3px solid var(--mau-focus);
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
 /* Bố cục chính bằng Grid */
 main {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 20px;
+  min-width: 0;
 }
 
 /* Các khối nội dung */
@@ -72,21 +78,42 @@ section,
 article {
   padding: 20px;
   background-color: var(--mau-phu);
+  min-width: 0;
 }
 
-/* Tiêu đề h2 và h3 dùng màu chính */
+/* Tiêu đề */
 h2,
 h3 {
   color: var(--mau-chinh);
 }
 
-/* Ảnh chân dung */
+/* Nút chứa ảnh chân dung */
+.profile-image-button {
+  display: block;
+  margin: 0 0 15px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: zoom-in;
+  line-height: 0;
+  border-radius: 8px;
+}
+
 .profile-image {
   display: block;
   width: 100%;
   max-width: 200px;
   height: auto;
-  margin-bottom: 15px;
+  border-radius: 8px;
+}
+
+.profile-image-button:hover .profile-image {
+  opacity: 0.9;
+}
+
+.profile-image-button:focus-visible {
+  outline: 3px solid var(--mau-focus);
+  outline-offset: 4px;
 }
 
 /* Danh sách kỹ năng */
@@ -105,9 +132,32 @@ h3 {
   border-radius: 5px;
 }
 
+/* Ô tìm kiếm kỹ năng */
+.skill-search {
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid var(--mau-chinh);
+  border-radius: 5px;
+  font-size: 16px;
+  color: var(--mau-chu);
+  background-color: var(--mau-nen);
+}
+
+.skill-search:focus-visible {
+  outline: 3px solid var(--mau-focus);
+  outline-offset: 2px;
+}
+
+.skill-hidden {
+  display: none;
+}
+
 /* Khung chứa bảng */
 .table-container {
   width: 100%;
+  max-width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -120,7 +170,6 @@ table {
   background-color: var(--mau-nen);
 }
 
-/* Caption không dùng màu chính */
 caption {
   padding: 10px;
   font-weight: bold;
@@ -147,10 +196,52 @@ footer {
   background-color: var(--mau-phu);
 }
 
+/* Modal xem ảnh */
+.image-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.image-modal-content {
+  max-width: 90%;
+  max-height: 80vh;
+  width: auto;
+  height: auto;
+  border-radius: 8px;
+}
+
+.image-modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 5px;
+  background-color: var(--mau-nen);
+  color: var(--mau-chu);
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.image-modal-close:hover {
+  background-color: var(--mau-phu);
+}
+
+.image-modal-close:focus-visible {
+  outline: 3px solid var(--mau-focus);
+  outline-offset: 3px;
+}
+
 /* Màn hình từ 768px trở lên */
 @media (min-width: 768px) {
   main {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
 
   main > section:last-child {
@@ -196,5 +287,46 @@ footer {
 
   table {
     min-width: 700px;
+  }
+}
+
+/* Điện thoại rất hẹp */
+@media (max-width: 360px) {
+  body {
+    padding: 8px;
+  }
+
+  header,
+  section,
+  article {
+    padding: 12px;
+  }
+
+  header h1 {
+    font-size: 22px;
+  }
+
+  nav {
+    gap: 8px;
+  }
+
+  .image-modal {
+    padding: 10px;
+  }
+
+  .image-modal-content {
+    max-width: 100%;
+  }
+
+  .image-modal-close {
+    top: 10px;
+    right: 10px;
+  }
+}
+
+/* Tôn trọng thiết lập giảm chuyển động của người dùng */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }
