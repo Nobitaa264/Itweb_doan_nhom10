@@ -1,0 +1,13 @@
+{
+    "name": "nhom10/ltweb-doan",
+    "description": "Website đồ án Thiết kế và Lập trình web của Nhóm 10",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+}
