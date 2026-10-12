@@ -275,7 +275,7 @@ require __DIR__ . '/../../includes/header.php';
         </p>
 
         <p>
-            <a href="<?= e($goc) ?>index.html">
+            <a href="<?= e($goc) ?>index.php">
                 Quay về trang chủ
             </a>
         </p>
