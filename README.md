@@ -195,7 +195,24 @@ Sau khi khởi động website, có thể thực hiện các bước kiểm th�
 8. Đăng xuất và kiểm tra khả năng truy cập lại trang quản trị.
 9. Kiểm tra nhật ký `logs/php-error.log` nếu phát sinh lỗi.
 
-## 9. Phạm vi sử dụng
+## 9. Trang giới thiệu nhóm và trang cá nhân thành viên
+
+Sau khi khởi động máy chủ PHP bằng lệnh `php -S localhost:8000` tại thư mục gốc dự án, có thể truy cập các trang giới thiệu của nhóm theo các đường dẫn sau:
+
+### 9.1. Trang giới thiệu nhóm
+
+- **Trang giới thiệu nhóm:** [http://localhost:8000/gioi-thieu.php](http://localhost:8000/gioi-thieu.php)
+
+### 9.2. Trang cá nhân của các thành viên
+
+| STT | Mã sinh viên | Tên thư mục          | Đường dẫn trang cá nhân                                                                                                                          |
+| --- | ------------ | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | 3120224028   | Nguyễn Đình Minh Đạt | [http://localhost:8000/thanhvien/3120224028_dat/gioithieu.php](http://localhost:8000/thanhvien/3120224028_dat/gioithieu.php)                     |
+| 2   | 3120224062   | Phạm Huy Hoàng       | [http://localhost:8000/thanhvien/3120224062_phamhoang/gioithieu.php](http://localhost:8000/thanhvien/3120224062_phamhoang/gioithieu.php)         |
+| 3   | 3120224123   | Dương Quang Sơn      | [http://localhost:8000/thanhvien/3120224123_son/gioithieu.php](http://localhost:8000/thanhvien/3120224123_son/gioithieu.php)                     |
+| 4   | 3120224170   | Nguyễn Hữu Tuân      | [http://localhost:8000/thanhvien/3120224170_nguyenhuutuan/gioithieu.php](http://localhost:8000/thanhvien/3120224170_nguyenhuutuan/gioithieu.php) |
+
+## 10. Phạm vi sử dụng
 
 StyleHub được xây dựng phục vụ mục đích học tập, thực hành và trình diễn các chức năng của website PHP.
 
