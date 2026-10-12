@@ -1,6 +1,12 @@
-/* ==============================
-   1. BIẾN CSS - BẢNG MÀU NHÓM
-   ============================== */
+
+/*
+  style.css - Trang cá nhân Sơn, Nhóm 10.
+  Giữ nguyên giao diện TH4.
+  Bổ sung biểu mẫu lịch hẹn và trắc nghiệm TH5.
+  Thiết kế responsive, hỗ trợ sáng/tối.
+*/
+
+/* 1. BIẾN CSS - BẢNG MÀU NHÓM */
 
 :root {
   --mau-chinh: #2563eb;
@@ -17,10 +23,7 @@
   --do-rong-trang: 1100px;
 }
 
-
-/* ==============================
-   2. CHUẨN HÓA
-   ============================== */
+/* 2. CHUẨN HÓA */
 
 *,
 *::before,
@@ -43,9 +46,7 @@ body {
     sans-serif;
 
   line-height: 1.6;
-
   color: var(--mau-chu);
-
   background: var(--mau-phu);
 
   transition:
@@ -55,9 +56,7 @@ body {
 
 img {
   display: block;
-
   max-width: 100%;
-
   height: auto;
 }
 
@@ -65,31 +64,18 @@ a {
   color: var(--mau-chinh);
 }
 
-
-/* ==============================
-   3. KHUNG TRANG
-   ============================== */
+/* 3. KHUNG TRANG */
 
 .trang {
   min-height: 100vh;
-
   display: grid;
-
-  /*
-    Cho phép Grid co đúng theo chiều rộng màn hình.
-    Nội dung rộng như bảng sẽ cuộn trong .bang-cuon
-    thay vì kéo rộng toàn bộ trang.
-  */
   grid-template-columns: minmax(0, 1fr);
-
-  grid-template-rows:
-    auto
-    1fr
-    auto;
+  grid-template-rows: auto 1fr auto;
 }
 
 .noi-dung {
   min-width: 0;
+  padding-block: var(--khoang-lon);
 }
 
 .bao {
@@ -99,18 +85,13 @@ a {
   );
 
   min-width: 0;
-
   margin-inline: auto;
 }
 
-
-/* ==============================
-   4. HEADER
-   ============================== */
+/* 4. HEADER */
 
 .dau-trang {
   color: var(--mau-nen);
-
   background: var(--mau-chinh);
 }
 
@@ -120,36 +101,23 @@ a {
 
 .dau-trang h1 {
   margin-top: 0;
-
   margin-bottom: var(--khoang-vua);
-
   font-size: 1.75rem;
 }
 
-
-/* ==============================
-   5. MENU
-   ============================== */
+/* 5. MENU */
 
 .menu {
   display: flex;
-
   flex-direction: column;
-
   gap: var(--khoang-nho);
 }
 
 .menu a {
   display: inline-block;
-
-  padding:
-    8px
-    12px;
-
+  padding: 8px 12px;
   border-radius: 6px;
-
   color: var(--mau-nen);
-
   text-decoration: none;
 
   transition:
@@ -159,7 +127,6 @@ a {
 
 .menu a:hover {
   color: var(--mau-chu);
-
   background: var(--mau-phu);
 }
 
@@ -169,30 +136,17 @@ a {
 
 .menu a:focus-visible {
   outline: 3px solid var(--mau-nen);
-
   outline-offset: 3px;
 }
 
-
-/* ==============================
-   6. NỘI DUNG
-   ============================== */
-
-.noi-dung {
-  padding-block: var(--khoang-lon);
-}
+/* 6. KHỐI NỘI DUNG */
 
 .khoi {
   min-width: 0;
-
   margin-bottom: var(--khoang-lon);
-
   padding: var(--khoang-vua);
-
   border: 1px solid var(--mau-chu);
-
   border-radius: var(--bo-goc);
-
   background: var(--mau-nen);
 
   transition:
@@ -202,7 +156,6 @@ a {
 
 .khoi h2 {
   margin-top: 0;
-
   color: var(--mau-chinh);
 }
 
@@ -210,16 +163,11 @@ a {
   max-width: 65ch;
 }
 
-
-/* ==============================
-   7. GIỚI THIỆU
-   ============================== */
+/* 7. GIỚI THIỆU BẢN THÂN */
 
 .gioi-thieu {
   display: grid;
-
   grid-template-columns: minmax(0, 1fr);
-
   gap: var(--khoang-lon);
 }
 
@@ -229,92 +177,61 @@ a {
 
 .gioi-thieu__anh img {
   width: 180px;
-
   aspect-ratio: 1;
-
   margin-inline: auto;
-
   border: 4px solid var(--mau-chinh);
-
   border-radius: 50%;
-
   object-fit: cover;
 }
 
-
-/* ==============================
-   8. KỸ NĂNG
-   ============================== */
+/* 8. DANH SÁCH KỸ NĂNG */
 
 .danh-sach-ky-nang {
   display: flex;
-
   flex-wrap: wrap;
-
   gap: var(--khoang-nho);
-
   padding-left: 0;
-
   list-style: none;
 }
 
 .danh-sach-ky-nang li {
-  padding:
-    8px
-    12px;
-
+  padding: 8px 12px;
   border: 1px solid var(--mau-chu);
-
   border-radius: 20px;
-
   background: var(--mau-phu);
 }
 
-
-/* ==============================
-   9. THỜI KHÓA BIỂU
-   ============================== */
+/* 9. THỜI KHÓA BIỂU */
 
 .bang-cuon {
   width: 100%;
-
   max-width: 100%;
-
   min-width: 0;
-
   overflow-x: auto;
 }
 
 table {
   width: 100%;
-
   min-width: 620px;
-
   border-collapse: collapse;
-
   background: var(--mau-nen);
 }
 
 caption {
   margin-bottom: 10px;
-
   font-weight: 700;
-
   text-align: left;
 }
 
 th,
 td {
   padding: 10px;
-
   border: 1px solid var(--mau-chu);
-
   text-align: center;
 }
 
 thead th {
-  color: var(--mau-nen);
-
+  color: #ffffff;
   background: var(--mau-chinh);
 }
 
@@ -322,43 +239,26 @@ tbody tr:nth-child(even) {
   background: var(--mau-phu);
 }
 
-
-/* ==============================
-   10. NÚT / LIÊN KẾT
-   ============================== */
+/* 10. NÚT VÀ LIÊN KẾT */
 
 .nhom-lien-ket {
   display: flex;
-
   flex-direction: column;
-
   gap: var(--khoang-nho);
 }
 
 .nut,
 .nut-accordion {
   display: inline-block;
-
-  padding:
-    10px
-    16px;
-
+  padding: 10px 16px;
   border: 2px solid var(--mau-chinh);
-
   border-radius: 8px;
-
   color: var(--mau-chinh);
-
   background: var(--mau-nen);
-
   font: inherit;
-
   font-weight: 600;
-
   text-decoration: none;
-
   text-align: center;
-
   cursor: pointer;
 
   transition:
@@ -369,8 +269,7 @@ tbody tr:nth-child(even) {
 
 .nut:hover,
 .nut-accordion:hover {
-  color: var(--mau-nen);
-
+  color: #ffffff;
   background: var(--mau-chinh);
 }
 
@@ -382,14 +281,10 @@ tbody tr:nth-child(even) {
 .nut:focus-visible,
 .nut-accordion:focus-visible {
   outline: 3px solid var(--mau-chu);
-
   outline-offset: 3px;
 }
 
-
-/* ==============================
-   11. TƯƠNG TÁC JAVASCRIPT
-   ============================== */
+/* 11. TƯƠNG TÁC JAVASCRIPT TH4 */
 
 .dieu-khien-giao-dien {
   text-align: left;
@@ -397,9 +292,7 @@ tbody tr:nth-child(even) {
 
 .thong-bao {
   min-height: 1.6em;
-
   margin-bottom: 0;
-
   font-weight: 600;
 }
 
@@ -409,17 +302,13 @@ tbody tr:nth-child(even) {
 
 .nut-accordion {
   width: 100%;
-
   text-align: left;
 }
 
 .noi-dung-accordion {
   margin-top: var(--khoang-vua);
-
   padding: var(--khoang-vua);
-
   border-left: 4px solid var(--mau-chinh);
-
   background: var(--mau-phu);
 }
 
@@ -427,10 +316,7 @@ tbody tr:nth-child(even) {
   display: none;
 }
 
-
-/* ==============================
-   12. CHẾ ĐỘ TỐI
-   ============================== */
+/* 12. CHẾ ĐỘ TỐI */
 
 body.che-do-toi {
   --mau-nen: #222222;
@@ -438,18 +324,12 @@ body.che-do-toi {
   --mau-chu: #ffffff;
 }
 
-
-/* ==============================
-   13. FOOTER
-   ============================== */
+/* 13. FOOTER */
 
 .chan-trang {
   padding-block: var(--khoang-vua);
-
-  color: var(--mau-nen);
-
+  color: #ffffff;
   text-align: center;
-
   background: var(--mau-chinh);
 }
 
@@ -457,20 +337,141 @@ body.che-do-toi {
   margin: 0;
 }
 
+/* ============================================
+   14. TH5 - CHỨC NĂNG ĐĂNG KÝ LỊCH HẸN
+   ============================================ */
 
-/* ==============================
-   14. RESPONSIVE MOBILE-FIRST
-   ============================== */
+.khoi form {
+  display: grid;
+  gap: var(--khoang-vua);
+  max-width: 700px;
+}
+
+.khoi form > p {
+  display: grid;
+  gap: var(--khoang-nho);
+  margin: 0;
+}
+
+.khoi form label {
+  font-weight: 500;
+}
+
+.khoi input[type="text"],
+.khoi input[type="date"],
+.khoi select,
+.khoi textarea {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid #777777;
+  border-radius: 8px;
+  color: var(--mau-chu);
+  background: var(--mau-nen);
+  font: inherit;
+}
+
+.khoi textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+.khoi input:focus-visible,
+.khoi select:focus-visible,
+.khoi textarea:focus-visible {
+  outline: 3px solid var(--mau-chinh);
+  outline-offset: 2px;
+}
+
+.khoi form > .nut {
+  justify-self: start;
+}
+
+.loi-bieu-mau {
+  display: block;
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+body.che-do-toi .loi-bieu-mau {
+  color: #fca5a5;
+}
+
+/* ============================================
+   15. TH5 - CHỨC NĂNG TRẮC NGHIỆM PHP
+   ============================================ */
+
+.cau-hoi {
+  min-width: 0;
+  margin: 0;
+  padding: var(--khoang-vua);
+  border: 1px solid #999999;
+  border-radius: var(--bo-goc);
+}
+
+.cau-hoi legend {
+  max-width: 100%;
+  padding: 0 6px;
+  font-weight: 700;
+  color: var(--mau-chu);
+}
+
+.lua-chon {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 12px 0;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.lua-chon:hover {
+  background: var(--mau-phu);
+}
+
+.lua-chon input[type="radio"] {
+  flex-shrink: 0;
+  margin-top: 6px;
+  accent-color: var(--mau-chinh);
+}
+
+.ket-qua-cau {
+  margin-top: var(--khoang-vua);
+  padding: var(--khoang-vua);
+  border: 1px solid #999999;
+  border-radius: var(--bo-goc);
+  background: var(--mau-phu);
+}
+
+.ket-qua-cau h3 {
+  margin-top: 0;
+  color: var(--mau-chinh);
+}
+
+.ket-qua-cau p {
+  margin-block: 8px;
+}
+
+/* 16. RESPONSIVE - MOBILE FIRST */
+
+@media (max-width: 767px) {
+  .khoi form > .nut {
+    width: 100%;
+  }
+
+  .cau-hoi {
+    padding: 12px;
+  }
+}
 
 @media (min-width: 768px) {
-
   .dau-trang .bao {
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
     gap: var(--khoang-lon);
   }
 
@@ -484,9 +485,7 @@ body.che-do-toi {
 
   .gioi-thieu {
     grid-template-columns:
-      220px
-      minmax(0, 1fr);
-
+      220px minmax(0, 1fr);
     align-items: center;
   }
 
@@ -499,9 +498,7 @@ body.che-do-toi {
   }
 }
 
-
 @media (min-width: 1024px) {
-
   .khoi {
     padding: var(--khoang-lon);
   }
