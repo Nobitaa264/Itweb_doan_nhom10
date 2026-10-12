@@ -69,7 +69,7 @@
             <ul>
 
                 <li>
-                    <a href="<?= e($goc) ?>index.html">
+                    <a href="<?= e($goc) ?>index.php">
                         Trang chủ
                     </a>
                 </li>
