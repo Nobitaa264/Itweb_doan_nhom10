@@ -59,6 +59,16 @@ require_once __DIR__ . '/../../inc/header.php';
 <!-- Bỏ dấu / ở cuối thẻ link -->
 <link rel="stylesheet" href="style.css">
 
+<nav class="navigation-back" style="margin: 20px 0; display: flex; gap: 12px; align-items: center;">
+    <a href="<?php echo $goc; ?>index.php" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background-color: #007bff; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; transition: background-color 0.2s ease;">
+        &larr; Trang chủ
+    </a>
+    <a href="<?php echo $goc; ?>gioi-thieu.php" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background-color: #6c757d; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; transition: background-color 0.2s ease;">
+        &larr; Trang Giới thiệu
+    </a>
+</nav>
+
+
 <section>
   <h1>Giới thiệu bản thân</h1>
   <button class="profile-image-button" type="button" aria-label="Mở ảnh chân dung của Nguyễn Đình Minh Đạt">
