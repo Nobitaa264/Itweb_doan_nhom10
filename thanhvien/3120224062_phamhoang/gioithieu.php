@@ -269,7 +269,7 @@ require __DIR__ . '/../../includes/header.php';
         </h2>
 
         <p>
-            <a href="<?= e($goc) ?>gioi-thieu.html">
+            <a href="<?= e($goc) ?>gioi-thieu.php">
                 Quay về trang giới thiệu nhóm
             </a>
         </p>
