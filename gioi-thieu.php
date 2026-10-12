@@ -80,7 +80,7 @@ $pageTitle = 'Giới thiệu - StyleHub';
 
                     <a
                         class="nut"
-                        href="thanhvien/3120224170_nguyenhuutuan/gioithieu.html"
+                        href="thanhvien/3120224170_nguyenhuutuan/gioithieu.php"
                     >
                         Xem trang cá nhân
                     </a>
@@ -91,7 +91,7 @@ $pageTitle = 'Giới thiệu - StyleHub';
 
                     <a
                         class="nut"
-                        href="thanhvien/3120224062_phamhoang/gioithieu.html"
+                        href="thanhvien/3120224062_phamhoang/gioithieu.php"
                     >
                         Xem trang cá nhân
                     </a>
@@ -102,7 +102,7 @@ $pageTitle = 'Giới thiệu - StyleHub';
 
                     <a
                         class="nut"
-                        href="thanhvien/3120224123_son/gioithieu.html"
+                        href="thanhvien/3120224123_son/gioithieu.php"
                     >
                         Xem trang cá nhân
                     </a>
