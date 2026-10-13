@@ -1,59 +1,72 @@
 /*
-    File canhan.js tạo các tương tác cho trang cá nhân.
-    Bao gồm đồng hồ thời gian thực và sao chép email.
-    Kiểm tra bằng cách nhấn nút trên trang web.
+    File: canhan.js
+    Chức năng:
+    - Hiển thị đồng hồ thời gian thực
+    - Sao chép email cá nhân
 */
 
 
+
 // =============================
-// CHỨC NĂNG 1:
-// ĐỒNG HỒ THỜI GIAN THỰC
+// 1. ĐỒNG HỒ THỜI GIAN THỰC
 // =============================
 
 
 function updateClock() {
 
 
+    const clock = document.getElementById("clock");
+
+
+    if (!clock) {
+        return;
+    }
+
+
+
     const now = new Date();
 
 
-    let hours = now.getHours();
-    let minutes = now.getMinutes();
-    let seconds = now.getSeconds();
+
+    let gio = now.getHours();
+
+    let phut = now.getMinutes();
+
+    let giay = now.getSeconds();
 
 
 
-    // Thêm số 0 phía trước nếu nhỏ hơn 10
 
-    hours = hours < 10 ? "0" + hours : hours;
+    gio = gio < 10 ? "0" + gio : gio;
 
-    minutes = minutes < 10 ? "0" + minutes : minutes;
+    phut = phut < 10 ? "0" + phut : phut;
 
-    seconds = seconds < 10 ? "0" + seconds : seconds;
-
-
-
-    const time =
-        hours + ":" + minutes + ":" + seconds;
+    giay = giay < 10 ? "0" + giay : giay;
 
 
 
-    document.getElementById("clock").textContent = time;
+
+
+    clock.textContent =
+        gio + ":" + phut + ":" + giay;
 
 
 }
 
 
 
-// Hiển thị ngay khi mở trang
+
+// chạy ngay khi mở trang
 
 updateClock();
 
 
 
-// Cập nhật mỗi giây
+// cập nhật mỗi giây
 
-setInterval(updateClock, 1000);
+setInterval(updateClock,1000);
+
+
 
 
 
@@ -62,62 +75,80 @@ setInterval(updateClock, 1000);
 
 
 // =============================
-// CHỨC NĂNG 2:
-// SAO CHÉP EMAIL
+// 2. SAO CHÉP EMAIL
 // =============================
 
 
 
 const btnCopyEmail =
-document.getElementById("btnCopyEmail");
-
+    document.getElementById("btnCopyEmail");
 
 
 const message =
-document.getElementById("message");
+    document.getElementById("message");
 
 
 
 
 
-btnCopyEmail.addEventListener(
-"click",
-function(){
+if(btnCopyEmail){
 
 
-    const email =
-    document
-    .getElementById("userEmail")
-    .textContent
-    .trim();
+    btnCopyEmail.addEventListener(
+        "click",
+        function(){
 
 
 
-    navigator.clipboard
-    .writeText(email)
+            const email =
+                "3120224170@udn.edu.vn";
 
 
 
-    .then(function(){
 
-
-        message.textContent =
-        "✅ Đã sao chép email thành công!";
-
-
-    })
+            navigator.clipboard.writeText(email)
 
 
 
-    .catch(function(){
-
-
-        message.textContent =
-        "❌ Không thể sao chép email.";
-
-
-    });
+            .then(function(){
 
 
 
-});
+                if(message){
+
+
+                    message.textContent =
+                    "Đã sao chép email thành công!";
+
+
+                }
+
+
+
+            })
+
+
+
+            .catch(function(){
+
+
+
+                if(message){
+
+
+                    message.textContent =
+                    "Không thể sao chép email.";
+
+
+                }
+
+
+            });
+
+
+
+        }
+    );
+
+
+}
