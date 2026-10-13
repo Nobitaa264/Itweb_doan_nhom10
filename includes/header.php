@@ -66,33 +66,7 @@
 
         <div class="bao">
 
-            <ul>
-
-                <li>
-                    <a href="<?= e($goc) ?>index.php">
-                        Trang chủ
-                    </a>
-                </li>
-
-                <li>
-                    <a href="<?= e($goc) ?>danh-sach.html">
-                        Sản phẩm
-                    </a>
-                </li>
-
-                <li>
-                    <a href="<?= e($goc) ?>gioi-thieu.html">
-                        Giới thiệu
-                    </a>
-                </li>
-
-                <li>
-                    <a href="<?= e($goc) ?>lien-he.html">
-                        Liên hệ
-                    </a>
-                </li>
-
-            </ul>
+        
 
         </div>
 
