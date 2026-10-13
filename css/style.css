@@ -1354,41 +1354,118 @@ a {
   }
 }
 
-/* =========================
-   THÔNG BÁO LỖI BIỂU MẪU PHP
-   ========================= */
-
-.loi-truong {
+/* Thông báo lỗi màu đỏ */
+.thong-bao-loi {
   display: block;
   margin-top: 8px;
   padding: 10px 12px;
-  border: 2px solid #dc2626;
-  border-left: 6px solid #b91c1c;
-  border-radius: 6px;
+  color: #b91c1c;
   background-color: #fef2f2;
-  color: #991b1b;
-  font-size: 0.95rem;
-  font-weight: 700;
-  line-height: 1.5;
+  border: 1px solid #fca5a5;
+  border-left: 4px solid #dc2626;
+  border-radius: 5px;
+  font-size: 13px;
 }
 
-.loi-truong::before {
+/* Ô nhập liệu có lỗi */
+.o-nhap-loi {
+  border: 1px solid #dc2626 !important;
+  background-color: #fff7f7 !important;
+  outline-color: #dc2626;
+}
+
+/* Thông báo gửi thành công màu xanh */
+.thong-bao-thanh-cong {
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  color: #166534;
+  background-color: #f0fdf4;
+  border: 1px solid #86efac;
+  border-left: 4px solid #16a34a;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* Biểu tượng trạng thái */
+.thong-bao-loi::before {
   content: "⚠ ";
+}
+
+.thong-bao-thanh-cong::before {
+  content: "✓ ";
+  font-weight: bold;
+}
+
+/* ==================================================
+   28. TRẠNG THÁI BIỂU MẪU LIÊN HỆ
+   ================================================== */
+
+/* Lỗi phía máy chủ: thông báo đỏ dưới từng trường */
+.thong-bao-loi {
+  display: block;
+  margin: 2px 0 0;
+  padding: 9px 11px;
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  border-left: 4px solid #dc2626;
+  border-radius: 5px;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.thong-bao-loi::before {
+  content: "⚠ ";
+  font-weight: 700;
+}
+
+/* Trường không hợp lệ */
+.nhom-form input.o-nhap-loi,
+.nhom-form select.o-nhap-loi,
+.nhom-form textarea.o-nhap-loi {
+  border: 2px solid #dc2626 !important;
+  background-color: #fff7f7 !important;
+}
+
+.nhom-form input.o-nhap-loi:focus,
+.nhom-form select.o-nhap-loi:focus,
+.nhom-form textarea.o-nhap-loi:focus {
+  outline: 3px solid #fecaca;
+  outline-offset: 1px;
+}
+
+/* Gửi thành công: thông báo xanh */
+.thong-bao-thanh-cong {
+  margin: 0 0 var(--khoang-vua);
+  padding: 14px 16px;
+  color: #166534;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-left: 4px solid #16a34a;
+  border-radius: 6px;
+}
+
+.thong-bao-thanh-cong::before {
+  content: "✓ ";
   font-weight: 800;
 }
 
-/* Làm nổi bật luôn ô đang có lỗi */
-.nhom-form input:has(+ .loi-truong),
-.nhom-form select:has(+ .loi-truong),
-.nhom-form textarea:has(+ .loi-truong) {
-  border: 2px solid #dc2626;
-  background-color: #fff7f7;
+.ban-do-lien-he {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--mau-chu);
+  border-radius: var(--bo-goc);
 }
 
-/* Khi người dùng click vào ô lỗi */
-.nhom-form input:has(+ .loi-truong):focus,
-.nhom-form select:has(+ .loi-truong):focus,
-.nhom-form textarea:has(+ .loi-truong):focus {
-  outline: 3px solid rgba(220, 38, 38, 0.2);
-  border-color: #b91c1c;
+.ban-do-lien-he iframe {
+  display: block;
+  width: 100%;
+  height: 350px;
+  border: 0;
+}
+
+@media (max-width: 767px) {
+  .ban-do-lien-he iframe {
+    height: 280px;
+  }
 }
