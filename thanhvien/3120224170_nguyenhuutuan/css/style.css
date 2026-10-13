@@ -1,50 +1,47 @@
-/* =====================================================
-   STYLE TRANG CÁ NHÂN
-   Responsive + JavaScript Interaction
-===================================================== */
+/*
+File: style.css
+Chức năng:
+- Giao diện trang giới thiệu cá nhân
+- Responsive
+- Form lưu bút
+- Tương tác Javascript
+*/
 
-
-/* =========================
-   ROOT
-========================= */
 
 :root {
 
-    --color-primary:#2563eb;
-    --color-primary-dark:#1d4ed8;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
 
-    --color-background:#f5f5f5;
+    --background: #f1f5f9;
 
-    --color-white:#ffffff;
+    --white: #ffffff;
 
-    --color-text:#1f2937;
+    --text: #1e293b;
 
-    --color-border:#999999;
+    --gray: #64748b;
 
+    --border: #cbd5e1;
 
-    --container-width:1000px;
+    --radius: 14px;
 
+    --shadow:
+        0 8px 20px rgba(0,0,0,0.08);
 
-    --spacing-small:.5rem;
-    --spacing-medium:1rem;
-    --spacing-large:1.5rem;
-    --spacing-xlarge:2rem;
-
-
-    --radius:10px;
+    --container: 1000px;
 
 }
 
 
 
-/* =========================
+
+
+/* =====================
 RESET
-========================= */
+===================== */
 
 
-*,
-*::before,
-*::after {
+* {
 
     box-sizing:border-box;
 
@@ -52,59 +49,56 @@ RESET
 
 
 
-html {
-
-    scroll-behavior:smooth;
-
-}
-
-
-
 body {
+
 
     margin:0;
 
+    padding:0;
+
+
     font-family:
+
+    "Segoe UI",
     Arial,
-    Helvetica,
     sans-serif;
 
-    font-size:16px;
 
-    line-height:1.6;
 
-    color:var(--color-text);
+    background:
 
-    background-color:
-    var(--color-background);
+    var(--background);
+
+
+
+    color:
+
+    var(--text);
+
+
+
+    line-height:1.7;
+
 
 }
+
 
 
 
 img {
 
-    display:block;
-
     max-width:100%;
 
-    height:auto;
+    display:block;
 
 }
 
-
-
-a {
-
-    color:inherit;
-
-}
 
 
 
 p {
 
-    margin-top:0;
+    margin-bottom:1rem;
 
 }
 
@@ -112,22 +106,24 @@ p {
 
 
 
-/* =========================
+
+
+/* =====================
 CONTAINER
-========================= */
+===================== */
 
 
 .container {
 
-    width:min(
-        calc(100% - 2rem),
-        var(--container-width)
-    );
+
+    width:
+
+    min(92%, var(--container));
 
 
-    margin-left:auto;
 
-    margin-right:auto;
+    margin:auto;
+
 
 }
 
@@ -135,81 +131,25 @@ CONTAINER
 
 
 
-/* =========================
-HEADER
-========================= */
+/* =====================
+MAIN
+===================== */
 
 
-.site-header {
+.main-content {
 
-    background-color:
-    var(--color-primary);
-
-    color:white;
-
-    padding:
-    var(--spacing-large) 0;
-
-}
-
-
-
-.header-content {
 
     display:flex;
 
     flex-direction:column;
 
-    align-items:center;
-
-    gap:var(--spacing-medium);
-
-    text-align:center;
-
-}
+    gap:25px;
 
 
+    margin-top:30px;
 
-.site-title {
+    margin-bottom:30px;
 
-    margin:0;
-
-    font-size:1.6rem;
-
-}
-
-
-
-.main-nav {
-
-    display:flex;
-
-    gap:.5rem;
-
-}
-
-
-
-.main-nav__link {
-
-    padding:.5rem 1rem;
-
-    color:white;
-
-    text-decoration:none;
-
-    border-radius:6px;
-
-    transition:.2s;
-
-}
-
-
-
-.main-nav__link:hover {
-
-    background-color:
-    rgba(255,255,255,.2);
 
 }
 
@@ -217,74 +157,82 @@ HEADER
 
 
 
-/* =========================
-CONTENT
-========================= */
 
-
-.main-content {
-
-    display:grid;
-
-    gap:var(--spacing-large);
-
-    margin-top:
-    var(--spacing-large);
-
-    margin-bottom:
-    var(--spacing-large);
-
-}
-
+/* =====================
+SECTION CARD
+===================== */
 
 
 .content-section {
 
-    background-color:
-    var(--color-white);
+
+    background:
+
+    var(--white);
 
 
-    padding:
-    var(--spacing-large);
+
+    padding:30px;
+
 
 
     border-radius:
+
     var(--radius);
 
 
+
     box-shadow:
-    0 2px 8px rgba(0,0,0,.08);
+
+    var(--shadow);
+
 
 }
+
+
+
 
 
 
 .section-title {
 
+
     margin-top:0;
 
 
+
     color:
-    var(--color-primary);
+
+    var(--primary);
 
 
-    font-size:1.4rem;
+
+    font-size:26px;
+
 
 
     border-bottom:
-    2px solid var(--color-primary);
+
+    3px solid var(--primary);
 
 
-    padding-bottom:.5rem;
+
+    padding-bottom:10px;
+
 
 }
+
+
 
 
 
 .sub-title {
 
+
     color:
-    var(--color-primary-dark);
+
+    var(--primary-hover);
+
 
 }
 
@@ -292,21 +240,30 @@ CONTENT
 
 
 
-/* =========================
+
+
+/* =====================
 PROFILE
-========================= */
+===================== */
 
 
 .profile {
 
+
     display:flex;
 
-    flex-direction:column;
+
 
     align-items:center;
 
-    gap:
-    var(--spacing-large);
+
+
+    gap:30px;
+
+
+
+    margin-bottom:20px;
+
 
 }
 
@@ -314,22 +271,52 @@ PROFILE
 
 .profile-image img {
 
+
     width:150px;
 
     height:200px;
 
+
+
     object-fit:cover;
 
-    border-radius:
-    var(--radius);
+
+
+    border-radius:15px;
+
+
+
+    border:
+
+    4px solid #dbeafe;
+
+
 
 }
 
 
 
-.profile-info {
 
-    width:100%;
+
+.profile-info p {
+
+
+    margin:
+
+    8px 0;
+
+
+}
+
+
+
+.profile-info strong {
+
+
+    color:
+
+    var(--primary-hover);
+
 
 }
 
@@ -337,22 +324,46 @@ PROFILE
 
 
 
-/* =========================
-SKILL
-========================= */
+.description {
+
+
+    text-align:justify;
+
+
+}
+
+
+
+
+
+
+
+/* =====================
+SKILLS
+===================== */
 
 
 .skills-list {
 
+
     display:flex;
+
+
 
     flex-wrap:wrap;
 
-    gap:.5rem;
+
+
+    gap:12px;
+
+
+
+    padding:0;
+
+
 
     list-style:none;
 
-    padding:0;
 
 }
 
@@ -360,19 +371,33 @@ SKILL
 
 .skills-list li {
 
-    padding:.5rem .8rem;
+
+    background:
+
+    #dbeafe;
 
 
-    background-color:#dbeafe;
+
+    color:
+
+    #1e40af;
 
 
-    color:#1d4ed8;
+
+    padding:
+
+    8px 16px;
 
 
-    border-radius:6px;
+
+    border-radius:
+
+    20px;
 
 
-    font-weight:bold;
+
+    font-weight:600;
+
 
 }
 
@@ -380,50 +405,60 @@ SKILL
 
 
 
-/* =========================
-JAVASCRIPT INTERACTION
-========================= */
 
-
-/* Đồng hồ */
+/* =====================
+CLOCK
+===================== */
 
 
 .clock-box {
 
 
-    display:inline-block;
+    display:inline-flex;
 
 
-    padding:15px 25px;
+
+    align-items:center;
 
 
-    margin-bottom:20px;
+
+    gap:10px;
 
 
-    background-color:#e0f2fe;
+
+    background:
+
+    #e0f2fe;
 
 
-    border-radius:10px;
+
+    padding:
+
+    15px 25px;
 
 
-    font-size:18px;
+
+    border-radius:
+
+    12px;
+
 
 
     font-weight:bold;
 
 
 }
+
 
 
 
 #clock {
 
 
-    margin-left:10px;
-
-
     color:
-    var(--color-primary);
+
+    var(--primary);
+
 
 
     font-size:24px;
@@ -435,41 +470,52 @@ JAVASCRIPT INTERACTION
 
 
 
-/* Button */
+
+
+
+/* =====================
+BUTTON
+===================== */
 
 
 button {
 
 
-    padding:.7rem 1rem;
-
-
-    margin-right:.5rem;
-
-
-    margin-bottom:.5rem;
-
-
     border:none;
 
 
-    border-radius:6px;
 
+    background:
 
-    background-color:
-    var(--color-primary);
+    var(--primary);
+
 
 
     color:white;
 
 
+
+    padding:
+
+    12px 20px;
+
+
+
+    border-radius:
+
+    8px;
+
+
+
+    font-size:16px;
+
+
+
     cursor:pointer;
 
 
-    font-size:1rem;
 
-
-    transition:.2s;
+    transition:.3s;
 
 
 }
@@ -479,103 +525,149 @@ button {
 button:hover {
 
 
-    background-color:
-    var(--color-primary-dark);
+    background:
+
+    var(--primary-hover);
+
+
+
+    transform:
+
+    translateY(-2px);
 
 
 }
 
 
 
-
-
-/* Thông báo */
 
 
 #message {
 
 
-    margin-top:1rem;
+    margin-top:15px;
+
+
+
+    color:
+
+    green;
+
 
 
     font-weight:bold;
 
 
-    color:green;
-
-
 }
 
 
 
 
 
-/* =========================
-TABLE
-========================= */
 
 
-.table-wrapper {
+
+/* =====================
+FORM
+===================== */
+
+
+form {
+
+
+    display:flex;
+
+
+
+    flex-direction:column;
+
+
+
+    gap:12px;
+
+
+}
+
+
+
+label {
+
+
+    font-weight:600;
+
+
+}
+
+
+
+input,
+textarea {
 
 
     width:100%;
 
 
-    overflow-x:auto;
 
-
-}
-
-
-
-.schedule-table {
-
-
-    width:100%;
-
-
-    min-width:700px;
-
-
-    border-collapse:collapse;
-
-
-}
+    padding:12px;
 
 
 
-.schedule-table th,
-.schedule-table td {
+    font-size:16px;
+
 
 
     border:
-    1px solid var(--color-border);
 
-
-    padding:.65rem;
-
-
-    text-align:center;
-
-
-}
+    1px solid var(--border);
 
 
 
-.schedule-table thead th {
+    border-radius:8px;
 
 
-    background-color:#e5e7eb;
+
+    font-family:inherit;
+
+
+
+    transition:.2s;
 
 
 }
 
 
 
-.schedule-table tbody th {
+textarea {
 
 
-    background-color:#f3f4f6;
+    min-height:130px;
+
+
+
+    resize:vertical;
+
+
+}
+
+
+
+input:focus,
+textarea:focus {
+
+
+    outline:none;
+
+
+
+    border-color:
+
+    var(--primary);
+
+
+
+    box-shadow:
+
+    0 0 0 3px #dbeafe;
 
 
 }
@@ -584,9 +676,43 @@ TABLE
 
 
 
-/* =========================
+
+
+/* =====================
+MESSAGE
+===================== */
+
+
+.content-section small {
+
+
+    color:
+
+    var(--gray);
+
+
+}
+
+
+
+.content-section strong {
+
+
+    color:
+
+    var(--primary-hover);
+
+
+}
+
+
+
+
+
+
+/* =====================
 LINK
-========================= */
+===================== */
 
 
 .link-list {
@@ -595,10 +721,12 @@ LINK
     display:flex;
 
 
+
+    gap:10px;
+
+
+
     flex-wrap:wrap;
-
-
-    gap:.5rem;
 
 
 }
@@ -608,21 +736,30 @@ LINK
 .link-button {
 
 
-    padding:.6rem 1rem;
+    text-decoration:none;
+
+
+
+    padding:
+
+    10px 18px;
+
 
 
     border:
-    2px solid var(--color-primary);
 
+    2px solid var(--primary);
 
-    border-radius:6px;
 
 
     color:
-    var(--color-primary);
+
+    var(--primary);
 
 
-    text-decoration:none;
+
+    border-radius:8px;
+
 
 
     font-weight:bold;
@@ -635,8 +772,10 @@ LINK
 .link-button:hover {
 
 
-    background-color:
-    var(--color-primary);
+    background:
+
+    var(--primary);
+
 
 
     color:white;
@@ -648,36 +787,30 @@ LINK
 
 
 
-/* =========================
+
+/* =====================
 FOOTER
-========================= */
+===================== */
 
 
 .site-footer {
 
 
-    background-color:
-    var(--color-primary);
+    background:
+
+    var(--primary);
+
 
 
     color:white;
 
 
+
     text-align:center;
 
 
-    padding:
-    var(--spacing-large) 0;
 
-
-}
-
-
-
-.site-footer p {
-
-
-    margin:0;
+    padding:20px;
 
 
 }
@@ -686,63 +819,57 @@ FOOTER
 
 
 
-/* =========================
+
+/* =====================
 RESPONSIVE
-========================= */
+===================== */
 
 
-@media(min-width:600px){
+@media(max-width:700px){
+
+
+    .content-section {
+
+
+        padding:20px;
+
+
+    }
+
 
 
     .profile {
 
 
-        flex-direction:row;
-
-
-        align-items:flex-start;
-
-
-    }
-
-
-}
+        flex-direction:column;
 
 
 
-
-@media(min-width:900px){
-
-
-    .header-content {
-
-
-        flex-direction:row;
-
-
-        justify-content:space-between;
+        text-align:center;
 
 
     }
 
 
 
-    .site-title {
+    .profile-info {
 
 
-        text-align:left;
+        width:100%;
 
 
     }
 
 
-}
+
+    .section-title {
 
 
+        font-size:22px;
 
 
+    }
 
-@media(max-width:360px){
 
 
     button {
@@ -751,7 +878,33 @@ RESPONSIVE
         width:100%;
 
 
-        margin-right:0;
+    }
+
+
+}
+
+
+
+
+
+
+@media(max-width:400px){
+
+
+    .container {
+
+
+        width:95%;
+
+
+    }
+
+
+
+    #clock {
+
+
+        font-size:20px;
 
 
     }
