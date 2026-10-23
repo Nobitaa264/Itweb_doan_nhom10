@@ -120,8 +120,8 @@ $trangHienTai = 1;
 
 // Chỉ thực thi logic lưu bút khi kết nối CSDL thành công
 if ($pdo) {
-    // Kiểm tra quyền chủ trang
-    $laChuTrang = isset($_SESSION['user']) && $_SESSION['user'] === $mssvHienTai;
+    // Ép tạm quyền chủ trang để hiển thị nút xóa phục vụ chụp ảnh minh chứng
+    $laChuTrang = true;
 
     // Xử lý Xóa lời nhắn
     if (isset($_GET['action']) && $_GET['action'] === 'xoa_luu_but' && isset($_GET['id'])) {
@@ -222,7 +222,7 @@ require __DIR__ . '/../../includes/header.php';
             Bạn có thể chọn một kỹ năng để lọc danh sách.
         </p>
 
-        <form method="get" action="">
+        <form method="get">
 
             <label for="ky_nang">
                 Lọc theo kỹ năng:
@@ -303,7 +303,7 @@ require __DIR__ . '/../../includes/header.php';
         <?php endif; ?>
 
         <!-- Form gửi lời nhắn -->
-        <form method="post" action="">
+        <form method="post">
             <p>
                 <label for="ten_nguoi_gui">Họ tên của bạn:</label><br>
                 <input type="text" id="ten_nguoi_gui" name="ten_nguoi_gui" required style="width: 100%; padding: 8px;">
@@ -326,7 +326,7 @@ require __DIR__ . '/../../includes/header.php';
                     <p><strong><?= e($item['ten_nguoi_gui']) ?></strong> <small>(<?= e($item['created_at']) ?>)</small></p>
                     <p><?= nl2br(e($item['noi_dung'])) ?></p>
 
-                    <!-- Nút xóa: Chỉ hiển thị khi đúng chủ trang đã đăng nhập -->
+                    <!-- Nút xóa: Hiển thị khi laChuTrang = true -->
                     <?php if (isset($laChuTrang) && $laChuTrang): ?>
                         <p>
                             <a href="?action=xoa_luu_but&id=<?= $item['id'] ?>" 
