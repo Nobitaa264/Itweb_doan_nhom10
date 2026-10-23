@@ -1,25 +1,30 @@
-### Test 1: Tìm kiếm sản phẩm hợp lệ
-GET http://localhost:8000/api/san-pham.php?q=sơ+mi
+# api.http - Bộ request kiểm thử REST API cho dự án StyleHub (Nhóm 10)
+# Mở bằng VS Code (Extension REST Client) và nhấn "Send Request" trên từng mục.
+
+@goc = http://localhost:8000
+
+### 1. Tìm kiếm sản phẩm hợp lệ (200 OK)
+GET {{goc}}/api/san-pham.php?q=sơ+mi
 Accept: application/json
 
-### Test 2: Xem chi tiết sản phẩm hợp lệ
-GET http://localhost:8000/api/san-pham.php?id=SH001
+### 2. Xem chi tiết sản phẩm hợp lệ (200 OK)
+GET {{goc}}/api/san-pham.php?id=SH001
 Accept: application/json
 
-### Test 3: ID sản phẩm không tồn tại (404)
-GET http://localhost:8000/api/san-pham.php?id=SP999999
+### 3. ID sản phẩm không tồn tại (404 Not Found)
+GET {{goc}}/api/san-pham.php?id=SP999999
 Accept: application/json
 
-### Test 4: Phương thức DELETE không hỗ trợ (405)
-DELETE http://localhost:8000/api/san-pham.php?id=SH001
+### 4. Phương thức DELETE không hỗ trợ (405 Method Not Allowed)
+DELETE {{goc}}/api/san-pham.php?id=SH001
 Accept: application/json
 
-### Test Giỏ hàng 1: Xem giỏ hàng hiện tại (200 OK)
-GET http://localhost:8000/api/gio-hang.php
+### 5. Xem giỏ hàng hiện tại (200 OK)
+GET {{goc}}/api/gio-hang.php
 Accept: application/json
 
-### Test Giỏ hàng 2: Thêm hợp lệ vào giỏ (200 OK)
-POST http://localhost:8000/api/gio-hang.php
+### 6. Thêm hợp lệ vào giỏ hàng (200 OK)
+POST {{goc}}/api/gio-hang.php
 Content-Type: application/json
 
 {
@@ -27,17 +32,35 @@ Content-Type: application/json
     "so_luong": 1
 }
 
-### Test Giỏ hàng 3: Thân không phải JSON (400 Bad Request)
-POST http://localhost:8000/api/gio-hang.php
+### 7. Thân không phải JSON (400 Bad Request)
+POST {{goc}}/api/gio-hang.php
 Content-Type: application/json
 
 thân_văn_bản_thường_không_phải_json
 
-### Test Giỏ hàng 4: Số lượng âm / không hợp lệ (422 Unprocessable Entity)
-POST http://localhost:8000/api/gio-hang.php
+### 8. Số lượng âm / không hợp lệ (422 Unprocessable Entity)
+POST {{goc}}/api/gio-hang.php
 Content-Type: application/json
 
 {
     "san_pham_id": "SH001",
     "so_luong": -3
+}
+
+### 9. Thêm sản phẩm không tồn tại / Thiếu ID (404 Not Found / 422)
+POST {{goc}}/api/gio-hang.php
+Content-Type: application/json
+
+{
+    "san_pham_id": "SP999999",
+    "so_luong": 1
+}
+
+### 10. Số lượng vượt quá tồn kho CSDL (422 Unprocessable Entity)
+POST {{goc}}/api/gio-hang.php
+Content-Type: application/json
+
+{
+    "san_pham_id": "SH001",
+    "so_luong": 999999
 }

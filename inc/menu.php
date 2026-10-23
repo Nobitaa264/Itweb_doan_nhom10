@@ -109,34 +109,55 @@ function ariaCurrent(string $tenTrang, string $trangHienTai): string
                 </a>
             </li>
 
-            <li>
-                
-<?php if (is_array($nguoiDung)): ?>
+            <?php if (is_array($nguoiDung)): ?>
+                <li>
+                    <a
+                        class="<?= e(mucDangChon('don-hang', $trang)) ?>"
+                        href="<?= e($goc) ?>don-hang.php"
+                        <?= ariaCurrent('don-hang', $trang) ?>
+                    >
+                        Đơn hàng
+                    </a>
+                </li>
 
-    <span>
-        Xin chào,
-        <?= e((string) ($nguoiDung['ten'] ?? 'Người dùng')) ?>
-    </span>
+                <?php if (($nguoiDung['vaiTro'] ?? $nguoiDung['vai_tro'] ?? '') === 'admin'): ?>
+                    <li>
+                        <a
+                            class="<?= e(mucDangChon('quan-tri', $trang)) ?>"
+                            href="<?= e($goc) ?>quan-tri.php"
+                            <?= ariaCurrent('quan-tri', $trang) ?>
+                        >
+                            Quản trị
+                        </a>
+                    </li>
+                <?php endif; ?>
 
-    <?php if (($nguoiDung['vaiTro'] ?? '') === 'admin'): ?>
-        <a href="<?= e($goc) ?>quan-tri.php">
-            Quản trị
-        </a>
-    <?php endif; ?>
+                <li>
+                    <span>
+                        Xin chào,
+                        <?= e((string) ($nguoiDung['ho_ten'] ?? $nguoiDung['ten'] ?? 'Người dùng')) ?>
+                    </span>
+                </li>
 
-    <a href="<?= e($goc) ?>dang-xuat.php">
-        Đăng xuất
-    </a>
+                <li>
+                    <a href="<?= e($goc) ?>dang-xuat.php">
+                        Đăng xuất
+                    </a>
+                </li>
 
-<?php else: ?>
+            <?php else: ?>
 
-    <a href="<?= e($goc) ?>dang-nhap.php">
-        Đăng nhập
-    </a>
+                <li>
+                    <a
+                        class="<?= e(mucDangChon('dang-nhap', $trang)) ?>"
+                        href="<?= e($goc) ?>dang-nhap.php"
+                        <?= ariaCurrent('dang-nhap', $trang) ?>
+                    >
+                        Đăng nhập
+                    </a>
+                </li>
 
-<?php endif; ?>
-
-            </li>
+            <?php endif; ?>
 
         </ul>
     </div>
