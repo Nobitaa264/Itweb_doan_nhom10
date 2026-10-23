@@ -1,10 +1,5 @@
-/vendor/
-
-/logs/*
-!/logs/.htaccess
-
-/storage/*
-!/storage/.htaccess
-
-/uploads/*
-!/uploads/.gitkeep
+.vs/
+*.zip
+*.bak
+cookies-test.txt
+logs/*.log

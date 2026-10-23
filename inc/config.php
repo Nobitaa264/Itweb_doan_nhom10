@@ -12,6 +12,8 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/ham.php';
+require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/xac-thuc.php'; // Nạp tệp xác thực tài khoản & phân quyền
 
 const MOI_TRUONG = 'dev';
 

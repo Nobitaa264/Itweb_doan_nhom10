@@ -1,27 +1,18 @@
 <?php
-
 declare(strict_types=1);
-
-/**
- * KhoLienHe.php
- *
- * Lớp truy cập dữ liệu các yêu cầu liên hệ.
- * Đây là nơi duy nhất đọc file storage/lien-he.jsonl.
- */
 
 namespace App\Data;
 
-use JsonException;
-use RuntimeException;
+use App\Config\Database;
+use PDO;
 
 final class KhoLienHe
 {
-    private string $duongDan;
+    private PDO $pdo;
 
-    public function __construct()
+    public function __construct(?PDO $pdo = null)
     {
-        $this->duongDan = __DIR__
-            . '/../../storage/lien-he.jsonl';
+        $this->pdo = $pdo ?? Database::connect();
     }
 
     /**
@@ -31,55 +22,74 @@ final class KhoLienHe
      */
     public function tatCa(): array
     {
-        if (!is_file($this->duongDan)) {
-            return [];
-        }
+        $sql = <<<'SQL'
+            SELECT
+                id,
+                ho_ten AS hoTen,
+                so_dien_thoai AS soDienThoai,
+                email,
+                san_pham_id AS sanPhamId,
+                san_pham_ten AS sanPhamTen,
+                noi_dung AS noiDung,
+                anh,
+                trang_thai AS trangThai,
+                created_at AS thoiGian
+            FROM lien_he
+            ORDER BY created_at DESC, id DESC
+            SQL;
 
-        $cacDong = file(
-            $this->duongDan,
-            FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES
-        );
+        $stmt = $this->pdo->query($sql);
 
-        if ($cacDong === false) {
-            throw new RuntimeException(
-                'Không thể đọc dữ liệu liên hệ.'
-            );
-        }
+        return $stmt->fetchAll();
+    }
 
-        $danhSach = [];
+    /**
+     * Lưu một yêu cầu liên hệ.
+     *
+     * @param array<string, mixed> $duLieu
+     */
+    public function luu(array $duLieu): int
+    {
+        $sql = <<<'SQL'
+            INSERT INTO lien_he (
+                ho_ten,
+                so_dien_thoai,
+                email,
+                san_pham_id,
+                san_pham_ten,
+                noi_dung,
+                anh
+            ) VALUES (
+                :ho_ten,
+                :so_dien_thoai,
+                :email,
+                :san_pham_id,
+                :san_pham_ten,
+                :noi_dung,
+                :anh
+            )
+            SQL;
 
-        foreach ($cacDong as $dong) {
-            try {
-                $banGhi = json_decode(
-                    $dong,
-                    true,
-                    512,
-                    JSON_THROW_ON_ERROR
-                );
+        $stmt = $this->pdo->prepare($sql);
 
-                if (is_array($banGhi)) {
-                    $danhSach[] = $banGhi;
-                }
-            } catch (JsonException) {
-                error_log(
-                    '[LIEN_HE] Bỏ qua một dòng JSONL không hợp lệ.'
-                );
-            }
-        }
+        $stmt->execute([
+            'ho_ten' => $duLieu['hoTen'],
+            'so_dien_thoai' => $duLieu['soDienThoai'],
+            'email' => ($duLieu['email'] ?? '') !== ''
+                ? $duLieu['email']
+                : null,
+            'san_pham_id' => ($duLieu['sanPhamId'] ?? '') !== ''
+                ? $duLieu['sanPhamId']
+                : null,
+            'san_pham_ten' => ($duLieu['sanPhamTen'] ?? '') !== ''
+                ? $duLieu['sanPhamTen']
+                : null,
+            'noi_dung' => $duLieu['noiDung'],
+            'anh' => ($duLieu['anh'] ?? '') !== ''
+                ? $duLieu['anh']
+                : null,
+        ]);
 
-        usort(
-            $danhSach,
-            static function (
-                array $a,
-                array $b
-            ): int {
-                return strcmp(
-                    (string) ($b['thoiGian'] ?? ''),
-                    (string) ($a['thoiGian'] ?? '')
-                );
-            }
-        );
-
-        return $danhSach;
+        return (int) $this->pdo->lastInsertId();
     }
 }

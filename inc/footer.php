@@ -19,6 +19,7 @@
         </p>
     </div>
 </footer>
-
+<script src="js/tim-kiem.js" defer></script>
+<script src="js/gio-hang.js" defer></script>
 </body>
 </html>

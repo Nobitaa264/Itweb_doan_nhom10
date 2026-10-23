@@ -408,6 +408,15 @@ $soMon = $gioHang->soMon();
                     >
                         Xóa toàn bộ giỏ hàng
                     </button>
+                    
+<?php if ($cacMucGioHang !== []): ?>
+    <p>
+        <a class="nut" href="dat-hang.php">
+            Tiến hành đặt hàng
+        </a>
+    </p>
+<?php endif; ?>
+
 
                 </form>
 

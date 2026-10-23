@@ -1,95 +1,128 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * dang-nhap.php
- * Xử lý đăng nhập bằng password_verify().
+ * Xác thực tài khoản bằng MySQL và password_verify().
  */
 
 require_once __DIR__ . '/inc/config.php';
+
+use App\Config\Database;
 
 $tieuDe = 'Đăng nhập - StyleHub';
 $trang = 'dang-nhap';
 $goc = './';
 
 $loi = '';
+$flash = null;
 
 $tenDangNhap = trim(
     (string) ($_POST['ten-dang-nhap'] ?? '')
 );
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $matKhau = (string) (
-        $_POST['mat-khau'] ?? ''
-    );
-
-    if ($tenDangNhap === '' || $matKhau === '') {
-
-        $loi = 'Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.';
-
-    } else {
-
-        $taiKhoan = require __DIR__ . '/inc/tai-khoan.php';
-
-        $taiKhoanHienTai =
-            $taiKhoan[$tenDangNhap] ?? null;
-
-        $hopLe =
-            is_array($taiKhoanHienTai) &&
-            isset($taiKhoanHienTai['matKhau']) &&
-            password_verify(
-                $matKhau,
-                $taiKhoanHienTai['matKhau']
-            );
-
-        if (!$hopLe) {
-
-            error_log(
-                sprintf(
-                    '[LOGIN_FAIL] Tài khoản thất bại: %s | IP: %s',
-                    $tenDangNhap,
-                    $_SERVER['REMOTE_ADDR'] ?? 'unknown'
-                )
-            );
-
-            $loi =
-                'Sai tên đăng nhập hoặc mật khẩu.';
-
-        } else {
-
-            session_regenerate_id(true);
-
-            $_SESSION['nguoi_dung'] = [
-                'tenDangNhap' => $tenDangNhap,
-                'ten' =>
-                    (string) (
-                        $taiKhoanHienTai['ten']
-                        ?? $tenDangNhap
-                    ),
-            ];
-
-            $_SESSION['flash'] = [
-                'loai' => 'thanh-cong',
-                'noiDung' => 'Đăng nhập thành công.',
-            ];
-
-            header('Location: quan-tri.php');
-            exit;
-        }
-    }
-}
-
-$flash = null;
-
 if (isset($_SESSION['flash'])) {
     $flash = $_SESSION['flash'];
     unset($_SESSION['flash']);
 }
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $matKhau = (string) ($_POST['mat-khau'] ?? '');
+
+    if ($tenDangNhap === '' || $matKhau === '') {
+        $loi = 'Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.';
+    } else {
+        try {
+            $pdo = Database::connect();
+
+            $stmt = $pdo->prepare(
+                'SELECT id, ten, ten_dang_nhap, email, mat_khau, vai_tro
+                 FROM nguoi_dung
+                 WHERE ten_dang_nhap = :ten_dang_nhap
+                 LIMIT 1'
+            );
+
+            $stmt->execute([
+                'ten_dang_nhap' => $tenDangNhap,
+            ]);
+
+            $taiKhoan = $stmt->fetch();
+
+            $hopLe = is_array($taiKhoan)
+                && password_verify(
+                    $matKhau,
+                    (string) $taiKhoan['mat_khau']
+                );
+
+            if (!$hopLe) {
+                error_log(
+                    sprintf(
+                        '[LOGIN_FAIL] Dang nhap that bai | IP: %s',
+                        $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+                    )
+                );
+
+                $loi = 'Sai tên đăng nhập hoặc mật khẩu.';
+            } else {
+                // Cập nhật hash nếu thuật toán/cấu hình đã thay đổi.
+                if (password_needs_rehash(
+                    (string) $taiKhoan['mat_khau'],
+                    PASSWORD_DEFAULT
+                )) {
+                    $hashMoi = password_hash(
+                        $matKhau,
+                        PASSWORD_DEFAULT
+                    );
+
+                    $update = $pdo->prepare(
+                        'UPDATE nguoi_dung
+                         SET mat_khau = :mat_khau
+                         WHERE id = :id'
+                    );
+
+                    $update->execute([
+                        'mat_khau' => $hashMoi,
+                        'id' => $taiKhoan['id'],
+                    ]);
+                }
+
+                session_regenerate_id(true);
+
+                // Chỉ lưu thông tin cần thiết vào session.
+                $_SESSION['nguoi_dung'] = [
+                    'id' => (int) $taiKhoan['id'],
+                    'tenDangNhap' => (string) $taiKhoan['ten_dang_nhap'],
+                    'ten' => (string) $taiKhoan['ten'],
+                    'vaiTro' => (string) $taiKhoan['vai_tro'],
+                ];
+
+                $_SESSION['flash'] = [
+                    'loai' => 'thanh-cong',
+                    'noiDung' => 'Đăng nhập thành công.',
+                ];
+
+                if ($taiKhoan['vai_tro'] === 'admin') {
+                    header('Location: quan-tri.php');
+                } else {
+                    header('Location: index.php');
+                }
+
+                exit;
+            }
+        } catch (\Throwable $e) {
+            error_log('[LOGIN_ERROR] ' . $e->getMessage());
+
+            $loi = 'Hệ thống chưa thể đăng nhập lúc này. Vui lòng thử lại.';
+        }
+    }
+}
 ?>
 
+
+
 <?php require __DIR__ . '/inc/header.php'; ?>
-
 <?php require __DIR__ . '/inc/menu.php'; ?>
-
 <main class="noi-dung">
     <div class="bao">
 
@@ -97,28 +130,27 @@ if (isset($_SESSION['flash'])) {
             Đăng nhập
         </h1>
 
-        <?php if ($flash !== null): ?>
-            <p
-                role="status"
-                aria-live="polite"
-            >
-                <?= e($flash['noiDung'] ?? '') ?>
-            </p>
-        <?php endif; ?>
-
-        <?php if ($loi !== ''): ?>
-            <p
-                role="alert"
-            >
-                <?= e($loi) ?>
-            </p>
-        <?php endif; ?>
+        
 
         <section class="khu-vuc-form">
+            
+<?php if ($flash !== null): ?>
+    <p role="status" aria-live="polite">
+        <?= e($flash['noiDung'] ?? '') ?>
+    </p>
+<?php endif; ?>
 
-            <h2>
-                Tài khoản quản trị
-            </h2>
+<?php if ($loi !== ''): ?>
+    <p role="alert">
+        <?= e($loi) ?>
+    </p>
+<?php endif; ?>
+
+
+            <h2 class="tieu-de-trang">Chào mừng trở lại</h2>
+<p class="mo-ta-dang-nhap">
+    Đăng nhập vào tài khoản StyleHub của bạn.
+</p>
 
             <form
                 method="post"
@@ -166,6 +198,14 @@ if (isset($_SESSION['flash'])) {
                 </button>
 
             </form>
+
+            <p class="chuyen-trang" style="margin-top: 15px;">
+                Chưa có tài khoản? <a href="dang-ky.php">Đăng ký ngay</a>
+            </p>
+
+            <a class="lien-ket-trang-chu" href="index.php">
+    ← Quay lại trang chủ
+</a>
 
         </section>
 

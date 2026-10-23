@@ -1,0 +1,43 @@
+### Test 1: Tìm kiếm sản phẩm hợp lệ
+GET http://localhost:8000/api/san-pham.php?q=sơ+mi
+Accept: application/json
+
+### Test 2: Xem chi tiết sản phẩm hợp lệ
+GET http://localhost:8000/api/san-pham.php?id=SH001
+Accept: application/json
+
+### Test 3: ID sản phẩm không tồn tại (404)
+GET http://localhost:8000/api/san-pham.php?id=SP999999
+Accept: application/json
+
+### Test 4: Phương thức DELETE không hỗ trợ (405)
+DELETE http://localhost:8000/api/san-pham.php?id=SH001
+Accept: application/json
+
+### Test Giỏ hàng 1: Xem giỏ hàng hiện tại (200 OK)
+GET http://localhost:8000/api/gio-hang.php
+Accept: application/json
+
+### Test Giỏ hàng 2: Thêm hợp lệ vào giỏ (200 OK)
+POST http://localhost:8000/api/gio-hang.php
+Content-Type: application/json
+
+{
+    "san_pham_id": "SH001",
+    "so_luong": 1
+}
+
+### Test Giỏ hàng 3: Thân không phải JSON (400 Bad Request)
+POST http://localhost:8000/api/gio-hang.php
+Content-Type: application/json
+
+thân_văn_bản_thường_không_phải_json
+
+### Test Giỏ hàng 4: Số lượng âm / không hợp lệ (422 Unprocessable Entity)
+POST http://localhost:8000/api/gio-hang.php
+Content-Type: application/json
+
+{
+    "san_pham_id": "SH001",
+    "so_luong": -3
+}

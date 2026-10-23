@@ -7,6 +7,8 @@
 $goc = $goc ?? './';
 $trang = $trang ?? '';
 
+$nguoiDung = $_SESSION['nguoi_dung'] ?? null;
+
 function mucDangChon(string $tenTrang, string $trangHienTai): string
 {
     return $tenTrang === $trangHienTai ? 'dang-chon' : '';
@@ -108,24 +110,32 @@ function ariaCurrent(string $tenTrang, string $trangHienTai): string
             </li>
 
             <li>
-                <?php if ($nguoiDung !== null): ?>
+                
+<?php if (is_array($nguoiDung)): ?>
 
-                    <span>
-                        Xin chào,
-                        <?= e($nguoiDung['ten'] ?? $nguoiDung) ?>
-                    </span>
+    <span>
+        Xin chào,
+        <?= e((string) ($nguoiDung['ten'] ?? 'Người dùng')) ?>
+    </span>
 
-                    <a href="<?= e($goc) ?>dang-xuat.php">
-                        Đăng xuất
-                    </a>
+    <?php if (($nguoiDung['vaiTro'] ?? '') === 'admin'): ?>
+        <a href="<?= e($goc) ?>quan-tri.php">
+            Quản trị
+        </a>
+    <?php endif; ?>
 
-                <?php else: ?>
+    <a href="<?= e($goc) ?>dang-xuat.php">
+        Đăng xuất
+    </a>
 
-                    <a href="<?= e($goc) ?>dang-nhap.php">
-                        Đăng nhập
-                    </a>
+<?php else: ?>
 
-                <?php endif; ?>
+    <a href="<?= e($goc) ?>dang-nhap.php">
+        Đăng nhập
+    </a>
+
+<?php endif; ?>
+
             </li>
 
         </ul>

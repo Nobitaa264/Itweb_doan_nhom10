@@ -146,9 +146,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    if ($loi === []) {
-        $banGhi = [
-            'thoiGian' => date(DATE_ATOM),
+    
+if ($loi === []) {
+    $khoLienHe = new \App\Data\KhoLienHe();
+
+    try {
+        $khoLienHe->luu([
             'hoTen' => $du['ho-ten'],
             'soDienThoai' => $du['so-dien-thoai'],
             'email' => $du['email'],
@@ -156,34 +159,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'sanPhamTen' => $sanPhamDaChon?->ten,
             'noiDung' => $du['noi-dung'],
             'anh' => $tenAnh,
-        ];
-
-        $dongJson = json_encode(
-            $banGhi,
-            JSON_UNESCAPED_UNICODE |
-            JSON_UNESCAPED_SLASHES |
-            JSON_THROW_ON_ERROR
-        );
-
-        $duongDanLuu = $thuMucStorage . '/lien-he.jsonl';
-
-        if (file_put_contents(
-            $duongDanLuu,
-            $dongJson . PHP_EOL,
-            FILE_APPEND | LOCK_EX
-        ) === false) {
-            if ($tenAnh !== '' && is_file($duongDanAnhTam)) {
-                unlink($duongDanAnhTam);
-            }
-
-            throw new RuntimeException('Không thể lưu yêu cầu liên hệ.');
+        ]);
+    } catch (\Throwable $e) {
+        // Xóa ảnh vừa tải nếu không lưu được thông tin liên hệ.
+        if ($tenAnh !== '' && is_file($duongDanAnhTam)) {
+            unlink($duongDanAnhTam);
         }
 
-        // Flash message và PRG.
-        $_SESSION['flash'] = 'Gửi yêu cầu thành công. Cảm ơn bạn đã liên hệ với StyleHub.';
+        error_log('[LIEN_HE] ' . $e->getMessage());
+
+        $loi['he-thong'] =
+            'Chưa thể lưu yêu cầu liên hệ. Vui lòng thử lại.';
+    }
+
+    if ($loi === []) {
+        $_SESSION['flash'] =
+            'Gửi yêu cầu thành công. Cảm ơn bạn đã liên hệ với StyleHub.';
 
         redirect('lien-he.php');
     }
+}
 }
 
 // Đọc thông báo flash một lần sau khi chuyển hướng.
@@ -199,12 +194,19 @@ unset($_SESSION['flash']);
     <div class="bao">
         <h1 class="tieu-de-trang">Liên hệ StyleHub</h1>
         <p>Gửi thông tin để StyleHub tư vấn và hỗ trợ bạn.</p>
+        
+<?php if (!empty($flash)): ?>
+    <div class="thong-bao-thanh-cong" role="status" aria-live="polite">
+        <?= e($flash) ?>
+    </div>
+<?php endif; ?>
 
-        <?php if (is_string($flash) && $flash !== ''): ?>
-            <div class="thong-bao-thanh-cong" role="status" aria-live="polite">
-                <?= e($flash) ?>
-            </div>
-        <?php endif; ?>
+
+        <?php if (isset($loi['he-thong'])): ?>
+    <div class="thong-bao-loi" role="alert">
+        <?= e($loi['he-thong']) ?>
+    </div>
+<?php endif; ?>
 
         <div class="bo-cuc-lien-he">
             <section class="khu-vuc-form">

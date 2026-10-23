@@ -1,28 +1,22 @@
 <?php
-/**
- * src/Data/KhoSanPham.php
- * Đọc và truy vấn dữ liệu sản phẩm từ data/san-pham.json.
- */
+declare(strict_types=1);
 
 namespace App\Data;
 
+use App\Config\Database;
 use App\Models\SanPham;
-use RuntimeException;
+use PDO;
 
 final class KhoSanPham
 {
-    /**
-     * @var array<int, SanPham>|null
-     */
     private ?array $duLieu = null;
 
-    public function __construct(
-        private readonly string $duongDanJson = __DIR__ . '/../../data/san-pham.json'
-    ) {
+    public function __construct()
+    {
     }
 
     /**
-     * Đọc JSON đúng một nơi trong toàn bộ ứng dụng.
+     * Lấy toàn bộ sản phẩm từ MySQL.
      *
      * @return array<int, SanPham>
      */
@@ -32,55 +26,37 @@ final class KhoSanPham
             return $this->duLieu;
         }
 
-        if (!is_file($this->duongDanJson)) {
-            throw new RuntimeException(
-                'Không tìm thấy tệp dữ liệu sản phẩm.'
-            );
-        }
+        $sql = '
+            SELECT
+                sp.id,
+                sp.ten,
+                sp.gia,
+                dm.ten AS danhMuc,
+                sp.hinh_anh AS hinhAnh,
+                sp.mo_ta AS moTa,
+                sp.chat_lieu AS chatLieu,
+                sp.mau_sac AS mauSac,
+                sp.kich_co AS kichCo,
+                sp.tinh_trang AS tinhTrang
+            FROM san_pham sp
+            INNER JOIN danh_muc dm
+                ON dm.id = sp.danh_muc_id
+            ORDER BY sp.id
+        ';
 
-        $noiDung = file_get_contents($this->duongDanJson);
-
-        if ($noiDung === false) {
-            throw new RuntimeException(
-                'Không thể đọc tệp dữ liệu sản phẩm.'
-            );
-        }
-
-        try {
-            $duLieuGoc = json_decode(
-                $noiDung,
-                true,
-                512,
-                JSON_THROW_ON_ERROR
-            );
-        } catch (\JsonException $ngoaiLe) {
-            throw new RuntimeException(
-                'Tệp dữ liệu sản phẩm không phải JSON hợp lệ.',
-                previous: $ngoaiLe
-            );
-        }
-
-        if (!is_array($duLieuGoc)) {
-            throw new RuntimeException(
-                'Dữ liệu sản phẩm không đúng cấu trúc.'
-            );
-        }
-
+        $stmt = Database::connect()->query($sql);
         $this->duLieu = [];
 
-        foreach ($duLieuGoc as $muc) {
-            if (!is_array($muc)) {
-                continue;
-            }
-
-            $this->duLieu[] = SanPham::tuMang($muc);
+        foreach ($stmt->fetchAll() as $dong) {
+            $dong['gia'] = (int) $dong['gia'];
+            $this->duLieu[] = SanPham::tuMang($dong);
         }
 
         return $this->duLieu;
     }
 
     /**
-     * Tìm sản phẩm theo ID chuỗi như SH001, JE001...
+     * Tìm sản phẩm theo mã.
      */
     public function timTheoId(string $id): ?SanPham
     {
@@ -100,26 +76,21 @@ final class KhoSanPham
     }
 
     /**
-     * Trả về danh mục duy nhất.
+     * Lấy danh sách tên danh mục không trùng nhau.
      *
      * @return array<int, string>
      */
     public function danhMuc(): array
     {
-        $ketQua = [];
+        $sql = '
+            SELECT ten
+            FROM danh_muc
+            ORDER BY ten
+        ';
 
-        foreach ($this->tatCa() as $sanPham) {
-            if (
-                $sanPham->danhMuc !== '' &&
-                !in_array($sanPham->danhMuc, $ketQua, true)
-            ) {
-                $ketQua[] = $sanPham->danhMuc;
-            }
-        }
+        $stmt = Database::connect()->query($sql);
 
-        sort($ketQua);
-
-        return $ketQua;
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
     /**
@@ -143,92 +114,63 @@ final class KhoSanPham
             $danhMuc = 'tat-ca';
         }
 
-        $sapXepChoPhep = [
-            'mac-dinh',
-            'gia-tang',
-            'gia-giam',
-            'ten-a-z',
-            'ten-z-a',
+        $cacCotSapXep = [
+            'mac-dinh' => 'sp.id ASC',
+            'gia-tang' => 'sp.gia ASC',
+            'gia-giam' => 'sp.gia DESC',
+            'ten-a-z' => 'sp.ten ASC',
+            'ten-z-a' => 'sp.ten DESC',
         ];
 
-        if (!in_array($sapXep, $sapXepChoPhep, true)) {
+        if (!isset($cacCotSapXep[$sapXep])) {
             $sapXep = 'mac-dinh';
         }
 
-        $ketQua = array_filter(
-            $this->tatCa(),
-            static function (SanPham $sanPham) use (
-                $tuKhoa,
-                $danhMuc
-            ): bool {
-                if (
-                    $danhMuc !== 'tat-ca' &&
-                    $sanPham->danhMuc !== $danhMuc
-                ) {
-                    return false;
-                }
+        $sql = '
+            SELECT
+                sp.id,
+                sp.ten,
+                sp.gia,
+                dm.ten AS danhMuc,
+                sp.hinh_anh AS hinhAnh,
+                sp.mo_ta AS moTa,
+                sp.chat_lieu AS chatLieu,
+                sp.mau_sac AS mauSac,
+                sp.kich_co AS kichCo,
+                sp.tinh_trang AS tinhTrang
+            FROM san_pham sp
+            INNER JOIN danh_muc dm
+                ON dm.id = sp.danh_muc_id
+            WHERE (
+                :tuKhoaRong = 1
+                OR sp.id LIKE :tuKhoaId
+                OR sp.ten LIKE :tuKhoaTen
+                OR dm.ten LIKE :tuKhoaDanhMuc
+            )
+        ';
 
-                if ($tuKhoa === '') {
-                    return true;
-                }
+        $thamSo = [
+            'tuKhoaRong' => $tuKhoa === '' ? 1 : 0,
+            'tuKhoaId' => '%' . $tuKhoa . '%',
+            'tuKhoaTen' => '%' . $tuKhoa . '%',
+            'tuKhoaDanhMuc' => '%' . $tuKhoa . '%',
+        ];
 
-                $noiDungTimKiem = implode(' ', [
-                    $sanPham->id,
-                    $sanPham->ten,
-                    $sanPham->danhMuc,
-                ]);
+        if ($danhMuc !== 'tat-ca') {
+            $sql .= ' AND dm.ten = :danhMuc';
+            $thamSo['danhMuc'] = $danhMuc;
+        }
 
-                return mb_stripos(
-                    $noiDungTimKiem,
-                    $tuKhoa,
-                    0,
-                    'UTF-8'
-                ) !== false;
-            }
-        );
+        $sql .= ' ORDER BY ' . $cacCotSapXep[$sapXep];
 
-        $ketQua = array_values($ketQua);
+        $stmt = Database::connect()->prepare($sql);
+        $stmt->execute($thamSo);
 
-        switch ($sapXep) {
-            case 'gia-tang':
-                usort(
-                    $ketQua,
-                    static fn (
-                        SanPham $a,
-                        SanPham $b
-                    ): int => $a->gia <=> $b->gia
-                );
-                break;
+        $ketQua = [];
 
-            case 'gia-giam':
-                usort(
-                    $ketQua,
-                    static fn (
-                        SanPham $a,
-                        SanPham $b
-                    ): int => $b->gia <=> $a->gia
-                );
-                break;
-
-            case 'ten-a-z':
-                usort(
-                    $ketQua,
-                    static fn (
-                        SanPham $a,
-                        SanPham $b
-                    ): int => strcoll($a->ten, $b->ten)
-                );
-                break;
-
-            case 'ten-z-a':
-                usort(
-                    $ketQua,
-                    static fn (
-                        SanPham $a,
-                        SanPham $b
-                    ): int => strcoll($b->ten, $a->ten)
-                );
-                break;
+        foreach ($stmt->fetchAll() as $dong) {
+            $dong['gia'] = (int) $dong['gia'];
+            $ketQua[] = SanPham::tuMang($dong);
         }
 
         return $ketQua;

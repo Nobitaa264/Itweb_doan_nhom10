@@ -45,8 +45,7 @@ $nguoiDung = $_SESSION['nguoi_dung'] ?? null;
     >
 </head>
 
-<body>
-
+<body class="<?= e($trang) ?>">
 <header class="dau-trang">
 
     <div class="bao">
