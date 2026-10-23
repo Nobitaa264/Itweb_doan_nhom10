@@ -22,12 +22,29 @@ function yeuCauQuyen(?string $vaiTro = null): array {
         exit;
     }
 
-    // Sai vai trò (ví dụ: Khách hàng mở trang Admin) -> Trả về 403.php
     $vaiTroUser = $user['vaiTro'] ?? $user['vai_tro'] ?? '';
-    if ($vaiTro !== null && $vaiTroUser !== $vaiTro) {
-        http_response_code(403);
-        require_once __DIR__ . '/../403.php';
-        exit;
+
+    // Nếu yêu cầu quyền 'quan_tri' hoặc 'admin', chấp nhận cả 2 giá trị này
+    if ($vaiTro !== null) {
+        $hopLe = false;
+
+        if ($vaiTro === 'quan_tri' || $vaiTro === 'admin') {
+            $hopLe = ($vaiTroUser === 'quan_tri' || $vaiTroUser === 'admin');
+        } else {
+            $hopLe = ($vaiTroUser === $vaiTro);
+        }
+
+        if (!$hopLe) {
+            http_response_code(403);
+            
+            $file403 = __DIR__ . '/../403.php';
+            if (file_exists($file403)) {
+                require_once $file403;
+            } else {
+                echo '<h1>403 Forbidden</h1><p>Bạn không có quyền truy cập trang này.</p>';
+            }
+            exit;
+        }
     }
 
     return $user;

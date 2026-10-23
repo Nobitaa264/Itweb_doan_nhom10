@@ -54,11 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          */
         if ($hanhDong === 'xoa') {
 
-            $id = trim(
-                (string) ($_POST['id'] ?? '')
-            );
+            $id = trim((string) ($_POST['id'] ?? ''));
 
-            if (!idSanPhamHopLe($id)) {
+            if ($id === '') {
                 throw new DomainException(
                     'ID sản phẩm không hợp lệ.'
                 );
@@ -88,18 +86,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 );
             }
 
-            /*
-             * Kiểm tra toàn bộ dữ liệu trước khi cập nhật.
-             * Nhờ vậy một dữ liệu sai sẽ không làm thay đổi
-             * một phần giỏ hàng.
-             */
             $duLieuHopLe = [];
 
             foreach ($cacSoLuong as $id => $giaTriSoLuong) {
 
                 $id = trim((string) $id);
 
-                if (!idSanPhamHopLe($id)) {
+                if ($id === '') {
                     throw new DomainException(
                         'ID sản phẩm không hợp lệ.'
                     );
@@ -390,7 +383,7 @@ $soMon = $gioHang->soMon();
 
 
             <section class="khu-vuc">
-<h2>Giỏ hàng của bạn</h2>
+                <h2>Giỏ hàng của bạn</h2>
                 <form
                     method="post"
                     action="gio-hang.php"
@@ -409,14 +402,13 @@ $soMon = $gioHang->soMon();
                         Xóa toàn bộ giỏ hàng
                     </button>
                     
-<?php if ($cacMucGioHang !== []): ?>
-    <p>
-        <a class="nut" href="dat-hang.php">
-            Tiến hành đặt hàng
-        </a>
-    </p>
-<?php endif; ?>
-
+                    <?php if ($cacMucGioHang !== []): ?>
+                        <p>
+                            <a class="nut" href="dat-hang.php">
+                                Tiến hành đặt hàng
+                            </a>
+                        </p>
+                    <?php endif; ?>
 
                 </form>
 

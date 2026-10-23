@@ -293,12 +293,12 @@ URL: `http://localhost:8000/gioi-thieu.php`
 
 ### 8.2. Trang cá nhân thành viên
 
-| STT | Mã sinh viên | Thành viên           | Đường dẫn                                           |
-| --- | ------------ | -------------------- | --------------------------------------------------- |
-| 1   | 3120224028   | Nguyễn Đình Minh Đạt | `/thanhvien/3120224028_dat/gioithieu.php`           |
-| 2   | 3120224062   | Phạm Huy Hoàng       | `/thanhvien/3120224062_phamhoang/gioithieu.php`     |
-| 3   | 3120224123   | Dương Quang Sơn      | `/thanhvien/3120224123_son/gioithieu.php`           |
-| 4   | 3120224170   | Nguyễn Hữu Tuân      | `/thanhvien/3120224170_nguyenhuutuan/gioithieu.php` |
+| STT | Mã sinh viên | Thành viên           | Đường dẫn                                                               |
+| --- | ------------ | -------------------- | ----------------------------------------------------------------------- |
+| 1   | 3120224028   | Nguyễn Đình Minh Đạt | http://localhost/Itweb/thanhvien/3120224028_dat/gioithieu.php           |
+| 2   | 3120224062   | Phạm Huy Hoàng       | http://localhost/Itweb/thanhvien/3120224062_phamhoang/gioithieu.php     |
+| 3   | 3120224123   | Dương Quang Sơn      | http://localhost/Itweb/thanhvien/3120224123_son/gioithieu.php           |
+| 4   | 3120224170   | Nguyễn Hữu Tuân      | http://localhost/Itweb/thanhvien/3120224170_nguyenhuutuan/gioithieu.php |
 
 Các trang cá nhân cần được kiểm tra riêng để bảo đảm đường dẫn tồn tại, giao diện hoạt động và các chức năng PHP sử dụng đúng cấu trúc dữ liệu của dự án.
 

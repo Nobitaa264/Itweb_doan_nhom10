@@ -6,7 +6,7 @@ require_once __DIR__ . '/../inc/db.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
-// Đăng ký Handler trả lỗi 500 định dạng JSON đúng yêu cầu đề bài
+// Đăng ký Handler trả lỗi 500 đúng chuẩn
 set_exception_handler(function ($e) {
     error_log('[API_GIO_HANG] ' . $e->getMessage());
     http_response_code(500);
@@ -20,9 +20,14 @@ if (session_status() === PHP_SESSION_NONE) {
 
 $method = $_SERVER['REQUEST_METHOD'];
 
+// Đồng bộ key Session duy nhất là $_SESSION['gio_hang']
+if (!isset($_SESSION['gio_hang'])) {
+    $_SESSION['gio_hang'] = [];
+}
+
 // 1. GET: Lấy danh sách sản phẩm trong giỏ hàng
 if ($method === 'GET') {
-    $gioHang = $_SESSION['gio'] ?? []; // Mảng [san_pham_id => so_luong]
+    $gioHang = $_SESSION['gio_hang'];
     
     if (empty($gioHang)) {
         echo json_encode([
@@ -71,19 +76,39 @@ if ($method === 'GET') {
     exit;
 }
 
-// 2. POST: Thêm sản phẩm vào giỏ hàng (Nhận thân JSON qua php://input)
+// 2. POST: Thêm, Xóa, Cập nhật giỏ hàng qua JSON Body
 if ($method === 'POST') {
     $rawInput = file_get_contents('php://input');
     $data = json_decode($rawInput, true);
 
-    // Kiểm tra định dạng JSON gửi lên
     if (json_last_error() !== JSON_ERROR_NONE || !is_array($data)) {
         http_response_code(400);
         echo json_encode(['loi' => 'Thân yêu cầu phải là dữ liệu JSON hợp lệ'], JSON_UNESCAPED_UNICODE);
         exit;
     }
 
+    $hanhDong = $data['hanh_dong'] ?? $data['hanh-dong'] ?? 'them';
     $sanPhamId = trim((string)($data['san_pham_id'] ?? $data['id'] ?? ''));
+
+    // XỬ LÝ HÀNH ĐỘNG XÓA
+    if ($hanhDong === 'xoa') {
+        if ($sanPhamId === '') {
+            http_response_code(404);
+            echo json_encode(['loi' => 'Thiếu mã sản phẩm'], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+
+        unset($_SESSION['gio_hang'][$sanPhamId]);
+
+        echo json_encode([
+            'thanhCong' => true,
+            'thongBao' => 'Đã xóa sản phẩm khỏi giỏ hàng',
+            'tongSoLuong' => array_sum($_SESSION['gio_hang'])
+        ], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    // XỬ LÝ HÀNH ĐỘNG THÊM
     $soLuong = filter_var($data['so_luong'] ?? $data['sl'] ?? 1, FILTER_VALIDATE_INT);
 
     if ($sanPhamId === '') {
@@ -93,12 +118,11 @@ if ($method === 'POST') {
     }
 
     if ($soLuong === false || $soLuong <= 0) {
-        http_response_code(422); // Unprocessable Entity
+        http_response_code(422);
         echo json_encode(['loi' => 'Số lượng sản phẩm không hợp lệ'], JSON_UNESCAPED_UNICODE);
         exit;
     }
 
-    // Kiểm tra sản phẩm có tồn tại trong CSDL không
     $pdo = db();
     $stmt = $pdo->prepare("SELECT id, ten, gia, tinh_trang FROM san_pham WHERE id = ?");
     $stmt->execute([$sanPhamId]);
@@ -110,32 +134,24 @@ if ($method === 'POST') {
         exit;
     }
 
-    if ($sp['tinh_trang'] === 'Hết hàng') {
+    if (isset($sp['tinh_trang']) && $sp['tinh_trang'] === 'Hết hàng') {
         http_response_code(422);
         echo json_encode(['loi' => 'Sản phẩm này hiện đã hết hàng'], JSON_UNESCAPED_UNICODE);
         exit;
     }
 
-    // Cập nhật giỏ hàng trong Session
-    if (!isset($_SESSION['gio'])) {
-        $_SESSION['gio'] = [];
-    }
-
-    $soLuongHienTai = $_SESSION['gio'][$sanPhamId] ?? 0;
-    $_SESSION['gio'][$sanPhamId] = $soLuongHienTai + $soLuong;
-
-    // Tính lại tổng số lượng món trong giỏ để JS cập nhật trên Header
-    $tongSoLuong = array_sum($_SESSION['gio']);
+    $soLuongHienTai = $_SESSION['gio_hang'][$sanPhamId] ?? 0;
+    $_SESSION['gio_hang'][$sanPhamId] = $soLuongHienTai + $soLuong;
 
     echo json_encode([
         'thanhCong' => true,
         'thongBao' => 'Đã thêm sản phẩm vào giỏ hàng',
-        'tongSoLuong' => $tongSoLuong
+        'tongSoLuong' => array_sum($_SESSION['gio_hang'])
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-// Phương thức không được hỗ trợ (DELETE, PUT...)
+// Các phương thức không hợp lệ
 http_response_code(405);
 header('Allow: GET, POST');
 echo json_encode(['loi' => 'Phương thức không được hỗ trợ'], JSON_UNESCAPED_UNICODE);

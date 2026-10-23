@@ -120,7 +120,8 @@ function ariaCurrent(string $tenTrang, string $trangHienTai): string
                     </a>
                 </li>
 
-                <?php if (($nguoiDung['vaiTro'] ?? $nguoiDung['vai_tro'] ?? '') === 'admin'): ?>
+                <?php $vaiTroCurrent = $nguoiDung['vaiTro'] ?? $nguoiDung['vai_tro'] ?? '';
+if ($vaiTroCurrent === 'quan_tri' || $vaiTroCurrent === 'admin'): ?>
                     <li>
                         <a
                             class="<?= e(mucDangChon('quan-tri', $trang)) ?>"

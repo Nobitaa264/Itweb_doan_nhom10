@@ -1,12 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // CHỈ chọn các form có class hoặc action là thêm vào giỏ hàng
+  // Tránh bắt nhầm các form xóa, cập nhật hoặc xóa toàn bộ giỏ
   const cacFormThemGio = document.querySelectorAll(
-    'form[action*="gio-hang.php"]',
+    'form.form-them-gio-hang, form[action*="them-gio-hang.php"]',
   );
   const nhanSoLuongGio = document.querySelector(".so-luong-gio-hang");
 
   cacFormThemGio.forEach((form) => {
     form.addEventListener("submit", async (e) => {
-      // Chặn hành vi submit form truyền thống (chỉ chạy khi bật JS)
+      // Chặn hành vi submit form truyền thống
       e.preventDefault();
 
       const inputId =
@@ -14,7 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
         form.querySelector('[name="id"]');
       const inputSoLuong =
         form.querySelector('[name="so_luong"]') ||
-        form.querySelector('[name="sl"]');
+        form.querySelector('[name="sl"]') ||
+        form.querySelector('[name="so-luong"]');
 
       if (!inputId) return;
 
@@ -45,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       } catch (error) {
         console.error("Lỗi API giỏ hàng:", error);
-        // Fallback: Nếu fetch lỗi, tự submit form truyền thống
+        // Fallback: Nếu fetch lỗi thì tự submit form truyền thống
         form.submit();
       }
     });

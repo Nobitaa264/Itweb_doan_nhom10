@@ -1,3 +1,5 @@
+SET NAMES utf8mb4;
+DROP DATABASE IF EXISTS ltweb_nhom10;
 CREATE DATABASE ltweb_nhom10
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
@@ -138,6 +140,17 @@ CREATE TABLE san_pham_nhan (
     INDEX idx_spn_nhan (nhan_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+-- Bảng thành viên nhóm
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS thanh_vien (
+    mssv VARCHAR(20) PRIMARY KEY,
+    ho_ten VARCHAR(100) NOT NULL,
+    nguoi_dung_id BIGINT UNSIGNED NULL,
+    FOREIGN KEY (nguoi_dung_id) REFERENCES nguoi_dung(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- ==========================================
 -- BỔ SUNG BẢNG SỔ LƯU BÚT (PHẦN B)
 -- ==========================================
@@ -151,16 +164,6 @@ CREATE TABLE IF NOT EXISTS tv_luu_but (
         REFERENCES thanh_vien(mssv) 
         ON DELETE CASCADE ON UPDATE CASCADE,
     INDEX idx_tv_luu_but_mssv (mssv)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
--- Bảng thành viên nhóm
--- --------------------------------------------------------
-CREATE TABLE IF NOT EXISTS thanh_vien (
-    mssv VARCHAR(20) PRIMARY KEY,
-    ho_ten VARCHAR(100) NOT NULL,
-    nguoi_dung_id BIGINT UNSIGNED NULL,
-    FOREIGN KEY (nguoi_dung_id) REFERENCES nguoi_dung(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
