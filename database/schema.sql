@@ -12,8 +12,7 @@ CREATE TABLE danh_muc (
     ten VARCHAR(100) NOT NULL UNIQUE,
     mo_ta VARCHAR(255) NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 2. Sản phẩm
 CREATE TABLE san_pham (
@@ -28,8 +27,7 @@ CREATE TABLE san_pham (
     kich_co VARCHAR(255) NOT NULL,
     tinh_trang VARCHAR(50) NOT NULL DEFAULT 'Còn hàng',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-        ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_san_pham_danh_muc
         FOREIGN KEY (danh_muc_id) REFERENCES danh_muc(id)
         ON UPDATE CASCADE ON DELETE RESTRICT,
@@ -37,8 +35,7 @@ CREATE TABLE san_pham (
     INDEX idx_san_pham_gia (gia),
     INDEX idx_san_pham_danh_muc (danh_muc_id),
     INDEX idx_san_pham_tinh_trang (tinh_trang)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 3. Người dùng
 CREATE TABLE nguoi_dung (
@@ -47,12 +44,10 @@ CREATE TABLE nguoi_dung (
     ten_dang_nhap VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(150) NOT NULL UNIQUE,
     mat_khau VARCHAR(255) NOT NULL,
-    vai_tro ENUM('admin', 'customer') NOT NULL DEFAULT 'customer',
+    vai_tro VARCHAR(20) NOT NULL DEFAULT 'khach_hang',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-        ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci;
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 4. Yêu cầu liên hệ
 CREATE TABLE lien_he (
@@ -64,16 +59,14 @@ CREATE TABLE lien_he (
     san_pham_ten VARCHAR(255) NULL,
     noi_dung TEXT NOT NULL,
     anh VARCHAR(255) NULL,
-    trang_thai ENUM('moi', 'dang_xu_ly', 'da_xu_ly')
-        NOT NULL DEFAULT 'moi',
+    trang_thai ENUM('moi', 'dang_xu_ly', 'da_xu_ly') NOT NULL DEFAULT 'moi',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_lien_he_san_pham
         FOREIGN KEY (san_pham_id) REFERENCES san_pham(id)
         ON UPDATE CASCADE ON DELETE SET NULL,
     INDEX idx_lien_he_created_at (created_at),
     INDEX idx_lien_he_trang_thai (trang_thai)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 5. Đơn hàng
 CREATE TABLE don_hang (
@@ -84,21 +77,16 @@ CREATE TABLE don_hang (
     dia_chi_nhan VARCHAR(255) NOT NULL,
     ghi_chu TEXT NULL,
     tong_tien BIGINT UNSIGNED NOT NULL DEFAULT 0,
-    trang_thai ENUM(
-        'cho_xac_nhan', 'da_xac_nhan', 'dang_giao',
-        'hoan_thanh', 'da_huy'
-    ) NOT NULL DEFAULT 'cho_xac_nhan',
+    trang_thai ENUM('cho_xac_nhan', 'da_xac_nhan', 'dang_giao', 'hoan_thanh', 'da_huy') NOT NULL DEFAULT 'cho_xac_nhan',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-        ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_don_hang_nguoi_dung
         FOREIGN KEY (nguoi_dung_id) REFERENCES nguoi_dung(id)
         ON UPDATE CASCADE ON DELETE RESTRICT,
     INDEX idx_don_hang_nguoi_dung (nguoi_dung_id),
     INDEX idx_don_hang_trang_thai (trang_thai),
     INDEX idx_don_hang_created_at (created_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 6. Chi tiết đơn hàng
 CREATE TABLE chi_tiet_don_hang (
@@ -116,15 +104,13 @@ CREATE TABLE chi_tiet_don_hang (
         FOREIGN KEY (san_pham_id) REFERENCES san_pham(id)
         ON UPDATE CASCADE ON DELETE RESTRICT,
     INDEX idx_ctdh_san_pham (san_pham_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 7. Nhãn sản phẩm
 CREATE TABLE nhan (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     ten VARCHAR(100) NOT NULL UNIQUE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 8. Liên kết sản phẩm và nhãn (N-N)
 CREATE TABLE san_pham_nhan (
@@ -138,12 +124,9 @@ CREATE TABLE san_pham_nhan (
         FOREIGN KEY (nhan_id) REFERENCES nhan(id)
         ON UPDATE CASCADE ON DELETE CASCADE,
     INDEX idx_spn_nhan (nhan_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- --------------------------------------------------------
--- Bảng thành viên nhóm
--- --------------------------------------------------------
+-- 9. Bảng thành viên nhóm (Phần B)
 CREATE TABLE IF NOT EXISTS thanh_vien (
     mssv VARCHAR(20) PRIMARY KEY,
     ho_ten VARCHAR(100) NOT NULL,
@@ -151,9 +134,7 @@ CREATE TABLE IF NOT EXISTS thanh_vien (
     FOREIGN KEY (nguoi_dung_id) REFERENCES nguoi_dung(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ==========================================
--- BỔ SUNG BẢNG SỔ LƯU BÚT (PHẦN B)
--- ==========================================
+-- 10. Bảng sổ lưu bút (Phần B)
 CREATE TABLE IF NOT EXISTS tv_luu_but (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     mssv VARCHAR(20) NOT NULL,
@@ -161,14 +142,11 @@ CREATE TABLE IF NOT EXISTS tv_luu_but (
     noi_dung TEXT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_tv_luu_but_thanh_vien FOREIGN KEY (mssv) 
-        REFERENCES thanh_vien(mssv) 
-        ON DELETE CASCADE ON UPDATE CASCADE,
+        REFERENCES thanh_vien(mssv) ON DELETE CASCADE ON UPDATE CASCADE,
     INDEX idx_tv_luu_but_mssv (mssv)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- --------------------------------------------------------
--- Bảng riêng cho Đạt: Lượt xem trang cá nhân
--- --------------------------------------------------------
+-- 11. Bảng lượt xem trang cá nhân (Phần B)
 CREATE TABLE IF NOT EXISTS tv_luot_xem (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     mssv VARCHAR(20) NOT NULL,
@@ -178,16 +156,14 @@ CREATE TABLE IF NOT EXISTS tv_luot_xem (
     FOREIGN KEY (mssv) REFERENCES thanh_vien(mssv) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- --------------------------------------------------------
--- Bảng riêng cho Đạt: Quản lý dự án cá nhân
--- --------------------------------------------------------
+-- 12. Bảng quản lý dự án cá nhân (Phần B)
 CREATE TABLE IF NOT EXISTS tv_du_an (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     mssv VARCHAR(20) NOT NULL,
     ten_du_an VARCHAR(255) NOT NULL,
-    loai_du_an VARCHAR(50) NOT NULL, -- Web, App, AI, OpenSource
+    loai_du_an VARCHAR(50) NOT NULL,
     mo_ta TEXT,
-    lien_ket VARCHAR(255),
+    link_dem VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (mssv) REFERENCES thanh_vien(mssv) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
