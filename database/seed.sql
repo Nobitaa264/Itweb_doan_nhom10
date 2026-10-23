@@ -1,5 +1,10 @@
-
+SET NAMES utf8mb4;
 USE ltweb_nhom10;
+
+-- Thêm 2 dòng này để dọn sạch dữ liệu cũ bị lỗi font trước khi chèn mới
+DELETE FROM san_pham;
+DELETE FROM danh_muc;
+
 -- Them danh muc san pham
 INSERT INTO danh_muc (ten, mo_ta)
 VALUES
@@ -73,3 +78,23 @@ INSERT INTO tv_luu_but (mssv, ten_nguoi_gui, noi_dung, created_at)
 VALUES 
     ('3120224062', 'Nguyễn Văn A', 'Trang cá nhân thiết kế rất đẹp và trực quan!', '2026-03-01 10:00:00'),
     ('3120224062', 'Trần Thị B', 'Chúc bạn hoàn thành xuất sắc đồ án nhóm nhé!', '2026-03-01 11:30:00');
+
+-- Thêm thông tin thành viên Đạt
+INSERT INTO thanh_vien (mssv, ho_ten, nguoi_dung_id) 
+VALUES ('3120224028', 'Nguyễn Đình Minh Đạt', 1)
+ON DUPLICATE KEY UPDATE ho_ten = VALUES(ho_ten);
+
+-- Mẫu lượt xem 7 ngày gần nhất cho Đạt
+INSERT INTO tv_luot_xem (mssv, ngay, so_luot) VALUES
+('3120224028', CURDATE() - INTERVAL 6 DAY, 15),
+('3120224028', CURDATE() - INTERVAL 5 DAY, 28),
+('3120224028', CURDATE() - INTERVAL 4 DAY, 42),
+('3120224028', CURDATE() - INTERVAL 3 DAY, 35),
+('3120224028', CURDATE() - INTERVAL 2 DAY, 50),
+('3120224028', CURDATE() - INTERVAL 1 DAY, 64),
+('3120224028', CURDATE(), 80)
+ON DUPLICATE KEY UPDATE so_luot = VALUES(so_luot);
+
+-- Dữ liệu dự án cá nhân của Đạt
+INSERT INTO tv_du_an (mssv, ten_du_an, loai_du_an, mo_ta, lien_ket) VALUES
+('3120224028', 'Website Thương mại Điện tử StyleHub', 'Web', 'Dự án bài tập thực hành nhóm 10 xây dựng bằng PHP MVC & MySQL.', 'https://github.com/Nobitaa264/Itweb_doan_nhom10'),

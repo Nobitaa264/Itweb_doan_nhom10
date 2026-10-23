@@ -1,6 +1,3 @@
--- LƯU Ý: DROP DATABASE sẽ xóa toàn bộ dữ liệu hiện có.
-DROP DATABASE IF EXISTS ltweb_nhom10;
-
 CREATE DATABASE ltweb_nhom10
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
@@ -154,4 +151,40 @@ CREATE TABLE IF NOT EXISTS tv_luu_but (
         REFERENCES thanh_vien(mssv) 
         ON DELETE CASCADE ON UPDATE CASCADE,
     INDEX idx_tv_luu_but_mssv (mssv)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+-- Bảng thành viên nhóm
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS thanh_vien (
+    mssv VARCHAR(20) PRIMARY KEY,
+    ho_ten VARCHAR(100) NOT NULL,
+    nguoi_dung_id BIGINT UNSIGNED NULL,
+    FOREIGN KEY (nguoi_dung_id) REFERENCES nguoi_dung(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+-- Bảng riêng cho Đạt: Lượt xem trang cá nhân
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS tv_luot_xem (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    mssv VARCHAR(20) NOT NULL,
+    ngay DATE NOT NULL,
+    so_luot INT UNSIGNED DEFAULT 1,
+    UNIQUE KEY uk_mssv_ngay (mssv, ngay),
+    FOREIGN KEY (mssv) REFERENCES thanh_vien(mssv) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+-- Bảng riêng cho Đạt: Quản lý dự án cá nhân
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS tv_du_an (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    mssv VARCHAR(20) NOT NULL,
+    ten_du_an VARCHAR(255) NOT NULL,
+    loai_du_an VARCHAR(50) NOT NULL, -- Web, App, AI, OpenSource
+    mo_ta TEXT,
+    lien_ket VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (mssv) REFERENCES thanh_vien(mssv) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
