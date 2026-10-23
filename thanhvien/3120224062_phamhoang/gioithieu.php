@@ -1,10 +1,11 @@
+
 <?php
 /*
  * Tệp: gioithieu.php
- * Chức năng: Trang giới thiệu cá nhân bằng PHP.
  * Chức năng 1: Đếm lượt xem, mỗi session chỉ tính một lần.
- * Chức năng 2: Hiển thị danh sách kỹ năng bằng PHP.
- * Cách kiểm tra: mở trang và tải lại trong cùng session.
+ * Chức năng 2: Lọc danh sách kỹ năng bằng phương thức GET.
+ * Chức năng 3: Hiển thị thông tin cá nhân, thời khóa biểu và sở thích.
+ * Cách kiểm tra: tải lại trang, lọc kỹ năng và kiểm tra tham số GET.
  */
 
 session_start();
@@ -13,6 +14,9 @@ $goc = '../../';
 $cssCaNhan = 'style.css';
 $jsCaNhan = 'js/canhan.js';
 
+/**
+ * Chuyển dữ liệu thành chuỗi an toàn khi xuất HTML.
+ */
 function e($value)
 {
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
@@ -21,8 +25,13 @@ function e($value)
 /* ===== CHỨC NĂNG 1: ĐẾM LƯỢT XEM ===== */
 
 $fileLuotXem = __DIR__ . '/storage/3120224062_views.txt';
+$thuMucStorage = dirname($fileLuotXem);
 
 $luotXem = 0;
+
+if (!is_dir($thuMucStorage)) {
+    mkdir($thuMucStorage, 0755, true);
+}
 
 if (is_file($fileLuotXem)) {
     $noiDung = trim((string) file_get_contents($fileLuotXem));
@@ -35,16 +44,18 @@ if (is_file($fileLuotXem)) {
 if (!isset($_SESSION['da_tinh_luot_xem'])) {
     $luotXem++;
 
-    file_put_contents(
+    $ghiThanhCong = file_put_contents(
         $fileLuotXem,
         (string) $luotXem,
         LOCK_EX
     );
 
-    $_SESSION['da_tinh_luot_xem'] = true;
+    if ($ghiThanhCong !== false) {
+        $_SESSION['da_tinh_luot_xem'] = true;
+    }
 }
 
-/* ===== CHỨC NĂNG 2: DANH SÁCH KỸ NĂNG ===== */
+/* ===== CHỨC NĂNG 2: DANH SÁCH VÀ LỌC KỸ NĂNG BẰNG GET ===== */
 
 $kyNang = [
     'HTML',
@@ -54,6 +65,40 @@ $kyNang = [
     'Git và GitHub',
     'Làm việc nhóm'
 ];
+
+$kyNangChon = '';
+
+if (isset($_GET['ky_nang']) && is_string($_GET['ky_nang'])) {
+    $kyNangChon = trim($_GET['ky_nang']);
+}
+
+/*
+ * Chỉ chấp nhận kỹ năng có trong danh sách cho phép.
+ * Giá trị rỗng có nghĩa là hiển thị tất cả kỹ năng.
+ */
+$boLocKhongHopLe = (
+    $kyNangChon !== ''
+    && !in_array($kyNangChon, $kyNang, true)
+);
+
+if ($boLocKhongHopLe) {
+    $kyNangChon = '';
+}
+
+if ($kyNangChon !== '') {
+    $kyNangHienThi = array_values(
+        array_filter(
+            $kyNang,
+            static function ($item) use ($kyNangChon) {
+                return $item === $kyNangChon;
+            }
+        )
+    );
+} else {
+    $kyNangHienThi = $kyNang;
+}
+
+/* ===== THÔNG TIN TRANG ===== */
 
 $tieuDe = 'Giới thiệu Phạm Huy Hoàng';
 
@@ -65,6 +110,7 @@ require __DIR__ . '/../../includes/header.php';
     <h1>Giới thiệu Phạm Huy Hoàng</h1>
 
     <section aria-labelledby="gioi-thieu-ban-than">
+
         <h2 id="gioi-thieu-ban-than">
             Giới thiệu bản thân
         </h2>
@@ -97,14 +143,81 @@ require __DIR__ . '/../../includes/header.php';
 
         <h3>Kỹ năng</h3>
 
-        <ul>
-            <?php foreach ($kyNang as $kyNangItem): ?>
-                <li><?= e($kyNangItem) ?></li>
-            <?php endforeach; ?>
-        </ul>
+        <p>
+            Bạn có thể chọn một kỹ năng để lọc danh sách.
+        </p>
+
+        <form method="get" action="">
+
+            <label for="ky_nang">
+                Lọc theo kỹ năng:
+            </label>
+
+            <select id="ky_nang" name="ky_nang">
+
+                <option
+                    value=""
+                    <?= $kyNangChon === '' ? 'selected' : '' ?>
+                >
+                    Tất cả kỹ năng
+                </option>
+
+                <?php foreach ($kyNang as $kyNangItem): ?>
+
+                    <option
+                        value="<?= e($kyNangItem) ?>"
+                        <?= $kyNangChon === $kyNangItem ? 'selected' : '' ?>
+                    >
+                        <?= e($kyNangItem) ?>
+                    </option>
+
+                <?php endforeach; ?>
+
+            </select>
+
+            <button type="submit">
+                Lọc kỹ năng
+            </button>
+
+            <a href="<?= e(strtok($_SERVER['REQUEST_URI'], '?')) ?>">
+                Xem tất cả
+            </a>
+
+        </form>
+
+        <?php if ($boLocKhongHopLe): ?>
+
+            <p role="alert">
+                Kỹ năng được chọn không hợp lệ.
+                Vui lòng chọn lại.
+            </p>
+
+        <?php endif; ?>
+
+        <?php if (!empty($kyNangHienThi)): ?>
+
+            <p>
+                <?php if ($kyNangChon !== ''): ?>
+                    Kết quả lọc cho kỹ năng:
+                    <strong><?= e($kyNangChon) ?></strong>
+                <?php else: ?>
+                    Danh sách tất cả kỹ năng:
+                <?php endif; ?>
+            </p>
+
+            <ul>
+                <?php foreach ($kyNangHienThi as $kyNangItem): ?>
+                    <li><?= e($kyNangItem) ?></li>
+                <?php endforeach; ?>
+            </ul>
+
+        <?php else: ?>
+
+            <p>Không tìm thấy kỹ năng phù hợp.</p>
+
+        <?php endif; ?>
 
     </section>
-
 
     <section aria-labelledby="luot-xem-title">
 
@@ -118,8 +231,11 @@ require __DIR__ . '/../../includes/header.php';
             lượt.
         </p>
 
-    </section>
+        <p>
+            Mỗi phiên truy cập chỉ được tính một lượt xem.
+        </p>
 
+    </section>
 
     <section aria-labelledby="countdown-title">
 
@@ -132,7 +248,6 @@ require __DIR__ . '/../../includes/header.php';
         </p>
 
     </section>
-
 
     <section aria-labelledby="du-an-title">
 
@@ -157,7 +272,6 @@ require __DIR__ . '/../../includes/header.php';
 
     </section>
 
-
     <section aria-labelledby="thong-tin-title">
 
         <h2 id="thong-tin-title">
@@ -166,6 +280,7 @@ require __DIR__ . '/../../includes/header.php';
 
         <details>
             <summary>Kỹ năng</summary>
+
             <p>
                 HTML, CSS, PHP, MySQL, Git và GitHub,
                 Làm việc nhóm.
@@ -174,6 +289,7 @@ require __DIR__ . '/../../includes/header.php';
 
         <details>
             <summary>Học vấn</summary>
+
             <p>
                 Sinh viên lớp 24CNTT2,
                 ngành Công nghệ thông tin.
@@ -182,6 +298,7 @@ require __DIR__ . '/../../includes/header.php';
 
         <details>
             <summary>Sở thích</summary>
+
             <p>
                 Nghe nhạc, tìm hiểu công nghệ,
                 sử dụng máy tính và giao lưu với bạn bè.
@@ -189,7 +306,6 @@ require __DIR__ . '/../../includes/header.php';
         </details>
 
     </section>
-
 
     <section aria-labelledby="thoi-khoa-bieu-title">
 
@@ -260,7 +376,6 @@ require __DIR__ . '/../../includes/header.php';
         </div>
 
     </section>
-
 
     <section aria-labelledby="lien-ket-title">
 
