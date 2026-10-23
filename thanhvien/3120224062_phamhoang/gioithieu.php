@@ -1,11 +1,9 @@
-
 <?php
 /*
  * Tệp: gioithieu.php
  * Chức năng 1: Đếm lượt xem, mỗi session chỉ tính một lần.
  * Chức năng 2: Lọc danh sách kỹ năng bằng phương thức GET.
- * Chức năng 3: Hiển thị thông tin cá nhân, thời khóa biểu và sở thích.
- * Cách kiểm tra: tải lại trang, lọc kỹ năng và kiểm tra tham số GET.
+ * Chức năng 3: Sổ lưu bút có phân trang và xóa lời nhắn (chủ trang đăng nhập).
  */
 
 session_start();
@@ -72,10 +70,6 @@ if (isset($_GET['ky_nang']) && is_string($_GET['ky_nang'])) {
     $kyNangChon = trim($_GET['ky_nang']);
 }
 
-/*
- * Chỉ chấp nhận kỹ năng có trong danh sách cho phép.
- * Giá trị rỗng có nghĩa là hiển thị tất cả kỹ năng.
- */
 $boLocKhongHopLe = (
     $kyNangChon !== ''
     && !in_array($kyNangChon, $kyNang, true)
@@ -97,6 +91,81 @@ if ($kyNangChon !== '') {
 } else {
     $kyNangHienThi = $kyNang;
 }
+
+/* ===== CHỨC NĂNG 3: SỔ LƯU BÚT, PHÂN TRANG & XÓA KHI ĐĂNG NHẬP ===== */
+
+$mssvHienTai = '3120224062';
+$thongBaoLuuBut = '';
+$loiLuuBut = '';
+
+// Kết nối CSDL bằng PDO
+$host = 'localhost';
+$dbname = 'ltweb_nhom10';
+$username = 'root';
+$password = '';
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+    ]);
+} catch (PDOException $e) {
+    $loiLuuBut = "Lỗi kết nối CSDL: " . $e->getMessage();
+}
+
+// Kiểm tra quyền chủ trang (dựa vào session đăng nhập, ví dụ $_SESSION['user'])
+$laChuTrang = isset($_SESSION['user']) && $_SESSION['user'] === $mssvHienTai;
+
+// Xử lý Xóa lời nhắn
+if (isset($_GET['action']) && $_GET['action'] === 'xoa_luu_but' && isset($_GET['id'])) {
+    if ($laChuTrang) {
+        $idXoa = (int) $_GET['id'];
+        $stmtXoa = $pdo->prepare("DELETE FROM tv_luu_but WHERE id = ? AND mssv = ?");
+        $stmtXoa->execute([$idXoa, $mssvHienTai]);
+        header("Location: gioithieu.php");
+        exit;
+    } else {
+        $loiLuuBut = "Bạn cần đăng nhập với tư cách chủ trang mới có quyền xóa lời nhắn.";
+    }
+}
+
+// Xử lý Gửi lời nhắn mới (POST)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gui_luu_but'])) {
+    $tenNguoiGui = trim($_POST['ten_nguoi_gui'] ?? '');
+    $noiDungLuuBut = trim($_POST['noi_dung_luu_but'] ?? '');
+
+    if ($tenNguoiGui !== '' && $noiDungLuuBut !== '') {
+        $stmtThem = $pdo->prepare("INSERT INTO tv_luu_but (mssv, ten_nguoi_gui, noi_dung) VALUES (?, ?, ?)");
+        $stmtThem->execute([$mssvHienTai, $tenNguoiGui, $noiDungLuuBut]);
+        header("Location: gioithieu.php");
+        exit;
+    } else {
+        $loiLuuBut = "Vui lòng điền đầy đủ họ tên và nội dung lời nhắn!";
+    }
+}
+
+// Phân trang sổ lưu bút
+$soTinMoiTrang = 3; // Hiển thị 3 lời nhắn mỗi trang
+$trangHienTai = isset($_GET['trang']) && ctype_digit($_GET['trang']) ? (int) $_GET['trang'] : 1;
+if ($trangHienTai < 1) $trangHienTai = 1;
+
+$offset = ($trangHienTai - 1) * $soTinMoiTrang;
+
+// Lấy tổng số lời nhắn
+$stmtTong = $pdo->prepare("SELECT COUNT(*) FROM tv_luu_but WHERE mssv = ?");
+$stmtTong->execute([$mssvHienTai]);
+$tongSoTin = $stmtTong->fetchColumn();
+$tongSoTrang = ceil($tongSoTin / $soTinMoiTrang);
+if ($tongSoTrang < 1) $tongSoTrang = 1;
+if ($trangHienTai > $tongSoTrang) $trangHienTai = $tongSoTrang;
+
+// Lấy danh sách lời nhắn theo phân trang
+$stmtLay = $pdo->prepare("SELECT * FROM tv_luu_but WHERE mssv = ? ORDER BY created_at DESC LIMIT ? OFFSET ?");
+$stmtLay->bindValue(1, $mssvHienTai, PDO::PARAM_STR);
+$stmtLay->bindValue(2, $soTinMoiTrang, PDO::PARAM_INT);
+$stmtLay->bindValue(3, $offset, PDO::PARAM_INT);
+$stmtLay->execute();
+$danhSachLuuBut = $stmtLay->fetchAll();
 
 /* ===== THÔNG TIN TRANG ===== */
 
@@ -217,6 +286,68 @@ require __DIR__ . '/../../includes/header.php';
 
         <?php endif; ?>
 
+    </section>
+
+    <!-- ===== PHẦN SỔ LƯU BÚT ===== -->
+    <section aria-labelledby="luu-but-title">
+        <h2 id="luu-but-title">Sổ lưu bút</h2>
+
+        <?php if ($loiLuuBut !== ''): ?>
+            <p role="alert" style="color: red;"><?= e($loiLuuBut) ?></p>
+        <?php endif; ?>
+
+        <!-- Form gửi lời nhắn -->
+        <form method="post" action="">
+            <p>
+                <label for="ten_nguoi_gui">Họ tên của bạn:</label><br>
+                <input type="text" id="ten_nguoi_gui" name="ten_nguoi_gui" required style="width: 100%; padding: 8px;">
+            </p>
+            <p>
+                <label for="noi_dung_luu_but">Lời nhắn:</label><br>
+                <textarea id="noi_dung_luu_but" name="noi_dung_luu_but" rows="3" required style="width: 100%; padding: 8px;"></textarea>
+            </p>
+            <button type="submit" name="gui_luu_but">Gửi lời nhắn</button>
+        </form>
+
+        <hr style="margin: 20px 0;">
+
+        <h3>Danh sách lời nhắn</h3>
+        <?php if (empty($danhSachLuuBut)): ?>
+            <p>Chưa có lời nhắn nào.</p>
+        <?php else: ?>
+            <?php foreach ($danhSachLuuBut as $item): ?>
+                <div style="border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+                    <p><strong><?= e($item['ten_nguoi_gui']) ?></strong> <small>(<?= e($item['created_at']) ?>)</small></p>
+                    <p><?= nl2br(e($item['noi_dung'])) ?></p>
+
+                    <!-- Nút xóa: Chỉ hiển thị khi đúng chủ trang đã đăng nhập -->
+                    <?php if ($laChuTrang): ?>
+                        <p>
+                            <a href="?action=xoa_luu_but&id=<?= $item['id'] ?>" 
+                               onclick="return confirm('Bạn có chắc muốn xóa lời nhắn này không?');" 
+                               style="color: red; font-size: 0.9em;">
+                                [Xóa lời nhắn]
+                            </a>
+                        </p>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+
+            <!-- Phân trang -->
+            <?php if ($tongSoTrang > 1): ?>
+                <nav aria-label="Phân trang lưu bút" style="margin-top: 15px;">
+                    <p>Trang: 
+                        <?php for ($i = 1; $i <= $tongSoTrang; $i++): ?>
+                            <?php if ($i === $trangHienTai): ?>
+                                <strong>[<?= $i ?>]</strong>
+                            <?php else: ?>
+                                <a href="?trang=<?= $i ?>"><?= $i ?></a>
+                            <?php endif; ?>
+                        <?php endfor; ?>
+                    </p>
+                </nav>
+            <?php endif; ?>
+        <?php endif; ?>
     </section>
 
     <section aria-labelledby="luot-xem-title">

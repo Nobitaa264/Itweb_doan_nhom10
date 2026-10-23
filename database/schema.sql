@@ -141,4 +141,17 @@ CREATE TABLE san_pham_nhan (
     INDEX idx_spn_nhan (nhan_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_unicode_ci;
-
+-- ==========================================
+-- BỔ SUNG BẢNG SỔ LƯU BÚT (PHẦN B)
+-- ==========================================
+CREATE TABLE IF NOT EXISTS tv_luu_but (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    mssv VARCHAR(20) NOT NULL,
+    ten_nguoi_gui VARCHAR(100) NOT NULL,
+    noi_dung TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_tv_luu_but_thanh_vien FOREIGN KEY (mssv) 
+        REFERENCES thanh_vien(mssv) 
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    INDEX idx_tv_luu_but_mssv (mssv)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

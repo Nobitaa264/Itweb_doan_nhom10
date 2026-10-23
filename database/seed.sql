@@ -66,3 +66,10 @@ WHERE dm.ten = 'Quần Jeans'
 AND NOT EXISTS (
     SELECT 1 FROM san_pham WHERE id = 'JE001'
 );
+-- ==========================================
+-- BỔ SUNG DỮ LIỆU MẪU SỔ LƯU BÚT (PHẦN B)
+-- ==========================================
+INSERT INTO tv_luu_but (mssv, ten_nguoi_gui, noi_dung, created_at) 
+VALUES 
+    ('3120224062', 'Nguyễn Văn A', 'Trang cá nhân thiết kế rất đẹp và trực quan!', '2026-03-01 10:00:00'),
+    ('3120224062', 'Trần Thị B', 'Chúc bạn hoàn thành xuất sắc đồ án nhóm nhé!', '2026-03-01 11:30:00');
