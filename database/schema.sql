@@ -167,3 +167,18 @@ CREATE TABLE IF NOT EXISTS tv_du_an (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (mssv) REFERENCES thanh_vien(mssv) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 13. Bảng kỹ năng và công nghệ cá nhân (Phần B)
+CREATE TABLE IF NOT EXISTS tv_ky_nang (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    mssv VARCHAR(20) NOT NULL,
+    ten_ky_nang VARCHAR(100) NOT NULL,
+    nhom_ky_nang VARCHAR(50) NOT NULL,
+    muc_do INT UNSIGNED NOT NULL DEFAULT 80,
+    mo_ta VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_tv_ky_nang_thanh_vien FOREIGN KEY (mssv)
+        REFERENCES thanh_vien(mssv) ON DELETE CASCADE ON UPDATE CASCADE,
+    INDEX idx_tv_ky_nang_mssv (mssv),
+    INDEX idx_tv_ky_nang_nhom (nhom_ky_nang)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
