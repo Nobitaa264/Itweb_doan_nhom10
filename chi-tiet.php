@@ -215,15 +215,26 @@ $danhSachDaXem = array_slice(
                             >
                         </div>
 
-                        <button
-                            class="nut"
-                            type="submit"
-                        >
-                            Thêm vào giỏ
-                        </button>
+                        <!-- CỤM NÚT HÀNH ĐỘNG CÓ NÚT YÊU THÍCH -->
+                        <div class="nhom-nut-hanh-dong" style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
+                            <button
+                                class="nut"
+                                type="submit"
+                            >
+                                Thêm vào giỏ
+                            </button>
+
+                            <button
+                                type="button"
+                                class="nut nut-yeu-thich"
+                                data-id-san-pham="<?= e($sanPham->id) ?>"
+                            >
+                                ♡ Yêu thích
+                            </button>
+                        </div>
                     </form>
 
-                    <p>
+                    <p style="margin-top: 15px;">
                         <a
                             class="nut"
                             href="danh-sach.php"
