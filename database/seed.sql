@@ -57,13 +57,18 @@ ON DUPLICATE KEY UPDATE ten = VALUES(ten);
 
 
 
--- 4. Thêm thành viên nhóm vào bảng thanh_vien
+-- 4. Thành viên nhóm (Phần B)
+-- NULL vì seed.sql hiện chưa tạo người dùng với id 3, 4, 5, 6.
+-- Không gán bừa id chưa tồn tại: sẽ gây lỗi khóa ngoại #1452.
+-- Nếu sau này nhóm tạo tài khoản thật để kiểm soát quyền chủ trang,
+-- hãy gắn nguoi_dung_id bằng UPDATE có kiểm tra tài khoản tương ứng.
+-- ON DUPLICATE chỉ cập nhật họ tên, không xóa liên kết đã có.
 INSERT INTO thanh_vien (mssv, ho_ten, nguoi_dung_id) VALUES
-('3120224028', 'Nguyễn Đình Minh Đạt', 3),
-('3120224062', 'Phạm Hoàng', 4),
-('3120224170', 'Nguyễn Hữu Tuân', 5),
-('3120224123', 'Dương Quang Sơn', 6)
-ON DUPLICATE KEY UPDATE ho_ten = VALUES(ho_ten), nguoi_dung_id = VALUES(nguoi_dung_id);
+('3120224028', 'Nguyễn Đình Minh Đạt', NULL),
+('3120224062', 'Phạm Hoàng', NULL),
+('3120224170', 'Nguyễn Hữu Tuân', NULL),
+('3120224123', 'Dương Quang Sơn', NULL)
+ON DUPLICATE KEY UPDATE ho_ten = VALUES(ho_ten);
 
 -- 5. Dữ liệu lượt xem trang cá nhân (Phần B)
 INSERT INTO tv_luot_xem (mssv, ngay, so_luot) VALUES
@@ -78,3 +83,20 @@ INSERT INTO tv_du_an (mssv, ten_du_an, loai_du_an, mo_ta, link_dem) VALUES
 ('3120224028', 'Ứng dụng di động Quản lý chi tiêu cá nhân', 'App Mobile', 'Xây dựng ứng dụng di động hỗ trợ theo dõi thu chi hàng ngày, lập kế hoạch tài chính và xuất báo cáo biểu đồ trực quan.', ''),
 ('3120224028', 'Hệ thống AI phân loại hình ảnh thời trang', 'AI / Trí tuệ nhân tạo', 'Ứng dụng mô hình học máy (Machine Learning) để nhận diện và phân loại tự động danh mục quần áo từ hình ảnh người dùng tải lên.', '')
 ON DUPLICATE KEY UPDATE ten_du_an = VALUES(ten_du_an);
+
+-- 7. Phần B cá nhân: Dương Quang Sơn (MSSV 3120224123)
+-- Bảng tv_son_lich_hen, tv_son_trac_nghiem đã được tạo trong schema.sql.
+-- Mẫu lịch hẹn cũ (hôm qua) để không chiếm khung giờ đăng ký tương lai.
+INSERT INTO tv_son_lich_hen (mssv, ho_ten, ngay_hen, gio_hen, noi_dung)
+VALUES ('3120224123', 'Khách demo', DATE_SUB(CURDATE(), INTERVAL 1 DAY), '08:00',
+        'Lịch mẫu kiểm thử dữ liệu cá nhân StyleHub')
+ON DUPLICATE KEY UPDATE ho_ten = ho_ten;
+
+-- Mẫu lịch sử trắc nghiệm để xem ngay danh sách trong gioithieu.php.
+-- chi_tiet "[]" là dữ liệu minh họa, không phải bài thi thật.
+INSERT INTO tv_son_trac_nghiem (mssv, bi_danh, so_cau_dung, tong_cau, diem, chi_tiet)
+SELECT '3120224123', 'Khách demo', 4, 5, 8, '[]'
+WHERE NOT EXISTS (
+    SELECT 1 FROM tv_son_trac_nghiem
+    WHERE mssv = '3120224123' AND bi_danh = 'Khách demo'
+);
