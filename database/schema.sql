@@ -182,3 +182,37 @@ CREATE TABLE IF NOT EXISTS tv_ky_nang (
     INDEX idx_tv_ky_nang_mssv (mssv),
     INDEX idx_tv_ky_nang_nhom (nhom_ky_nang)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- ==============================================
+-- TH6 PHAN B - DUONG QUANG SON (3120224123)
+-- Hai chuc nang: lich hen + trac nghiem MySQL
+-- ==============================================
+CREATE TABLE IF NOT EXISTS tv_son_lich_hen (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    mssv VARCHAR(20) NOT NULL,
+    ho_ten VARCHAR(60) NOT NULL,
+    ngay_hen DATE NOT NULL,
+    gio_hen VARCHAR(5) NOT NULL,
+    noi_dung VARCHAR(500) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_tv_son_lich_hen_tv FOREIGN KEY (mssv)
+        REFERENCES thanh_vien(mssv) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT uq_tv_son_lich_hen_gio UNIQUE (mssv, ngay_hen, gio_hen),
+    INDEX idx_tv_son_lich_hen_moi (mssv, created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS tv_son_trac_nghiem (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    mssv VARCHAR(20) NOT NULL,
+    bi_danh VARCHAR(40) NOT NULL DEFAULT 'Khách',
+    so_cau_dung TINYINT UNSIGNED NOT NULL,
+    tong_cau TINYINT UNSIGNED NOT NULL,
+    diem TINYINT UNSIGNED NOT NULL,
+    chi_tiet TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_tv_son_trac_nghiem_tv
+        FOREIGN KEY (mssv) REFERENCES thanh_vien(mssv)
+        ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT chk_tv_son_trac_nghiem_diem CHECK (diem <= 10),
+    CONSTRAINT chk_tv_son_trac_nghiem_dung CHECK (so_cau_dung <= tong_cau),
+    INDEX idx_tv_son_trac_nghiem_moi (mssv, id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

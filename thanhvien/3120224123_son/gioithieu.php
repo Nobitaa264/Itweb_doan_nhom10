@@ -2,23 +2,59 @@
 declare(strict_types=1);
 
 /**
- * Trang cá nhân Dương Quang Sơn - TH5 Phần B.
- * Chức năng 1: Đăng ký lịch hẹn, lưu JSONL.
- * Chức năng 2: Trắc nghiệm lập trình bằng PHP.
- * Kiểm thử: gửi đúng/sai, F5, tắt JavaScript.
+ * Trang cá nhân Dương Quang Sơn – TH6 Phần B, MSSV 3120224123.
+ * Chức năng 1: Đăng ký lịch hẹn (TH5 JSONL -> MySQL, kiểm tra trùng).
+ * Chức năng 2: Trắc nghiệm lập trình, lưu và xem lịch sử điểm MySQL.
+ * Thử: gửi lịch hợp lệ / trùng, làm trắc nghiệm, xem lịch sử, F5 và tắt JS.
  */
 
 require_once __DIR__ . '/../../inc/config.php';
+if (is_file(__DIR__ . '/../../inc/db.php')) {
+    require_once __DIR__ . '/../../inc/db.php';
+}
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
+const SON_MSSV = '3120224123';
+
+// Tương thích với hàm db() của nhóm; dự phòng cho môi trường XAMPP.
+function sonPdo(): PDO
+{
+    static $ketNoi = null;
+    if ($ketNoi instanceof PDO) {
+        return $ketNoi;
+    }
+    if (function_exists('db')) {
+        $ketNoi = db();
+        if (!$ketNoi instanceof PDO) {
+            throw new RuntimeException('Hàm db() phải trả về đối tượng PDO.');
+        }
+        return $ketNoi;
+    }
+    $ketNoi = new PDO(
+        'mysql:host=127.0.0.1;dbname=ltweb_nhom10;charset=utf8mb4',
+        'root',
+        '',
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
+        ]
+    );
+    return $ketNoi;
+}
+
+function sonH(mixed $giaTri): string
+{
+    return htmlspecialchars((string) $giaTri, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
 
 // Cấu hình trang cá nhân.
 $goc = '../../';
 $tieuDe = 'Giới thiệu cá nhân - Dương Quang Sơn';
 $trang = '';
 
-$tepLichHen = __DIR__
-    . '/../../storage/3120224123_son_lichhen.jsonl';
-
-$duongDanTrang = 'gioithieu.php';
 
 $khungGio = [
     '08:00' => '08:00 - 09:00',
@@ -104,6 +140,13 @@ $du = [
 
 $loiLich = [];
 $loiTracNghiem = '';
+
+// Giá trị ô Bí danh khi chưa POST hoặc gửi sai kiểu phải là chuỗi rỗng.
+// Đọc một lần để không truy cập khóa $_POST['bi_danh'] chưa tồn tại.
+$biDanhDaNhap = $_POST['bi_danh'] ?? '';
+if (!is_string($biDanhDaNhap)) {
+    $biDanhDaNhap = '';
+}
 
 $thongBao = $_SESSION['son_thong_bao'] ?? '';
 $ketQua = $_SESSION['son_ket_qua'] ?? null;
@@ -200,45 +243,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($loiLich === []) {
 
-            $thuMuc = dirname($tepLichHen);
-
-            if (!is_dir($thuMuc)) {
-                if (
-                    !mkdir($thuMuc, 0775, true) &&
-                    !is_dir($thuMuc)
-                ) {
-                    throw new RuntimeException(
-                        'Không tạo được thư mục lưu dữ liệu.'
-                    );
+            // Lưu trực tiếp MySQL, không còn ghi tệp JSONL như TH5.
+            // Khóa UNIQUE (mssv, ngay_hen, gio_hen) tránh trùng giờ hẹn.
+            try {
+                $luuHen = sonPdo()->prepare(
+                    'INSERT INTO tv_son_lich_hen
+                     (mssv, ho_ten, ngay_hen, gio_hen, noi_dung)
+                     VALUES (?, ?, ?, ?, ?)'
+                );
+                $luuHen->execute([
+                    SON_MSSV,
+                    $du['hoTen'],
+                    $du['ngay'],
+                    $du['gio'],
+                    $du['noiDung']
+                ]);
+            } catch (PDOException $ex) {
+                if ((string) $ex->getCode() === '23000' &&
+                    (int) ($ex->errorInfo[1] ?? 0) === 1062) {
+                    $loiLich['gio'] = 'Khung giờ này đã có người đặt. Hãy chọn giờ khác.';
+                } else {
+                    throw $ex;
                 }
             }
 
-            $banGhi = [
-                'ma' => bin2hex(random_bytes(8)),
-                'hoTen' => $du['hoTen'],
-                'ngay' => $du['ngay'],
-                'gio' => $du['gio'],
-                'noiDung' => $du['noiDung'],
-                'taoLuc' => date('c')
-            ];
-
-            $json = json_encode(
-                $banGhi,
-                JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR
-            );
-
-            $ketQuaGhi = file_put_contents(
-                $tepLichHen,
-                $json . PHP_EOL,
-                FILE_APPEND | LOCK_EX
-            );
-
-            if ($ketQuaGhi === false) {
-                throw new RuntimeException(
-                    'Không lưu được lịch hẹn.'
-                );
-            }
-
+            if ($loiLich === []) {
             $_SESSION['son_thong_bao'] =
                 'Đăng ký lịch hẹn thành công!';
 
@@ -248,6 +277,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 303
             );
             exit;
+            }
         }
 
     } elseif ($hanhDong === 'trac_nghiem') {
@@ -255,6 +285,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // ==========================================
         // CHỨC NĂNG PHP 2 - CHẤM TRẮC NGHIỆM
         // ==========================================
+
+        // Bí danh dùng để hiển thị lịch sử, không yêu cầu thông tin thật.
+        $biDanhNhap = $_POST['bi_danh'] ?? '';
+        $biDanh = is_string($biDanhNhap) ? trim($biDanhNhap) : '';
+        if ($biDanh === '') {
+            $biDanh = 'Khách';
+        }
+        if (mb_strlen($biDanh) > 40) {
+            $loiTracNghiem = 'Bí danh không quá 40 ký tự.';
+        }
 
         $dapAnNhap = $_POST['dap_an'] ?? [];
 
@@ -278,7 +318,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$hopLe) {
             $loiTracNghiem =
                 'Vui lòng chọn đủ 5 đáp án hợp lệ.';
-        } else {
+        } elseif ($loiTracNghiem === '') {
             $soCauDung = 0;
             $chiTiet = [];
 
@@ -307,6 +347,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'chiTiet' => $chiTiet
             ];
 
+            // TH6: ghi lịch sử điểm vào MySQL. PDO prepared statement.
+            $luuBai = sonPdo()->prepare(
+                'INSERT INTO tv_son_trac_nghiem
+                 (mssv, bi_danh, so_cau_dung, tong_cau, diem, chi_tiet)
+                 VALUES (?, ?, ?, ?, ?, ?)'
+            );
+            $luuBai->execute([
+                SON_MSSV, $biDanh, $soCauDung, count($cauHoi),
+                $soCauDung * 2,
+                json_encode($chiTiet, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR)
+            ]);
+
             header(
                 'Location: gioithieu.php#ket-qua',
                 true,
@@ -320,6 +372,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// ==================================================
+// TH6: LỊCH SỬ TRẮC NGHIỆM BẰNG PDO, 10 BÀI MỚI NHẤT
+// ==================================================
+$diemTuNhap = $_GET['diem_tu'] ?? '0';
+$diemChoPhep = ['0', '2', '4', '6', '8', '10'];
+$diemTu = is_string($diemTuNhap) && in_array($diemTuNhap, $diemChoPhep, true)
+    ? (int) $diemTuNhap : 0;
+
+$docLichSu = sonPdo()->prepare(
+    'SELECT id, bi_danh, so_cau_dung, tong_cau, diem, created_at
+     FROM tv_son_trac_nghiem
+     WHERE mssv = ? AND diem >= ?
+     ORDER BY id DESC LIMIT 10'
+);
+$docLichSu->bindValue(1, SON_MSSV, PDO::PARAM_STR);
+$docLichSu->bindValue(2, $diemTu, PDO::PARAM_INT);
+$docLichSu->execute();
+$lichSuTracNghiem = $docLichSu->fetchAll(PDO::FETCH_ASSOC);
+
+// ==================================================
 // ==================================================
 // SỬ DỤNG HEADER CHUNG CỦA NHÓM
 // ==================================================
@@ -477,21 +549,9 @@ echo str_replace(
                 và các ứng dụng của AI.
             </p>
 
-            <h3>Kỹ năng</h3>
-
-            <ul class="danh-sach-ky-nang">
-                <li>HTML5 cơ bản</li>
-                <li>CSS3 cơ bản</li>
-                <li>JavaScript</li>
-                <li>PHP cơ bản</li>
-                <li>Visual Studio Code</li>
-                <li>Git và GitHub</li>
-                <li>Làm việc nhóm</li>
-            </ul>
-
         </article>
 
-        <!-- CHỨC NĂNG PHP 1 -->
+        <!-- CHỨC NĂNG PHP 1 - LỊCH HẸN LƯU MYSQL -->
 
         <section class="khoi" id="lich-hen">
 
@@ -499,7 +559,7 @@ echo str_replace(
 
             <p>
                 Điền thông tin để đăng ký trao đổi
-                về lập trình, học tập hoặc dự án.
+                về lập trình, học tập hoặc dự án. Lịch hẹn được lưu vào MySQL.
             </p>
 
             <form method="post" action="gioithieu.php#lich-hen">
@@ -606,7 +666,7 @@ echo str_replace(
 
         </section>
 
-        <!-- CHỨC NĂNG PHP 2 -->
+        <!-- CHỨC NĂNG 2 - TRẮC NGHIỆM VÀ LỊCH SỬ MYSQL -->
 
         <section class="khoi" id="trac-nghiem">
 
@@ -614,7 +674,7 @@ echo str_replace(
 
             <p>
                 Trả lời 5 câu hỏi HTML, CSS và PHP.
-                Mỗi câu đúng được 2 điểm.
+                Mỗi câu đúng được 2 điểm. Kết quả được lưu vào MySQL.
             </p>
 
             <?php if ($loiTracNghiem !== ''): ?>
@@ -636,6 +696,13 @@ echo str_replace(
                     type="hidden"
                     name="csrf"
                     value="<?= e($csrf) ?>">
+
+                <p>
+                    <label for="son-bi-danh">Bí danh (không bắt buộc)</label>
+                    <input id="son-bi-danh" name="bi_danh" type="text"
+                        maxlength="40" placeholder="Ví dụ: Bạn học IT"
+                        value="<?= sonH($biDanhDaNhap) ?>">
+                </p>
 
                 <?php foreach ($cauHoi as $so => $cau): ?>
 
@@ -736,6 +803,53 @@ echo str_replace(
             </section>
 
         <?php endif; ?>
+
+        <!-- TH6 - CHỨC NĂNG 2: LỊCH SỬ KẾT QUẢ MYSQL -->
+
+        <section class="khoi" id="lich-su-trac-nghiem">
+            <h2>Lịch sử điểm trắc nghiệm (MySQL)</h2>
+            <p>Hiển thị 10 lượt làm bài gần nhất. Lọc theo mức điểm tối thiểu.</p>
+            <form method="get" action="gioithieu.php#lich-su-trac-nghiem">
+                <label for="diem_tu">Điểm tối thiểu</label>
+                <select id="diem_tu" name="diem_tu">
+                    <?php foreach ([0, 2, 4, 6, 8, 10] as $mucDiem): ?>
+                        <option value="<?= sonH($mucDiem) ?>"
+                            <?= $diemTu === $mucDiem ? 'selected' : '' ?>>
+                            <?= sonH($mucDiem) ?>/10
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <button class="nut" type="submit">Xem lịch sử</button>
+            </form>
+
+            <?php if ($lichSuTracNghiem === []): ?>
+                <p>Chưa có bài làm phù hợp.</p>
+            <?php else: ?>
+                <div class="bang-cuon">
+                    <table>
+                        <caption>Lịch sử điểm trắc nghiệm của trang Sơn</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Bí danh</th>
+                                <th scope="col">Số câu đúng</th>
+                                <th scope="col">Điểm</th>
+                                <th scope="col">Ngày làm</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($lichSuTracNghiem as $lan): ?>
+                                <tr>
+                                    <td><?= sonH($lan['bi_danh']) ?></td>
+                                    <td><?= sonH($lan['so_cau_dung']) ?>/<?= sonH($lan['tong_cau']) ?></td>
+                                    <td><?= sonH($lan['diem']) ?>/10</td>
+                                    <td><?= sonH($lan['created_at']) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+        </section>
 
         <!-- ACCORDION -->
 
