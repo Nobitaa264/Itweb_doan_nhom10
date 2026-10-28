@@ -60,6 +60,9 @@ ON DUPLICATE KEY UPDATE ten = VALUES(ten);
 -- 4. Bảng thành viên (Phần B - Đạt)
 INSERT INTO thanh_vien (mssv, ho_ten, nguoi_dung_id) VALUES
 ('3120224028', 'Nguyễn Đình Minh Đạt', NULL),
+('3120224062', 'Phạm Hoàng', NULL),
+('3120224123', 'Dương Quang Sơn', NULL),
+('3120224170', 'Nguyễn Hữu Tuân', NULL) 
 ON DUPLICATE KEY UPDATE ho_ten = VALUES(ho_ten);
 
 -- ============================================================
