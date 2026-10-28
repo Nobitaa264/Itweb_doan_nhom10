@@ -57,27 +57,25 @@ ON DUPLICATE KEY UPDATE ten = VALUES(ten);
 
 
 
--- 4. Thành viên nhóm (Phần B)
--- NULL vì seed.sql hiện chưa tạo người dùng với id 3, 4, 5, 6.
--- Không gán bừa id chưa tồn tại: sẽ gây lỗi khóa ngoại #1452.
--- Nếu sau này nhóm tạo tài khoản thật để kiểm soát quyền chủ trang,
--- hãy gắn nguoi_dung_id bằng UPDATE có kiểm tra tài khoản tương ứng.
--- ON DUPLICATE chỉ cập nhật họ tên, không xóa liên kết đã có.
+-- 4. Bảng thành viên (Phần B - Đạt)
 INSERT INTO thanh_vien (mssv, ho_ten, nguoi_dung_id) VALUES
 ('3120224028', 'Nguyễn Đình Minh Đạt', NULL),
-('3120224062', 'Phạm Hoàng', NULL),
-('3120224170', 'Nguyễn Hữu Tuân', NULL),
-('3120224123', 'Dương Quang Sơn', NULL)
 ON DUPLICATE KEY UPDATE ho_ten = VALUES(ho_ten);
 
--- 5. Dữ liệu lượt xem trang cá nhân (Phần B)
+-- ============================================================
+-- PHẦN B (3120224028 - Nguyễn Đình Minh Đạt): DỮ LIỆU MẪU TV_LUOT_XEM
+-- Tạo dữ liệu kiểm thử cho chức năng thống kê lượt xem theo ngày.
+-- ============================================================
 INSERT INTO tv_luot_xem (mssv, ngay, so_luot) VALUES
 ('3120224028', CURDATE(), 25),
 ('3120224028', DATE_SUB(CURDATE(), INTERVAL 1 DAY), 18),
 ('3120224028', DATE_SUB(CURDATE(), INTERVAL 2 DAY), 12)
 ON DUPLICATE KEY UPDATE so_luot = VALUES(so_luot);
 
--- 6. Dữ liệu dự án cá nhân (Phần B - Đạt)
+-- ============================================================
+-- PHẦN B (3120224028 - Nguyễn Đình Minh Đạt): DỮ LIỆU MẪU TV_DU_AN
+-- Tạo dữ liệu kiểm thử cho chức năng quản lý dự án cá nhân.
+-- ============================================================
 INSERT INTO tv_du_an (mssv, ten_du_an, loai_du_an, mo_ta, link_dem) VALUES
 ('3120224028', 'Website thương mại điện tử StyleHub', 'Web', 'Dự án bài tập lớn môn Lập trình Web. Xây dựng trang bán hàng thời trang sử dụng PHP PDO, MySQL, REST API giỏ hàng và trang quản trị Admin.', 'https://github.com/Nobitaa264/ltweb_doan_nhom10'),
 ('3120224028', 'Ứng dụng di động Quản lý chi tiêu cá nhân', 'App Mobile', 'Xây dựng ứng dụng di động hỗ trợ theo dõi thu chi hàng ngày, lập kế hoạch tài chính và xuất báo cáo biểu đồ trực quan.', ''),

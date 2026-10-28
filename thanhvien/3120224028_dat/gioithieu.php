@@ -100,8 +100,8 @@ $loaiDuAnFilter = trim((string)($_GET['loai_duan'] ?? ''));
 
 try {
     $pdo = db();
-    $sqlDuAn = "SELECT id, ten_du_an, loai_du_an, mo_ta, lien_ket, created_at FROM tv_du_an WHERE mssv = ?";
-    $paramsDuAn = [$mssv];
+$sqlDuAn = "SELECT id, ten_du_an, loai_du_an, mo_ta, link_dem, created_at
+            FROM tv_du_an WHERE mssv = ?";    $paramsDuAn = [$mssv];
 
     if ($loaiDuAnFilter !== '') {
         $sqlDuAn .= " AND loai_du_an = ?";
@@ -215,8 +215,8 @@ require_once __DIR__ . '/../../inc/header.php';
         <select name="loai_duan" style="padding: 6px 12px; border: 1px solid #ccc; border-radius: 4px;">
             <option value="">-- Tất cả loại dự án --</option>
             <option value="Web" <?php echo $loaiDuAnFilter === 'Web' ? 'selected' : ''; ?>>Web</option>
-            <option value="App" <?php echo $loaiDuAnFilter === 'App' ? 'selected' : ''; ?>>App Mobile</option>
-            <option value="AI" <?php echo $loaiDuAnFilter === 'AI' ? 'selected' : ''; ?>>AI / Trí tuệ nhân tạo</option>
+            <option value="App Mobile" <?php echo $loaiDuAnFilter === 'App Mobile' ? 'selected' : ''; ?>>App Mobile</option>
+<option value="AI / Trí tuệ nhân tạo" <?php echo $loaiDuAnFilter === 'AI / Trí tuệ nhân tạo' ? 'selected' : ''; ?>>AI / Trí tuệ nhân tạo</option>
         </select>
         <button type="submit" style="padding: 6px 16px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">Tìm / Lọc</button>
         <a href="gioithieu.php" style="padding: 6px 16px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px;">Làm mới</a>
@@ -230,9 +230,11 @@ require_once __DIR__ . '/../../inc/header.php';
                 <div style="border: 1px solid #e0e0e0; border-radius: 6px; padding: 12px; background-color: #f9f9f9;">
                     <h3 style="margin-top: 0; color: #007bff;"><?php echo e($da['ten_du_an']); ?> <small style="color: #6c757d;">(<?php echo e($da['loai_du_an']); ?>)</small></h3>
                     <p style="margin: 6px 0;"><?php echo nl2br(e($da['mo_ta'])); ?></p>
-                    <?php if (!empty($da['lien_ket'])): ?>
-                        <a href="<?php echo e($da['lien_ket']); ?>" target="_blank" rel="noopener" style="color: #0056b3;">Xem chi tiết dự án &rarr;</a>
-                    <?php endif; ?>
+                    <?php if (!empty($da['link_dem'])): ?>
+    <a href="<?php echo e($da['link_dem']); ?>" target="_blank" rel="noopener">
+        Xem chi tiết dự án &rarr;
+    </a>
+<?php endif; ?>
                 </div>
             <?php endforeach; ?>
         </div>
