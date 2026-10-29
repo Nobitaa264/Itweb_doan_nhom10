@@ -31,12 +31,12 @@ INSERT INTO san_pham (id, ten, danh_muc_id, gia, hinh_anh, mo_ta, chat_lieu, mau
 ('AK002', 'Áo khoác Denim Jacket', 3, 549000, 'images/denim-jacket.jpg', 'Áo khoác Denim dày dặn, cúc kim loại bền chắc.', 'Denim', 'Xanh nhạt', 'M, L', 'Còn hàng'),
 ('AK003', 'Áo khoác Cardigan Wool', 3, 420000, 'images/bomber.jpg', 'Áo khoác len Cardigan nhẹ nhàng chuẩn phong cách Hàn Quốc.', 'Len mềm', 'Kem, Xám', 'Free Size', 'Còn hàng'),
 ('AK004', 'Áo khoác Gió Chống Nước', 3, 350000, 'images/bomber.jpg', 'Áo khoác gió thể thao chống nước và cản gió tốt.', 'Vải Dù', 'Xanh đen', 'M, L, XL', 'Còn hàng'),
-('AK005', 'Áo khoác Hoodie Form Rộng', 3, 390000, 'images/bomber.jpg', 'Áo Hoodie có nón chất nỉ bông ấm áp.', 'Nỉ bông', 'Xám tiêu', 'S, M, L, XL', 'Còn hàng'),
+('AK005', 'Áo khoác Hoodie Form Rộng', 3, 390000, 'images/bomber.jpg', 'Áo Hoodie có nón chất nỉ n bông ấm áp.', 'Nỉ n bông', 'Xám tiêu', 'S, M, L, XL', 'Còn hàng'),
 
 ('AT001', 'Áo thun Cotton 100% Trắng', 4, 199000, 'images/tshirt.jpg', 'Áo thun cổ tròn chất cotton thấm hút mồ hôi cực tốt.', 'Cotton 100%', 'Trắng', 'S, M, L, XL', 'Còn hàng'),
 ('AT002', 'Áo thun Oversize Đen', 4, 220000, 'images/tshirt.jpg', 'Áo thun dáng rộng Oversize chuẩn phong cách Streetwear.', 'Cotton 250gsm', 'Đen', 'M, L, XL', 'Còn hàng'),
 ('AT003', 'Áo thun Polo Thể Thao', 4, 280000, 'images/tshirt.jpg', 'Áo Polo có cổ lịch sự, vải cá sấu co giãn 4 chiều.', 'Polo CVC', 'Xanh bích', 'M, L, XL, XXL', 'Còn hàng'),
-('AT004', 'Áo thun In Graphic', 4, 240000, 'images/tshirt.jpg', 'Áo thun in hình Graphic cá tính ở mặt sau lưng.', 'Cotton', 'Trắng, Đen', 'M, L', 'Còn hàng'),
+('AT004', 'Áo thun In In Graphic', 4, 240000, 'images/tshirt.jpg', 'Áo thun in hình Graphic cá tính ở mặt sau lưng.', 'Cotton', 'Trắng, Đen', 'M, L', 'Còn hàng'),
 ('AT005', 'Áo thun Ba Lỗ Gymmer', 4, 150000, 'images/tshirt.jpg', 'Áo ba lỗ ôm body tập gym thoải mái vận động.', 'Thun lạnh', 'Đen, Xám', 'M, L, XL', 'Còn hàng'),
 
 ('DL002', 'Combo 5 Đôi Vớ Cổ Cao', 5, 120000, 'images/somi.jpg', 'Combo vớ cổ cao thể thao khử mùi hiệu quả.', 'Cotton dệt', 'Trắng, Đen', 'Free Size', 'Còn hàng'),
@@ -54,6 +54,73 @@ INSERT INTO san_pham (id, ten, danh_muc_id, gia, hinh_anh, mo_ta, chat_lieu, mau
 ('PK004', 'Mũ Bucket Hai Mặt', 7, 165000, 'images/somi.jpg', 'Mũ tai bèo Bucket đội được 2 mặt phối đồ cực chất.', 'Kaki', 'Đen/Vàng', 'Free Size', 'Còn hàng'),
 ('PK005', 'Kính Mát Thời Trang UV400', 7, 230000, 'images/somi.jpg', 'Kính mát chống tia UV400 bảo vệ mắt khi đi đường.', 'Gọng Nhựa/Chống UV', 'Đen huyền', 'Standard', 'Còn hàng')
 ON DUPLICATE KEY UPDATE ten = VALUES(ten);
+
+-- 3. Thêm Người dùng và Đơn hàng (Đã sửa lỗi cú pháp chấm phẩy)
+INSERT INTO nguoi_dung (`id`, `ten`, `ten_dang_nhap`, `email`, `mat_khau`, `vai_tro`, `created_at`, `updated_at`) VALUES
+(1, 'khach', 'khach1', '1@gmail.com', '$2y$10$OpbHEGMk7oGqOqTOG4gx9uiIu6gKvh8qrhEweL9UaCe1Y09Amqhva', 'customer', '2026-10-23 17:32:44', '2026-10-23 17:32:44'),
+(2, 'Quan tri vien', 'admin', 'admin@stylehub.local', '$2y$10$4DeoqmOWxnlP49zVTqRnxenbMRzoHCBs4fTSL1SalueRqc7PGSg76', 'quan_tri', '2026-10-23 17:36:49', '2026-10-23 18:08:14')
+ON DUPLICATE KEY UPDATE ten = VALUES(ten), ten_dang_nhap = VALUES(ten_dang_nhap), email = VALUES(email), mat_khau = VALUES(mat_khau), vai_tro = VALUES(vai_tro), updated_at = VALUES(updated_at);
+
+INSERT INTO don_hang (`id`, `nguoi_dung_id`, `ho_ten_nhan`, `so_dien_thoai_nhan`, `dia_chi_nhan`, `ghi_chu`, `tong_tien`, `trang_thai`, `created_at`, `updated_at`) VALUES
+(1, 2, 'dat', '01010101101001', 'đại học sư phạm', NULL, 499000, 'cho_xac_nhan', '2026-10-23 18:02:49', '2026-10-23 18:02:49'),
+(2, 1, 'khach1', '0707070700707', 'Đà nẵng', NULL, 549000, 'cho_xac_nhan', '2026-10-23 18:04:06', '2026-10-23 18:04:06')
+ON DUPLICATE KEY UPDATE nguoi_dung_id = VALUES(nguoi_dung_id), ho_ten_nhan = VALUES(ho_ten_nhan), so_dien_thoai_nhan = VALUES(so_dien_thoai_nhan), dia_chi_nhan = VALUES(dia_chi_nhan), ghi_chu = VALUES(ghi_chu), tong_tien = VALUES(tong_tien), trang_thai = VALUES(trang_thai), updated_at = VALUES(updated_at);
+
+-- Đã sửa lỗi tên cột don_gia thành gia_don_vi
+INSERT INTO chi_tiet_don_hang (`don_hang_id`, `san_pham_id`, `ten_san_pham`, `gia_don_vi`, `so_luong`, `thanh_tien`) VALUES
+(1, 'AK001', 'Áo khoác Bomber Đen', 499000, 1, 499000),
+(2, 'AK002', 'Áo khoác Denim Jacket', 549000, 1, 549000)
+ON DUPLICATE KEY UPDATE
+    don_hang_id = VALUES(don_hang_id),
+    san_pham_id = VALUES(san_pham_id),
+    so_luong = VALUES(so_luong),
+    gia_don_vi = VALUES(gia_don_vi);
+
+-- Nhãn sản phẩm
+INSERT INTO nhan (id, ten) VALUES
+(1, 'Mới'),
+(2, 'Bán chạy'),
+(3, 'Giảm giá'),
+(4, 'Nổi bật'),
+(5, 'Xu hướng')
+ON DUPLICATE KEY UPDATE ten = VALUES(ten);
+
+-- Yêu cầu liên hệ mẫu
+INSERT INTO lien_he
+(id, ho_ten, so_dien_thoai, email, san_pham_id, san_pham_ten,
+ noi_dung, anh, trang_thai, created_at)
+VALUES
+(1, 'Nguyễn Văn An', '0901234567', 'an@example.com',
+ 'SH001', 'Áo sơ mi nam',
+ 'Tôi muốn hỏi về kích thước và chất liệu sản phẩm.',
+ NULL, 'moi', NOW()),
+(2, 'Trần Thị Bình', '0912345678', 'binh@example.com',
+ 'JE001', 'Quần jeans nam',
+ 'Sản phẩm còn hàng size M không?',
+ NULL, 'dang_xu_ly', NOW()),
+(3, 'Lê Minh Khang', '0987654321', 'khang@example.com',
+ 'AK001', 'Áo khoác nam',
+ 'Tôi muốn biết chính sách đổi trả sản phẩm.',
+ NULL, 'da_xu_ly', NOW())
+ON DUPLICATE KEY UPDATE
+    ho_ten = VALUES(ho_ten),
+    so_dien_thoai = VALUES(so_dien_thoai),
+    email = VALUES(email),
+    san_pham_id = VALUES(san_pham_id),
+    san_pham_ten = VALUES(san_pham_ten),
+    noi_dung = VALUES(noi_dung),
+    trang_thai = VALUES(trang_thai);
+
+-- Gắn nhãn cho sản phẩm
+INSERT INTO san_pham_nhan (san_pham_id, nhan_id) VALUES
+('SH001', 1),
+('SH001', 4),
+('JE001', 2),
+('JE001', 5),
+('AK001', 3),
+('AK001', 4)
+ON DUPLICATE KEY UPDATE
+    nhan_id = VALUES(nhan_id);
 
 -- 4. Bảng thành viên (Phần B)
 INSERT INTO thanh_vien (mssv, ho_ten, nguoi_dung_id) VALUES
@@ -74,8 +141,8 @@ ON DUPLICATE KEY UPDATE so_luot = VALUES(so_luot);
 
 -- ============================================================
 -- PHẦN B (3120224028 - Nguyễn Đình Minh Đạt): DỮ LIỆU MẪU TV_DU_AN
+-- Đã sửa link_dem thành link_demo
 -- ============================================================
--- Đã sửa lỗi chính tả link_dem thành link_demo
 INSERT INTO tv_du_an (mssv, ten_du_an, loai_du_an, mo_ta, link_demo) VALUES
 ('3120224028', 'Website thương mại điện tử StyleHub', 'Web', 'Dự án bài tập lớn môn Lập trình Web. Xây dựng trang bán hàng thời trang sử dụng PHP PDO, MySQL, REST API giỏ hàng và trang quản trị Admin.', 'https://github.com/Nobitaa264/ltweb_doan_nhom10'),
 ('3120224028', 'Ứng dụng di động Quản lý chi tiêu cá nhân', 'App Mobile', 'Xây dựng ứng dụng di động hỗ trợ theo dõi thu chi hàng ngày, lập kế hoạch tài chính và xuất báo cáo biểu đồ trực quan.', ''),
@@ -105,7 +172,7 @@ WHERE NOT EXISTS (
 );
 
 -- ============================================================
--- PHẦN B (3120224170 - Nguyễn Hữu Tuân): DỮ LIỆU KỸ NĂNG, LƯỢT XEM VÀ LƯU BÚT
+-- PHẦN B (3120224170 - Nguyễn Hữu Tuân): DỮ LIỆU CÁ NHÂN CỦA BẠN
 -- ============================================================
 INSERT INTO tv_ky_nang (mssv, ten_ky_nang, nhom_ky_nang, muc_do, mo_ta_chi_tiet) VALUES
 ('3120224170', 'HTML5 & Semantic Web', 'Frontend', 90, 'Xây dựng cấu trúc trang web chuẩn W3C, thân thiện SEO và Accessibility.'),
