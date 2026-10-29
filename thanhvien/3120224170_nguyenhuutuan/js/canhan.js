@@ -9,6 +9,7 @@ Chức năng:
 - Sao chép email cá nhân
 - Hiển thị thông báo khi sao chép
 - Tự động ẩn thông báo sau 3 giây
+- Tải dữ liệu kỹ năng qua Fetch API
 */
 
 // =============================
@@ -139,5 +140,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (btnCopyEmail) {
     btnCopyEmail.addEventListener("click", copyEmail);
+  }
+
+  // Gắn sự kiện gọi JSON API bằng Fetch (Phần B)
+  const btnFetchApi = document.getElementById("btnFetchApi");
+  const apiResultBox = document.getElementById("apiResultBox");
+
+  if (btnFetchApi && apiResultBox) {
+    btnFetchApi.addEventListener("click", function () {
+      apiResultBox.style.display = "block";
+      apiResultBox.textContent = "Đang tải dữ liệu từ API...";
+
+      fetch("gioithieu.php?api=ky_nang")
+        .then(function (response) {
+          if (!response.ok) {
+            throw new Error("Lỗi khi kết nối API");
+          }
+          return response.json();
+        })
+        .then(function (data) {
+          const danhSach = (data.du_lieu || [])
+            .map(function (item) {
+              return `${item.ten_ky_nang} (${item.nhom_ky_nang} - ${item.muc_do}%)`;
+            })
+            .join(" | ");
+          apiResultBox.textContent = `Kết quả JSON API (${data.tong_so} kỹ năng) của ${data.thanh_vien}: ${danhSach}`;
+        })
+        .catch(function (error) {
+          apiResultBox.textContent =
+            "Không thể tải dữ liệu từ API. Vui lòng thử lại!";
+        });
+    });
   }
 });
