@@ -4,42 +4,27 @@ Sinh viên: Nguyễn Hữu Tuân
 MSSV: 3120224170
 
 Chức năng:
-- Giao diện giới thiệu cá nhân
-- Nút điều hướng
-- Thông tin cá nhân
-- Dự án và kỹ năng
-- Đồng hồ và tương tác JavaScript
-- Bảng thời khóa biểu
-- Form sổ lưu bút
-- Responsive trên điện thoại
+- Giao diện giới thiệu cá nhân hoàn chỉnh
+- Bố cục lưới (Flexbox/Grid) cho Profile, Kỹ năng, Lưu bút
+- Tách biệt CSS Form Bộ lọc (hàng ngang) và Form Lưu bút (hàng dọc)
+- Responsive chuẩn trên mọi thiết bị
 */
 
 /* =========================
-   BIẾN MÀU SẮC
+   1. BIẾN MÀU SẮC & CƠ BẢN
 ========================= */
-
 :root {
   --primary: #2563eb;
   --primary-hover: #1d4ed8;
-
   --background: #f1f5f9;
   --white: #ffffff;
-
   --text: #1e293b;
   --gray: #64748b;
-
   --border: #cbd5e1;
-
   --radius: 14px;
-
   --shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-
   --container: 1000px;
 }
-
-/* =========================
-   RESET
-========================= */
 
 * {
   box-sizing: border-box;
@@ -52,12 +37,9 @@ html {
 body {
   margin: 0;
   padding: 0;
-
   font-family: "Segoe UI", Arial, sans-serif;
-
   background: var(--background);
   color: var(--text);
-
   line-height: 1.7;
 }
 
@@ -76,147 +58,98 @@ a {
 }
 
 /* =========================
-   CONTAINER
+   2. BỐ CỤC CHÍNH
 ========================= */
-
 .container {
   width: min(92%, var(--container));
   margin: auto;
 }
 
-/* =========================
-   MAIN CONTENT
-========================= */
-
 .main-content {
   display: flex;
   flex-direction: column;
-
   gap: 25px;
-
   margin-top: 30px;
   margin-bottom: 30px;
 }
 
+.content-section {
+  background: var(--white);
+  padding: 30px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid #e2e8f0;
+}
+
 /* =========================
-   NÚT ĐIỀU HƯỚNG
+   3. TIÊU ĐỀ & ĐIỀU HƯỚNG
 ========================= */
+.section-title {
+  margin-top: 0;
+  margin-bottom: 25px;
+  color: var(--primary);
+  font-size: 26px;
+  font-weight: 700;
+  border-bottom: 3px solid var(--primary);
+  padding-bottom: 10px;
+}
+
+.sub-title {
+  color: var(--primary-hover);
+  font-size: 20px;
+  margin-top: 25px;
+  margin-bottom: 15px;
+}
 
 .navigation-back {
   display: flex;
   align-items: center;
-
   gap: 12px;
   flex-wrap: wrap;
-
-  margin: 0 0 5px;
+  margin-bottom: 5px;
 }
 
 .navigation-back a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   padding: 10px 18px;
-
   color: var(--white);
   text-decoration: none;
-
   font-size: 15px;
   font-weight: 600;
-
   border-radius: 8px;
-
   transition:
     background-color 0.2s ease,
     transform 0.2s ease,
     box-shadow 0.2s ease;
 }
 
-/* Nút quay về Trang chủ */
-
-.navigation-back .btn-home {
+.btn-home {
   background-color: var(--primary);
 }
-
-.navigation-back .btn-home:hover {
+.btn-home:hover {
   background-color: var(--primary-hover);
 }
-
-/* Nút quay về Trang Giới thiệu */
-
-.navigation-back .btn-intro {
+.btn-intro {
   background-color: #64748b;
 }
-
-.navigation-back .btn-intro:hover {
+.btn-intro:hover {
   background-color: #475569;
 }
 
 .navigation-back a:hover {
   transform: translateY(-2px);
-
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.navigation-back a:focus-visible {
-  outline: 3px solid #93c5fd;
-  outline-offset: 3px;
-}
-
 /* =========================
-   SECTION CARD
+   4. THÔNG TIN CÁ NHÂN
 ========================= */
-
-.content-section {
-  background: var(--white);
-
-  padding: 30px;
-
-  border-radius: var(--radius);
-
-  box-shadow: var(--shadow);
-
-  border: 1px solid #e2e8f0;
-}
-
-/* =========================
-   TIÊU ĐỀ
-========================= */
-
-.section-title {
-  margin-top: 0;
-  margin-bottom: 25px;
-
-  color: var(--primary);
-
-  font-size: 26px;
-  font-weight: 700;
-
-  border-bottom: 3px solid var(--primary);
-
-  padding-bottom: 10px;
-}
-
-.sub-title {
-  color: var(--primary-hover);
-
-  font-size: 20px;
-
-  margin-top: 25px;
-  margin-bottom: 15px;
-}
-
-/* =========================
-   THÔNG TIN CÁ NHÂN
-========================= */
-
 .profile {
   display: flex;
   align-items: center;
-
   gap: 30px;
-
   margin-bottom: 25px;
 }
 
@@ -227,13 +160,9 @@ a {
 .profile-image img {
   width: 150px;
   height: 200px;
-
   object-fit: cover;
-
   border-radius: 15px;
-
   border: 4px solid #dbeafe;
-
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
@@ -244,7 +173,6 @@ a {
 
 .profile-info p {
   margin: 8px 0;
-
   overflow-wrap: anywhere;
 }
 
@@ -254,545 +182,369 @@ a {
 
 .description {
   text-align: justify;
-
   line-height: 1.8;
-
   margin-bottom: 15px;
 }
 
 /* =========================
-   DANH SÁCH KỸ NĂNG
+   5. NÚT BẤM (BUTTON)
 ========================= */
-
-.skills-list {
-  display: flex;
-  flex-wrap: wrap;
-
-  gap: 12px;
-
-  padding: 0;
-  margin: 15px 0;
-
-  list-style: none;
-}
-
-.skills-list li {
-  background: #dbeafe;
-  color: #1e40af;
-
-  padding: 8px 16px;
-
-  border-radius: 20px;
-
-  font-weight: 600;
-  font-size: 15px;
-
-  transition:
-    background-color 0.2s ease,
-    transform 0.2s ease;
-}
-
-.skills-list li:hover {
-  background: #bfdbfe;
-
-  transform: translateY(-2px);
-}
-
-/* =========================
-   ĐỒNG HỒ
-========================= */
-
-.clock-box {
+button,
+.btn-action {
   display: inline-flex;
-
   align-items: center;
-  flex-wrap: wrap;
-
-  gap: 10px;
-
-  background: #e0f2fe;
-
-  padding: 15px 25px;
-
-  border-radius: 12px;
-
-  font-weight: bold;
-
-  margin-bottom: 15px;
-}
-
-#clock {
-  color: var(--primary);
-
-  font-size: 24px;
-  font-weight: 700;
-
-  font-variant-numeric: tabular-nums;
-}
-
-/* =========================
-   BUTTON
-========================= */
-
-button {
+  justify-content: center;
   border: none;
-
   background: var(--primary);
   color: var(--white);
-
-  padding: 12px 20px;
-
+  padding: 10px 18px;
   border-radius: 8px;
-
   font-family: inherit;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
-
   cursor: pointer;
-
+  text-decoration: none;
   transition:
     background-color 0.2s ease,
     transform 0.2s ease,
     box-shadow 0.2s ease;
 }
 
-button:hover {
+button:hover,
+.btn-action:hover {
   background: var(--primary-hover);
-
   transform: translateY(-2px);
-
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
 }
 
-button:active {
-  transform: translateY(0);
+.btn-secondary {
+  background-color: #64748b;
 }
 
-button:focus-visible {
-  outline: 3px solid #93c5fd;
-  outline-offset: 3px;
+.btn-secondary:hover {
+  background-color: #475569;
 }
 
-/* =========================
-   SAO CHÉP EMAIL
-========================= */
-
-#btnCopyEmail {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+.btn-delete {
+  background-color: #dc2626;
+  padding: 6px 12px;
+  font-size: 13px;
 }
 
-#message {
-  margin-top: 15px;
-
-  color: #15803d;
-
-  font-weight: bold;
+.btn-delete:hover {
+  background-color: #b91c1c;
 }
 
 /* =========================
-   BẢNG THỜI KHÓA BIỂU
+   6. BỘ LỌC KỸ NĂNG (DÀN HÀNG NGANG)
 ========================= */
-
-.table-container {
-  width: 100%;
-
-  overflow-x: auto;
-
-  margin-top: 20px;
-
-  border-radius: 10px;
-
-  border: 1px solid var(--border);
-}
-
-.schedule-table {
-  width: 100%;
-  min-width: 750px;
-
-  border-collapse: collapse;
-
-  text-align: center;
-
-  background: var(--white);
-}
-
-.schedule-table caption {
-  font-size: 18px;
-  font-weight: 700;
-
-  color: var(--primary-hover);
-
-  padding: 15px;
-}
-
-.schedule-table th,
-.schedule-table td {
-  border: 1px solid #dbe3ee;
-
-  padding: 12px 10px;
-
-  font-size: 14px;
-
-  vertical-align: middle;
-}
-
-.schedule-table thead {
-  background: var(--primary);
-  color: var(--white);
-}
-
-.schedule-table thead th {
-  background: var(--primary);
-  color: var(--white);
-
-  font-weight: 700;
-
-  white-space: nowrap;
-}
-
-.schedule-table tbody th {
-  background: #eff6ff;
-
-  color: var(--primary-hover);
-
-  font-weight: 700;
-}
-
-.schedule-table tbody tr:nth-child(even) {
+.filter-bar {
+  display: flex;
+  flex-direction: row; /* Ép buộc hàng ngang */
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 15px;
+  margin: 20px 0;
+  padding: 16px;
   background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
 }
 
-.schedule-table tbody tr:hover {
-  background: #dbeafe;
-}
-
-.schedule-table tbody td {
-  overflow-wrap: break-word;
-}
-
-/* =========================
-   FORM SỔ LƯU BÚT
-========================= */
-
-form {
+.filter-group {
   display: flex;
   flex-direction: column;
-
-  gap: 12px;
-
-  margin-top: 20px;
+  gap: 6px;
+  flex: 1;
+  min-width: 180px;
 }
 
-label {
+.filter-group label {
   font-weight: 600;
+  color: var(--text);
+  font-size: 14px;
+}
 
+.filter-group input,
+.filter-group select {
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 15px;
+  background: var(--white);
+  outline: none;
+  font-family: inherit;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px #dbeafe;
+}
+
+.json-box {
+  margin-top: 15px;
+  padding: 15px;
+  background: #eef6ff;
+  border-left: 4px solid var(--primary);
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1e3a8a;
+  display: none;
+}
+
+/* =========================
+   7. FORM SỔ LƯU BÚT (DÀN HÀNG DỌC)
+========================= */
+#so-luu-but form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+#so-luu-but label {
+  font-weight: 600;
   color: var(--text);
 }
 
-input,
-textarea {
+#so-luu-but input[type="text"],
+#so-luu-but textarea {
   width: 100%;
-
   padding: 12px;
-
-  font-size: 16px;
+  font-size: 15px;
   font-family: inherit;
-
   color: var(--text);
-
   background: var(--white);
-
   border: 1px solid var(--border);
-
   border-radius: 8px;
-
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
 }
 
-textarea {
-  min-height: 130px;
-
+#so-luu-but textarea {
+  min-height: 120px;
   resize: vertical;
-
-  line-height: 1.6;
 }
 
-input:focus,
-textarea:focus {
+#so-luu-but input[type="text"]:focus,
+#so-luu-but textarea:focus {
   outline: none;
-
   border-color: var(--primary);
-
   box-shadow: 0 0 0 3px #dbeafe;
 }
 
-form button[type="submit"] {
+#so-luu-but button[type="submit"] {
   align-self: flex-start;
-
   min-width: 150px;
-
-  margin-top: 8px;
+  margin-top: 5px;
 }
 
-/* =========================
-   LỜI NHẮN LƯU BÚT
-========================= */
-
+/* Lời nhắn lưu bút */
 .guestbook-message {
   margin: 15px 0;
-
   padding: 15px 18px;
-
   background: #f8fafc;
-
   border: 1px solid #e2e8f0;
-
   border-radius: 10px;
-
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
   overflow-wrap: anywhere;
 }
 
 .guestbook-message p {
-  margin-bottom: 8px;
-}
-
-.guestbook-message strong {
-  color: var(--primary-hover);
+  margin-bottom: 6px;
 }
 
 .guestbook-message small {
   color: var(--gray);
-
   font-size: 13px;
+}
+
+/* Phân trang */
+.pagination {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.pagination a,
+.pagination span {
+  padding: 8px 14px;
+  border: 1px solid var(--primary);
+  border-radius: 6px;
+  text-decoration: none;
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.pagination .active {
+  background-color: var(--primary);
+  color: var(--white);
+}
+
+/* =========================
+   8. BẢNG BIỂU (TABLES)
+========================= */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 20px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.schedule-table,
+.data-table {
+  width: 100%;
+  min-width: 750px;
+  border-collapse: collapse;
+  text-align: center;
+  background: var(--white);
+}
+
+.data-table {
+  min-width: 600px;
+}
+
+.schedule-table caption,
+.data-table caption {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary-hover);
+  padding: 15px;
+}
+
+.schedule-table th,
+.schedule-table td,
+.data-table th,
+.data-table td {
+  border: 1px solid #dbe3ee;
+  padding: 12px 10px;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.schedule-table thead,
+.data-table thead {
+  background: var(--primary);
+  color: var(--white);
+}
+
+.schedule-table thead th,
+.data-table thead th {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.schedule-table tbody tr:nth-child(even),
+.data-table tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+.schedule-table tbody tr:hover,
+.data-table tbody tr:hover {
+  background: #dbeafe;
+}
+
+/* =========================
+   9. ĐỒNG HỒ & TRẠNG THÁI
+========================= */
+.clock-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #e0f2fe;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+#clock {
+  color: var(--primary);
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+#message {
+  margin-top: 15px;
+  color: #15803d;
+  font-weight: bold;
 }
 
 .error-message {
   color: #dc2626;
-
   font-weight: 600;
-
   margin-top: 15px;
 }
 
-.content-section small {
-  color: var(--gray);
-}
-
-.content-section strong {
-  color: var(--primary-hover);
-}
-
-/* =========================
-   LINK
-========================= */
-
-.link-list {
-  display: flex;
-  flex-wrap: wrap;
-
-  gap: 10px;
-}
-
-.link-button {
-  display: inline-block;
-
-  text-decoration: none;
-
-  padding: 10px 18px;
-
-  border: 2px solid var(--primary);
-
-  color: var(--primary);
-
-  border-radius: 8px;
-
-  font-weight: bold;
-}
-
-.link-button:hover {
-  background: var(--primary);
-
-  color: var(--white);
+.success-message {
+  color: #15803d;
+  font-weight: 600;
+  margin-top: 15px;
 }
 
 /* =========================
-   FOOTER
+   10. RESPONSIVE
 ========================= */
-
-.site-footer {
-  background: var(--primary);
-
-  color: var(--white);
-
-  text-align: center;
-
-  padding: 20px;
-}
-
-/* =========================
-   RESPONSIVE TABLET
-========================= */
-
 @media (max-width: 900px) {
   .content-section {
     padding: 25px;
   }
-
   .profile {
     gap: 20px;
   }
-
-  .schedule-table th,
-  .schedule-table td {
-    padding: 10px 8px;
-    font-size: 13px;
-  }
 }
-
-/* =========================
-   RESPONSIVE MOBILE
-========================= */
 
 @media (max-width: 700px) {
   .container {
     width: 94%;
   }
-
-  .main-content {
-    gap: 20px;
-
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
-
-  .content-section {
-    padding: 20px;
-  }
-
-  .section-title {
-    font-size: 22px;
-  }
-
   .profile {
     flex-direction: column;
-
     text-align: center;
-
-    gap: 15px;
   }
-
-  .profile-info {
-    width: 100%;
-  }
-
   .profile-image img {
     width: 150px;
     height: 200px;
   }
-
   .description {
     text-align: left;
   }
-
-  .navigation-back {
-    gap: 10px;
-  }
-
   .navigation-back a {
     flex: 1;
-
-    padding: 10px;
-
-    font-size: 14px;
     text-align: center;
   }
-
-  .clock-box {
-    width: 100%;
-
-    justify-content: center;
-
-    padding: 12px;
+  .filter-bar {
+    flex-direction: column; /* Điện thoại thì xếp dọc bộ lọc cho dễ nhìn */
+    align-items: stretch;
   }
-
-  #clock {
-    font-size: 22px;
-  }
-
-  button {
+  .filter-group {
     width: 100%;
   }
-
-  form button[type="submit"] {
+  button,
+  .btn-action {
     width: 100%;
   }
-
-  .table-container {
-    overflow-x: auto;
-  }
-
-  .schedule-table {
-    min-width: 750px;
+  #so-luu-but button[type="submit"] {
+    width: 100%;
   }
 }
-
-/* =========================
-   RESPONSIVE MÀN HÌNH NHỎ
-========================= */
-
-@media (max-width: 400px) {
-  .container {
-    width: 95%;
-  }
-
-  .content-section {
-    padding: 16px;
-  }
-
-  .section-title {
-    font-size: 20px;
-  }
-
-  .navigation-back {
-    flex-direction: column;
-  }
-
-  .navigation-back a {
-    width: 100%;
-  }
-
-  #clock {
-    font-size: 20px;
-  }
-
-  .skills-list {
-    gap: 8px;
-  }
-
-  .skills-list li {
-    padding: 6px 12px;
-
-    font-size: 13px;
-  }
-}
-
-/* =========================
-   GIẢM HIỆU ỨNG CHUYỂN ĐỘNG
-========================= */
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-
   *,
   *::before,
   *::after {
     transition-duration: 0.01ms !important;
-    animation-duration: 0.01ms !important;
   }
 }
