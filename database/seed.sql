@@ -30,16 +30,16 @@ INSERT INTO thanh_vien (mssv, ho_ten, nguoi_dung_id) VALUES
 ('3120224170', 'Nguyễn Hữu Tuân', NULL) 
 ON DUPLICATE KEY UPDATE ho_ten = VALUES(ho_ten);
 
--- 4. Dữ liệu mẫu TV_LUOT_XEM & TV_DU_AN của Phạm Huy Hoàng (3120224062)
+-- 4. Dữ liệu mẫu TV_LUOT_XEM & TV_DU_AN của Nguyễn Đình Minh Đạt (3120224028)
 INSERT INTO tv_luot_xem (mssv, ngay, so_luot) VALUES
-('3120224062', CURDATE(), 20)
+('3120224028', CURDATE(), 20)
 ON DUPLICATE KEY UPDATE so_luot = so_luot + 1;
 
 INSERT INTO tv_du_an (mssv, ten_du_an, loai_du_an, mo_ta, link_demo) VALUES
-('3120224062', 'Website Bán Quần Áo StyleHub', 'Web Fullstack', 'Xây dựng module trang cá nhân, sổ lưu bút, bộ đếm lượt xem và bảo mật.', 'http://localhost:8000/thanhvien/3120224062_phamhoang/gioithieu.php')
+('3120224028', 'Website Bán Quần Áo StyleHub', 'Web Fullstack', 'Xây dựng module trang cá nhân, dự án và quản lý.', 'http://localhost:8000/thanhvien/3120224028_minhdat/gioithieu.php')
 ON DUPLICATE KEY UPDATE ten_du_an = VALUES(ten_du_an);
 
--- 5. Dữ liệu mẫu Sổ Lưu Bút
+-- 5. Dữ liệu mẫu Sổ Lưu Bút của Phạm Huy Hoàng (3120224062)
 INSERT INTO tv_luu_but (mssv, ten_nguoi_gui, noi_dung, created_at) VALUES 
 ('3120224062', 'Nguyễn Văn A', 'Trang cá nhân thiết kế rất đẹp và trực quan!', '2026-03-01 10:00:00'),
 ('3120224062', 'Trần Thị B', 'Chúc bạn hoàn thành xuất sắc đồ án nhóm nhé!', '2026-03-01 11:30:00');
