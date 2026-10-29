@@ -141,9 +141,53 @@ CREATE TABLE san_pham_nhan (
     INDEX idx_spn_nhan (nhan_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_unicode_ci;
--- ==========================================
--- BỔ SUNG BẢNG SỔ LƯU BÚT (PHẦN B)
--- ==========================================
+
+-- ============================================================
+-- 9. BẢNG THÀNH VIÊN (Phục vụ trang cá nhân)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS thanh_vien (
+    mssv VARCHAR(20) PRIMARY KEY,
+    ho_ten VARCHAR(100) NOT NULL,
+    nguoi_dung_id BIGINT UNSIGNED NULL,
+    CONSTRAINT fk_thanh_vien_nguoi_dung 
+        FOREIGN KEY (nguoi_dung_id) REFERENCES nguoi_dung(id) 
+        ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================================
+-- 10. BẢNG DỰ ÁN CÁ NHÂN (tv_du_an)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS tv_du_an (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    mssv VARCHAR(20) NOT NULL,
+    ten_du_an VARCHAR(255) NOT NULL,
+    loai_du_an VARCHAR(50) NOT NULL,
+    mo_ta TEXT NULL,
+    link_demo VARCHAR(255) NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_tv_du_an_thanh_vien 
+        FOREIGN KEY (mssv) REFERENCES thanh_vien(mssv) 
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    INDEX idx_tv_du_an_mssv (mssv)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================================
+-- 11. BẢNG LƯỢT XEM TRANG CÁ NHÂN (tv_luot_xem)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS tv_luot_xem (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    mssv VARCHAR(20) NOT NULL,
+    ngay DATE NOT NULL,
+    so_luot INT UNSIGNED NOT NULL DEFAULT 1,
+    CONSTRAINT fk_tv_luot_xem_thanh_vien 
+        FOREIGN KEY (mssv) REFERENCES thanh_vien(mssv) 
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    UNIQUE KEY uk_mssv_ngay (mssv, ngay)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================================
+-- 12. BẢNG SỔ LƯU BÚT (tv_luu_but)[cite: 4, 5]
+-- ============================================================
 CREATE TABLE IF NOT EXISTS tv_luu_but (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     mssv VARCHAR(20) NOT NULL,

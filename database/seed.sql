@@ -1,6 +1,6 @@
-
 USE ltweb_nhom10;
--- Them danh muc san pham
+
+-- Thêm danh mục sản phẩm mẫu
 INSERT INTO danh_muc (ten, mo_ta)
 VALUES
     ('Áo sơ mi', 'Các sản phẩm áo sơ mi'),
@@ -8,7 +8,7 @@ VALUES
 ON DUPLICATE KEY UPDATE
     mo_ta = VALUES(mo_ta);
 
--- Them san pham mau
+-- Thêm sản phẩm mẫu 1
 INSERT INTO san_pham (
     id,
     ten,
@@ -38,6 +38,7 @@ AND NOT EXISTS (
     SELECT 1 FROM san_pham WHERE id = 'SH001'
 );
 
+-- Thêm sản phẩm mẫu 2
 INSERT INTO san_pham (
     id,
     ten,
@@ -66,8 +67,28 @@ WHERE dm.ten = 'Quần Jeans'
 AND NOT EXISTS (
     SELECT 1 FROM san_pham WHERE id = 'JE001'
 );
+
+-- ============================================================
+-- DỮ LIỆU MẪU CÁ NHÂN: PHẠM HUY HOÀNG (3120224062)
+-- ============================================================
+
+-- 1. Thêm thành viên vào bảng thanh_vien
+INSERT INTO thanh_vien (mssv, ho_ten, nguoi_dung_id) 
+VALUES ('3120224062', 'Phạm Huy Hoàng', NULL)
+ON DUPLICATE KEY UPDATE ho_ten = VALUES(ho_ten);
+
+-- 2. Thêm dữ liệu dự án cá nhân vào bảng tv_du_an
+INSERT INTO tv_du_an (mssv, ten_du_an, loai_du_an, mo_ta, link_demo) 
+VALUES ('3120224062', 'Website Bán Quần Áo StyleHub', 'Fullstack Web', 'Xây dựng module trang cá nhân, sổ lưu bút, bộ đếm lượt xem và bảo mật chống XSS/SQL Injection.', 'http://localhost:8000/thanhvien/3120224062_phamhoang/gioithieu.php')
+ON DUPLICATE KEY UPDATE ten_du_an = VALUES(ten_du_an);
+
+-- 3. Thêm dữ liệu lượt xem vào bảng tv_luot_xem
+INSERT INTO tv_luot_xem (mssv, ngay, so_luot) 
+VALUES ('3120224062', CURDATE(), 15)
+ON DUPLICATE KEY UPDATE so_luot = so_luot + 1;
+
 -- ==========================================
--- BỔ SUNG DỮ LIỆU MẪU SỔ LƯU BÚT (PHẦN B)
+-- DỮ LIỆU MẪU SỔ LƯU BÚT (tv_luu_but)[cite: 5]
 -- ==========================================
 INSERT INTO tv_luu_but (mssv, ten_nguoi_gui, noi_dung, created_at) 
 VALUES 
