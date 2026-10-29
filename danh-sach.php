@@ -7,7 +7,9 @@
 
 require_once __DIR__ . '/inc/config.php';
 
-$tieuDe = 'Danh sách sản phẩm - StyleHub';
+$laTrangYeuThich = isset($_GET['yeuthich']) && $_GET['yeuthich'] == '1';
+
+$tieuDe = $laTrangYeuThich ? 'Sản phẩm yêu thích - StyleHub' : 'Danh sách sản phẩm - StyleHub';
 $trang = 'danh-sach';
 $goc = './';
 
@@ -94,10 +96,10 @@ $danhSachSanPham =
     <div class="bao">
 
         <h1 class="tieu-de-trang">
-            Danh sách sản phẩm
+            <?= $laTrangYeuThich ? '♥ Sản phẩm yêu thích của bạn' : 'Danh sách sản phẩm' ?>
         </h1>
 
-
+        <?php if (!$laTrangYeuThich): ?>
         <section
             class="khu-vuc khu-vuc--dau"
             aria-labelledby="tieu-de-cong-cu"
@@ -107,14 +109,12 @@ $danhSachSanPham =
                 Tìm kiếm và lọc sản phẩm
             </h2>
 
-
             <form
                 method="get"
                 action="danh-sach.php"
             >
 
                 <div class="cong-cu-san-pham">
-
 
                     <div class="nhom-cong-cu">
 
@@ -132,7 +132,6 @@ $danhSachSanPham =
                         >
 
                     </div>
-
 
                     <div class="nhom-cong-cu">
 
@@ -168,7 +167,6 @@ $danhSachSanPham =
                         </select>
 
                     </div>
-
 
                     <div class="nhom-cong-cu">
 
@@ -230,7 +228,6 @@ $danhSachSanPham =
 
                     </div>
 
-
                     <div class="nhom-cong-cu">
 
                         <button
@@ -254,7 +251,7 @@ $danhSachSanPham =
             </form>
 
         </section>
-
+        <?php endif; ?>
 
         <section
             class="khu-vuc"
@@ -264,7 +261,7 @@ $danhSachSanPham =
             <div class="dau-ket-qua">
 
                 <h2 id="tieu-de-ket-qua">
-                    Sản phẩm
+                    <?= $laTrangYeuThich ? 'Danh sách yêu thích' : 'Sản phẩm' ?>
                 </h2>
 
                 <p
@@ -278,6 +275,14 @@ $danhSachSanPham =
 
             </div>
 
+            <p
+                id="thong-bao-rong-yeu-thich"
+                class="trang-thai-danh-sach"
+                style="display: none;"
+                role="status"
+            >
+                Bạn chưa có sản phẩm nào trong danh sách yêu thích.
+            </p>
 
             <?php if ($danhSachSanPham === []): ?>
 
@@ -286,10 +291,8 @@ $danhSachSanPham =
                     role="status"
                     aria-live="polite"
                 >
-                    Không tìm thấy sản phẩm phù hợp
-                    với điều kiện tìm kiếm.
+                    Không tìm thấy sản phẩm phù hợp với điều kiện tìm kiếm.
                 </p>
-
 
             <?php else: ?>
 
@@ -303,7 +306,7 @@ $danhSachSanPham =
                         as $sanPham
                     ): ?>
 
-                        <article class="the-san-pham">
+                        <article class="the-san-pham" data-id-san-pham="<?= e($sanPham->id) ?>">
 
                             <img
                                 class="the-san-pham__anh"
@@ -313,7 +316,6 @@ $danhSachSanPham =
                                 height="300"
                             >
 
-
                             <div
                                 class="the-san-pham__noi-dung"
                             >
@@ -322,28 +324,34 @@ $danhSachSanPham =
                                     <?= e($sanPham->id) ?>
                                 </p>
 
-
                                 <h3>
                                     <?= e($sanPham->ten) ?>
                                 </h3>
-
 
                                 <p>
                                     <?= e($sanPham->moTa) ?>
                                 </p>
 
-
                                 <p class="gia">
                                     <?= vnd($sanPham->gia) ?>
                                 </p>
 
+                                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                    <a
+                                        class="nut"
+                                        href="chi-tiet.php?id=<?= urlencode($sanPham->id) ?>"
+                                    >
+                                        Xem chi tiết
+                                    </a>
 
-                                <a
-                                    class="nut"
-                                    href="chi-tiet.php?id=<?= urlencode($sanPham->id) ?>"
-                                >
-                                    Xem chi tiết
-                                </a>
+                                    <button
+                                        type="button"
+                                        class="nut nut-yeu-thich"
+                                        data-id-san-pham="<?= e($sanPham->id) ?>"
+                                    >
+                                        ♡ Yêu thích
+                                    </button>
+                                </div>
 
                             </div>
 
@@ -354,38 +362,6 @@ $danhSachSanPham =
                 </div>
 
             <?php endif; ?>
-
-
-            <noscript>
-
-                <p>
-                    JavaScript đang bị tắt.
-                    Chức năng tìm kiếm, lọc và sắp xếp
-                    vẫn hoạt động bằng PHP.
-                </p>
-
-            </noscript>
-
-        </section>
-
-
-        <section class="khu-vuc khu-vuc--phu">
-
-            <h2>
-                Hướng dẫn
-            </h2>
-
-            <p>
-                Bạn có thể nhập từ khóa để tìm kiếm,
-                chọn danh mục để lọc hoặc chọn cách
-                sắp xếp sản phẩm.
-            </p>
-
-            <p>
-                Chọn
-                <strong>Xem chi tiết</strong>
-                để xem đầy đủ thông tin của từng sản phẩm.
-            </p>
 
         </section>
 
@@ -402,5 +378,55 @@ $danhSachSanPham =
     type="module"
     src="js/yeu-thich.js"
 ></script>
+
+<?php if ($laTrangYeuThich): ?>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const isYeuThichPage = new URLSearchParams(window.location.search).get('yeuthich') === '1';
+    if (!isYeuThichPage) return;
+
+    const luoiSanPham = document.getElementById('danh-sach-san-pham');
+    const thongBaoRong = document.getElementById('thong-bao-rong-yeu-thich');
+    const soLuongText = document.getElementById('so-luong-ket-qua');
+    if (!luoiSanPham) return;
+
+    const filterYeuThich = () => {
+        const rawData = localStorage.getItem('stylehubYeuThich');
+        let dsYeuThich = [];
+        try {
+            dsYeuThich = JSON.parse(rawData) || [];
+        } catch (e) {
+            dsYeuThich = [];
+        }
+
+        const cacTheSanPham = luoiSanPham.querySelectorAll('.the-san-pham[data-id-san-pham]');
+        let count = 0;
+
+        cacTheSanPham.forEach(the => {
+            const id = the.getAttribute('data-id-san-pham');
+            if (dsYeuThich.includes(id)) {
+                the.style.display = '';
+                count++;
+            } else {
+                the.style.display = 'none';
+            }
+        });
+
+        if (soLuongText) {
+            soLuongText.textContent = `${count} sản phẩm`;
+        }
+
+        if (count === 0) {
+            if (thongBaoRong) thongBaoRong.style.display = 'block';
+        } else {
+            if (thongBaoRong) thongBaoRong.style.display = 'none';
+        }
+    };
+
+    filterYeuThich();
+    window.addEventListener('stylehub:yeu-thich-thay-doi', filterYeuThich);
+});
+</script>
+<?php endif; ?>
 
 <?php require __DIR__ . '/inc/footer.php'; ?>

@@ -41,13 +41,47 @@ foreach ($danhSachDaXem as $idDaXem) {
 
     <section class="noi-dung">
 
-        <h1>Thời trang cho phong cách riêng của bạn</h1>
+        <section class="hero-home" aria-labelledby="tieu-de-hero">
+            <div class="hero-home__noi-dung">
+                <p class="hero-home__nhan">STYLEHUB · PHONG CÁCH CỦA BẠN</p>
+                <h1 id="tieu-de-hero">Thời trang cho <span>phong cách riêng</span> của bạn</h1>
+                <p class="hero-home__mo-ta">
+                    Chào mừng bạn đến với StyleHub. Khám phá những lựa chọn thời trang
+                    đơn giản, hiện đại và dễ phối đồ cho mỗi ngày.
+                </p>
+                <div class="hero-home__hanh-dong">
+                    <a class="nut nut--chinh" href="danh-sach.php">Khám phá sản phẩm <span aria-hidden="true">→</span></a>
+                    <a class="hero-home__lien-ket" href="gioi-thieu.php">Tìm hiểu về StyleHub</a>
+                </div>
+                <div class="hero-home__diem-noi-bat" aria-label="Điểm nổi bật">
+                    <span><strong>01</strong> Dễ phối đồ</span>
+                    <span><strong>02</strong> Phong cách hiện đại</span>
+                    <span><strong>03</strong> Khám phá dễ dàng</span>
+                </div>
+            </div>
+            <div class="hero-home__hinh-khoi" aria-hidden="true">
+                <div class="hero-home__vong hero-home__vong--lon"></div>
+                <div class="hero-home__vong hero-home__vong--nho"></div>
+                <div class="hero-home__the-noi">
+                    <span class="hero-home__the-noi-nhan">YOUR EVERYDAY EDIT</span>
+                    <span class="hero-home__the-noi-chu">STYLE<br>YOUR<br>DAY.</span>
+                    <span class="hero-home__the-noi-chan">SIMPLE · MODERN · YOU</span>
+                </div>
+                <span class="hero-home__cham hero-home__cham--mot"></span>
+                <span class="hero-home__cham hero-home__cham--hai"></span>
+            </div>
+        </section>
 
-        <p>
-            Chào mừng bạn đến với StyleHub.
-            Khám phá những sản phẩm thời trang đơn giản,
-            hiện đại và dễ phối đồ.
-        </p>
+        <?php if ($danhMuc !== []): ?>
+            <nav class="danh-muc-home" aria-label="Danh mục sản phẩm">
+                <p class="danh-muc-home__nhan">KHÁM PHÁ THEO DANH MỤC</p>
+                <ul class="danh-muc-home__ds">
+                    <?php foreach ($danhMuc as $muc): ?>
+                        <li><?= e($muc) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </nav>
+        <?php endif; ?>
 
         <section class="khoi-noi-dung">
             <h2>Sản phẩm nổi bật</h2>

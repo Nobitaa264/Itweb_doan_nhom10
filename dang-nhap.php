@@ -102,11 +102,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'noiDung' => 'Đăng nhập thành công.',
                 ];
 
-                if ($taiKhoan['vai_tro'] === 'admin') {
-                    header('Location: quan-tri.php');
-                } else {
-                    header('Location: index.php');
-                }
+                if ($taiKhoan['vai_tro'] === 'quan_tri' || $taiKhoan['vai_tro'] === 'admin') {
+    header('Location: quan-tri.php');
+} else {
+    header('Location: index.php');
+}
 
                 exit;
             }
