@@ -1,3 +1,4 @@
+SET FOREIGN_KEY_CHECKS = 0;
 SET NAMES utf8mb4;
 USE ltweb_nhom10;
 
@@ -30,12 +31,12 @@ INSERT INTO san_pham (id, ten, danh_muc_id, gia, hinh_anh, mo_ta, chat_lieu, mau
 ('AK002', 'Áo khoác Denim Jacket', 3, 549000, 'images/denim-jacket.jpg', 'Áo khoác Denim dày dặn, cúc kim loại bền chắc.', 'Denim', 'Xanh nhạt', 'M, L', 'Còn hàng'),
 ('AK003', 'Áo khoác Cardigan Wool', 3, 420000, 'images/bomber.jpg', 'Áo khoác len Cardigan nhẹ nhàng chuẩn phong cách Hàn Quốc.', 'Len mềm', 'Kem, Xám', 'Free Size', 'Còn hàng'),
 ('AK004', 'Áo khoác Gió Chống Nước', 3, 350000, 'images/bomber.jpg', 'Áo khoác gió thể thao chống nước và cản gió tốt.', 'Vải Dù', 'Xanh đen', 'M, L, XL', 'Còn hàng'),
-('AK005', 'Áo khoác Hoodie Form Rộng', 3, 390000, 'images/bomber.jpg', 'Áo Hoodie có nón chất nỉ n bông ấm áp.', 'Nỉ n bông', 'Xám tiêu', 'S, M, L, XL', 'Còn hàng'),
+('AK005', 'Áo khoác Hoodie Form Rộng', 3, 390000, 'images/bomber.jpg', 'Áo Hoodie có nón chất nỉ bông ấm áp.', 'Nỉ bông', 'Xám tiêu', 'S, M, L, XL', 'Còn hàng'),
 
 ('AT001', 'Áo thun Cotton 100% Trắng', 4, 199000, 'images/tshirt.jpg', 'Áo thun cổ tròn chất cotton thấm hút mồ hôi cực tốt.', 'Cotton 100%', 'Trắng', 'S, M, L, XL', 'Còn hàng'),
 ('AT002', 'Áo thun Oversize Đen', 4, 220000, 'images/tshirt.jpg', 'Áo thun dáng rộng Oversize chuẩn phong cách Streetwear.', 'Cotton 250gsm', 'Đen', 'M, L, XL', 'Còn hàng'),
 ('AT003', 'Áo thun Polo Thể Thao', 4, 280000, 'images/tshirt.jpg', 'Áo Polo có cổ lịch sự, vải cá sấu co giãn 4 chiều.', 'Polo CVC', 'Xanh bích', 'M, L, XL, XXL', 'Còn hàng'),
-('AT004', 'Áo thun In In Graphic', 4, 240000, 'images/tshirt.jpg', 'Áo thun in hình Graphic cá tính ở mặt sau lưng.', 'Cotton', 'Trắng, Đen', 'M, L', 'Còn hàng'),
+('AT004', 'Áo thun In Graphic', 4, 240000, 'images/tshirt.jpg', 'Áo thun in hình Graphic cá tính ở mặt sau lưng.', 'Cotton', 'Trắng, Đen', 'M, L', 'Còn hàng'),
 ('AT005', 'Áo thun Ba Lỗ Gymmer', 4, 150000, 'images/tshirt.jpg', 'Áo ba lỗ ôm body tập gym thoải mái vận động.', 'Thun lạnh', 'Đen, Xám', 'M, L, XL', 'Còn hàng'),
 
 ('DL002', 'Combo 5 Đôi Vớ Cổ Cao', 5, 120000, 'images/somi.jpg', 'Combo vớ cổ cao thể thao khử mùi hiệu quả.', 'Cotton dệt', 'Trắng, Đen', 'Free Size', 'Còn hàng'),
@@ -54,7 +55,7 @@ INSERT INTO san_pham (id, ten, danh_muc_id, gia, hinh_anh, mo_ta, chat_lieu, mau
 ('PK005', 'Kính Mát Thời Trang UV400', 7, 230000, 'images/somi.jpg', 'Kính mát chống tia UV400 bảo vệ mắt khi đi đường.', 'Gọng Nhựa/Chống UV', 'Đen huyền', 'Standard', 'Còn hàng')
 ON DUPLICATE KEY UPDATE ten = VALUES(ten);
 
--- 4. Bảng thành viên (Phần B - Đạt)
+-- 4. Bảng thành viên (Phần B)
 INSERT INTO thanh_vien (mssv, ho_ten, nguoi_dung_id) VALUES
 ('3120224028', 'Nguyễn Đình Minh Đạt', NULL),
 ('3120224062', 'Phạm Hoàng', NULL),
@@ -74,7 +75,8 @@ ON DUPLICATE KEY UPDATE so_luot = VALUES(so_luot);
 -- ============================================================
 -- PHẦN B (3120224028 - Nguyễn Đình Minh Đạt): DỮ LIỆU MẪU TV_DU_AN
 -- ============================================================
-INSERT INTO tv_du_an (mssv, ten_du_an, loai_du_an, mo_ta, link_dem) VALUES
+-- Đã sửa lỗi chính tả link_dem thành link_demo
+INSERT INTO tv_du_an (mssv, ten_du_an, loai_du_an, mo_ta, link_demo) VALUES
 ('3120224028', 'Website thương mại điện tử StyleHub', 'Web', 'Dự án bài tập lớn môn Lập trình Web. Xây dựng trang bán hàng thời trang sử dụng PHP PDO, MySQL, REST API giỏ hàng và trang quản trị Admin.', 'https://github.com/Nobitaa264/ltweb_doan_nhom10'),
 ('3120224028', 'Ứng dụng di động Quản lý chi tiêu cá nhân', 'App Mobile', 'Xây dựng ứng dụng di động hỗ trợ theo dõi thu chi hàng ngày, lập kế hoạch tài chính và xuất báo cáo biểu đồ trực quan.', ''),
 ('3120224028', 'Hệ thống AI phân loại hình ảnh thời trang', 'AI / Trí tuệ nhân tạo', 'Ứng dụng mô hình học máy (Machine Learning) để nhận diện và phân loại tự động danh mục quần áo từ hình ảnh người dùng tải lên.', '')
@@ -87,7 +89,9 @@ INSERT INTO tv_luu_but (mssv, ten_nguoi_gui, noi_dung, created_at) VALUES
 ('3120224062', 'Nguyễn Văn A', 'Trang cá nhân thiết kế rất đẹp và trực quan!', '2026-03-01 10:00:00'),
 ('3120224062', 'Trần Thị B', 'Chúc bạn hoàn thành xuất sắc đồ án nhóm nhé!', '2026-03-01 11:30:00');
 
--- 7. Phần B cá nhân: Dương Quang Sơn (MSSV 3120224123)
+-- ==============================================
+-- TH6 PHAN B - DUONG QUANG SON (3120224123)
+-- ==============================================
 INSERT INTO tv_son_lich_hen (mssv, ho_ten, ngay_hen, gio_hen, noi_dung)
 VALUES ('3120224123', 'Khách demo', DATE_SUB(CURDATE(), INTERVAL 1 DAY), '08:00',
         'Lịch mẫu kiểm thử dữ liệu cá nhân StyleHub')
@@ -99,3 +103,30 @@ WHERE NOT EXISTS (
     SELECT 1 FROM tv_son_trac_nghiem
     WHERE mssv = '3120224123' AND bi_danh = 'Khách demo'
 );
+
+-- ============================================================
+-- PHẦN B (3120224170 - Nguyễn Hữu Tuân): DỮ LIỆU KỸ NĂNG, LƯỢT XEM VÀ LƯU BÚT
+-- ============================================================
+INSERT INTO tv_ky_nang (mssv, ten_ky_nang, nhom_ky_nang, muc_do, mo_ta_chi_tiet) VALUES
+('3120224170', 'HTML5 & Semantic Web', 'Frontend', 90, 'Xây dựng cấu trúc trang web chuẩn W3C, thân thiện SEO và Accessibility.'),
+('3120224170', 'CSS3 & Responsive Layout', 'Frontend', 85, 'Thiết kế giao diện đáp ứng đa thiết bị với Flexbox và CSS Grid.'),
+('3120224170', 'JavaScript & Fetch API', 'Frontend', 80, 'Xử lý DOM động, gọi API bất đồng bộ và định dạng dữ liệu JSON.'),
+('3120224170', 'PHP 8 & Lập trình hướng đối tượng', 'Backend', 88, 'Xây dựng ứng dụng web theo mô hình PRG, xử lý Session và bảo mật XSS.'),
+('3120224170', 'MySQL & PDO Prepared Statement', 'Database', 85, 'Thiết kế lược đồ CSDL quan hệ, tối ưu truy vấn JOIN, GROUP BY và chống SQL Injection.'),
+('3120224170', 'Git & Quản lý phiên bản', 'Công cụ', 75, 'Sử dụng Git để làm việc nhóm, commit, push và giải quyết xung đột code.'),
+('3120224170', 'Làm việc nhóm & Giải quyết vấn đề', 'Kỹ năng mềm', 90, 'Phân chia công việc, thảo luận giải pháp kỹ thuật và hỗ trợ thành viên.')
+ON DUPLICATE KEY UPDATE ten_ky_nang = VALUES(ten_ky_nang);
+
+INSERT INTO tv_luot_xem (mssv, ngay, so_luot) VALUES
+('3120224170', CURDATE(), 5),
+('3120224170', DATE_SUB(CURDATE(), INTERVAL 1 DAY), 12),
+('3120224170', DATE_SUB(CURDATE(), INTERVAL 2 DAY), 8),
+('3120224170', DATE_SUB(CURDATE(), INTERVAL 3 DAY), 20),
+('3120224170', DATE_SUB(CURDATE(), INTERVAL 4 DAY), 15)
+ON DUPLICATE KEY UPDATE so_luot = VALUES(so_luot);
+
+INSERT INTO tv_luu_but (mssv, ten_nguoi_gui, noi_dung, created_at) VALUES 
+('3120224170', 'Minh Đạt', 'Giao diện trang cá nhân của Tuân làm rất tốt, bộ lọc hoạt động mượt mà!', DATE_SUB(NOW(), INTERVAL 2 DAY)),
+('3120224170', 'Quang Sơn', 'Chúc Tuân bảo vệ đồ án đạt điểm cao tuyệt đối nhé!', DATE_SUB(NOW(), INTERVAL 1 DAY));
+
+SET FOREIGN_KEY_CHECKS = 1;
