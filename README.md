@@ -65,11 +65,10 @@ Mở trình duyệt truy cập: **`http://localhost:8000`**
 
 Toàn bộ tài khoản mẫu đã được tạo sẵn trong tệp `database/seed.sql` với mật khẩu chung là `123456`:
 
-| Vai trò           | Email đăng nhập       | Mật khẩu | Tên người dùng | Chức năng kiểm thử                                     |
-| :---------------- | :-------------------- | :------- | :------------- | :----------------------------------------------------- |
-| **Quản trị viên** | `admin@stylehub.com`  | `123456` | Quản trị viên  | Quản lý sản phẩm (`quan-tri.php`), xem tất cả đơn hàng |
-| **Khách hàng 1**  | `khach1@stylehub.com` | `123456` | Nguyễn Văn An  | Đặt hàng, xem đơn hàng cá nhân (`don-hang.php`)        |
-| **Khách hàng 2**  | `khach2@stylehub.com` | `123456` | Trần Thị Bình  | Đặt hàng, xem đơn hàng cá nhân (`don-hang.php`)        |
+| Vai trò           | đăng nhập | Mật khẩu     | Tên người dùng | Chức năng kiểm thử                                     |
+| :---------------- | :-------- | :----------- | :------------- | :----------------------------------------------------- |
+| **Quản trị viên** | `admin`   | `Admin@123`  | Quản trị viên  | Quản lý sản phẩm (`quan-tri.php`), xem tất cả đơn hàng |
+| **Khách hàng 1**  | `khach1`  | `Khach1@123` | khach1         | Đặt hàng, xem đơn hàng cá nhân (`don-hang.php`)        |
 
 ---
 
