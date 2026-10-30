@@ -21,6 +21,7 @@ INSERT INTO san_pham (id, ten, danh_muc_id, gia, hinh_anh, mo_ta, chat_lieu, mau
 ('SH004', 'Áo sơ mi Tay Ngắn Mùa Hè', 1, 270000, 'images/somi.jpg', 'Áo sơ mi ngắn tay thoáng mát phù hợp thời tiết mùa hè.', 'Linen', 'Xanh nhạt', 'M, L, XL', 'Còn hàng'),
 ('SH005', 'Áo sơ mi Denim Nam', 1, 380000, 'images/somi.jpg', 'Áo sơ mi chất liệu Denim cá tính, phong cách bụi bặm.', 'Denim', 'Xanh đậm', 'M, L', 'Còn hàng'),
 
+('JE006', 'Quần jean Levi''s 501', 2, 1290000, 'images/jeans.jpg', 'Quần jean Levi''s 501 phong cách cổ điển, chất liệu denim bền đẹp.', 'Denim', 'Xanh Denim', '29, 30, 31, 32', 'Còn hàng'),
 ('JE001', 'Quần Jeans Classic Xanh', 2, 399000, 'images/jeans.jpg', 'Quần Jeans ống đứng cổ điển, màu xanh denim chuẩn đẹp.', 'Denim', 'Xanh Denim', '29, 30, 31, 32', 'Còn hàng'),
 ('JE002', 'Quần Jeans Slimfit Đen', 2, 420000, 'images/jeans.jpg', 'Quần Jeans ôm dáng Slimfit màu đen tuyền cá tính.', 'Denim co giãn', 'Đen', '28, 29, 30, 31', 'Còn hàng'),
 ('JE003', 'Quần Jeans Rách Gối Style', 2, 450000, 'images/jeans.jpg', 'Quần Jeans rách gối nhẹ tạo điểm nhấn phá cách.', 'Denim', 'Xanh sáng', '29, 30, 31, 32', 'Còn hàng'),
