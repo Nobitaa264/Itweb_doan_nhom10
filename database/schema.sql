@@ -217,21 +217,3 @@ CREATE TABLE IF NOT EXISTS tv_son_trac_nghiem (
     CONSTRAINT chk_tv_son_trac_nghiem_dung CHECK (so_cau_dung <= tong_cau),
     INDEX idx_tv_son_trac_nghiem_moi (mssv, id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ============================================================
--- PHẦN B (3120224170 - Nguyễn Hữu Tuân): BẢNG TV_KY_NANG
--- ============================================================
-CREATE TABLE IF NOT EXISTS tv_ky_nang (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    mssv VARCHAR(20) NOT NULL,
-    ten_ky_nang VARCHAR(100) NOT NULL,
-    nhom_ky_nang VARCHAR(50) NOT NULL,
-    muc_do TINYINT UNSIGNED NOT NULL, -- Phần trăm mức độ thành thạo (0 - 100)
-    mo_ta_chi_tiet TEXT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_tv_ky_nang_thanh_vien 
-        FOREIGN KEY (mssv) REFERENCES thanh_vien(mssv) 
-        ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT chk_tv_ky_nang_muc_do CHECK (muc_do <= 100),
-    INDEX idx_tv_ky_nang_mssv (mssv)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -100,12 +100,13 @@ $loaiDuAnFilter = trim((string)($_GET['loai_duan'] ?? ''));
 
 try {
     $pdo = db();
-$sqlDuAn = "SELECT id, ten_du_an, loai_du_an, mo_ta, link_dem, created_at
-            FROM tv_du_an WHERE mssv = ?";    $paramsDuAn = [$mssv];
+    $sqlDuAn = "SELECT id, ten_du_an, loai_du_an, mo_ta, created_at FROM tv_du_an WHERE mssv = ?";
+    $paramsDuAn = [$mssv];
 
     if ($loaiDuAnFilter !== '') {
-        $sqlDuAn .= " AND loai_du_an = ?";
-        $paramsDuAn[] = $loaiDuAnFilter;
+        // Dùng LIKE để lọc chính xác hơn nếu tên loại dự án có ký tự đặc biệt
+        $sqlDuAn .= " AND loai_du_an LIKE ?";
+        $paramsDuAn[] = '%' . $loaiDuAnFilter . '%';
     }
 
     if ($timKiemDuAn !== '') {
