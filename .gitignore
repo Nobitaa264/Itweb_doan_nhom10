@@ -1,5 +1,12 @@
+
 .vs/
 *.zip
 *.bak
 cookies-test.txt
 logs/*.log
+
+# Bao ve thong tin cau hinh
+.env
+
+# Thu vien PHP cai dat bang Composer
+/vendor/

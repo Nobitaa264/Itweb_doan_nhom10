@@ -14,11 +14,11 @@ http_response_code(403);
 
 <main class="noi-dung">
     <div class="bao">
-        <section class="khu-vuc" style="text-align: center; padding: 50px 0;">
-            <h1 style="font-size: 72px; margin-bottom: 10px;">403</h1>
+        <section class="khu-vuc trang-loi-403">
+            <h1 class="trang-loi-403__ma">403</h1>
             <h2>Trang bị cấm truy cập</h2>
             <p>Bạn không có quyền truy cập vào khu vực này.</p>
-            <p style="margin-top: 20px;">
+            <p class="trang-loi-403__hanh-dong">
                 <a class="nut" href="index.php">Quay lại trang chủ</a>
             </p>
         </section>

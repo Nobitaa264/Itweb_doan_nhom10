@@ -1,0 +1,24 @@
+/* TH7 / CSP: thay cac thuoc tinh style noi tuyen bang class. */
+.trang-loi-403 {
+    text-align: center;
+    padding: 50px 0;
+}
+
+.trang-loi-403__ma {
+    font-size: 72px;
+    margin-bottom: 10px;
+}
+
+.trang-loi-403__hanh-dong {
+    margin-top: 20px;
+}
+
+.chuyen-trang--dang-nhap {
+    margin-top: 15px;
+}
+
+/* Trang yeu thich dung hidden thay cho style.display. */
+body.danh-sach #thong-bao-rong-yeu-thich[hidden],
+body.danh-sach .the-san-pham[hidden] {
+    display: none !important;
+}

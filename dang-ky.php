@@ -17,6 +17,9 @@ $tenDangNhap = '';
 $email = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // TH7: từ chối POST thiếu/sai mã CSRF trước khi đọc dữ liệu đăng ký.
+    csrfKiemTraPost();
+
     $ten = trim((string) ($_POST['ten'] ?? ''));
     $tenDangNhap = trim(
         (string) ($_POST['ten-dang-nhap'] ?? '')
@@ -95,6 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="khu-vuc-form">
             <form method="post" action="dang-ky.php">
+                <?= csrfField() ?>
                 <div class="nhom-form">
                     <label for="ten">Họ và tên</label>
                     <input
