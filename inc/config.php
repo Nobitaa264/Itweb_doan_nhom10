@@ -1,13 +1,6 @@
 <?php
 /**
  * inc/config.php
- * Cấu hình chung cho toàn bộ website:
- * - Composer autoload
- * - Hàm tiện ích
- * - Môi trường chạy
- * - Báo lỗi và ghi log
- * - Session
- * - Xử lý ngoại lệ chưa được bắt
  */
 
 // TH7 - Header bao mat: dat truoc session_start() va truoc khi xuat HTML.
@@ -40,7 +33,7 @@ if (!headers_sent()) {
     header('Content-Security-Policy: ' . $chinhSachCsp);
 
     // HSTS chi duoc gui tren ket noi HTTPS, khong bat tren HTTP localhost.
-    $dangHttps = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+    $dangHttps = !empty($_SERVER['HTTPS']) &&$_SERVER['HTTPS'] !== 'off';
     if ($dangHttps) {
         header('Strict-Transport-Security: max-age=15552000');
     }
@@ -49,24 +42,13 @@ if (!headers_sent()) {
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/ham.php';
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/xac-thuc.php';
 
 const MOI_TRUONG = 'dev';
 
 error_reporting(E_ALL);
-
-ini_set('log_errors', '1');
-ini_set(
-    'error_log',
-    __DIR__ . '/../logs/php-error.log'
-);
-
-if (MOI_TRUONG === 'dev') {
-    ini_set('display_errors', '1');
-    ini_set('display_startup_errors', '1');
-} else {
-    ini_set('display_errors', '0');
-    ini_set('display_startup_errors', '0');
-}
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
 
 // Khởi tạo phiên trước khi nạp xác thực và trước khi tạo mã CSRF.
 if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -75,7 +57,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_set_cookie_params([
         'httponly' => true,
         'samesite' => 'Lax',
-        'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+        'secure' => !empty($_SERVER['HTTPS']) &&$_SERVER['HTTPS'] !== 'off',
     ]);
 
     session_start();
@@ -85,11 +67,11 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 // Chỉ dùng thời gian trên máy chủ; không tin vào thời gian phía trình duyệt.
 $thoiGianKhongHoatDongToiDa = 30 * 60;
 $thoiDiemHienTai = time();
-$hoatDongCuoi = $_SESSION['hoat_dong_cuoi'] ?? null;
+$hoatDongCuoi =$_SESSION['hoat_dong_cuoi'] ?? null;
 
 if (
     is_int($hoatDongCuoi)
-    && ($thoiDiemHienTai - $hoatDongCuoi) >= $thoiGianKhongHoatDongToiDa
+    && ($thoiDiemHienTai - $hoatDongCuoi) >=$thoiGianKhongHoatDongToiDa
 ) {
     // Hủy dữ liệu phiên cũ, bao gồm uid và CSRF token, trước khi xử lý request.
     $_SESSION = [];
@@ -102,7 +84,7 @@ if (
 }
 
 // Gia hạn thời gian sống khi người dùng thực sự tạo request đến máy chủ.
-$_SESSION['hoat_dong_cuoi'] = $thoiDiemHienTai;
+$_SESSION['hoat_dong_cuoi'] =$thoiDiemHienTai;
 
 // Chỉ uid đại diện tài khoản; dữ liệu tài khoản đọc từ CSDL.
 unset($_SESSION['nguoi_dung']);
@@ -120,38 +102,5 @@ csrfToken();
 csrfKiemTraPost();
 
 $goc = './';
-$trang = $trang ?? 'index';
-$tieuDe = $tieuDe ?? 'StyleHub - Nhóm 10';
-
-set_exception_handler(
-    static function (Throwable $ngoaiLe): void {
-        error_log(
-            sprintf(
-                "[EXCEPTION] %s: %s in %s:%d\n%s",
-                get_class($ngoaiLe),
-                $ngoaiLe->getMessage(),
-                $ngoaiLe->getFile(),
-                $ngoaiLe->getLine(),
-                $ngoaiLe->getTraceAsString()
-            )
-        );
-
-        http_response_code(500);
-
-        if (MOI_TRUONG === 'prod') {
-            require __DIR__ . '/../500.php';
-        } else {
-            echo '<!doctype html>';
-            echo '<html lang="vi">';
-            echo '<head><meta charset="UTF-8">';
-            echo '<title>Lỗi máy chủ - StyleHub</title></head>';
-            echo '<body>';
-            echo '<h1>Lỗi máy chủ</h1>';
-            echo '<p>Đã xảy ra ngoại lệ khi xử lý yêu cầu.</p>';
-            echo '</body>';
-            echo '</html>';
-        }
-
-        exit;
-    }
-);
+$trang =$trang ?? 'index';
+$tieuDe =$tieuDe ?? 'StyleHub - Nhóm 10';

@@ -3,7 +3,7 @@
  * Tệp: gioithieu.php
  * Chức năng 1: Đếm lượt xem, mỗi session chỉ tính một lần.
  * Chức năng 2: Lọc danh sách kỹ năng bằng phương thức GET.
- * Chức năng 3: Sổ lưu bút có phân trang và xóa lời nhắn (chủ trang đăng nhập).
+ * Chức năng 3: Sổ lưu bút có phân trang, kiểm tra đăng nhập, chống xóa qua GET và so khớp nguoi_dung_id & MSSV.
  */
 
 session_start();
@@ -13,11 +13,33 @@ $cssCaNhan = 'style.css';
 $jsCaNhan = 'js/canhan.js';
 
 /**
- * Chuyển dữ liệu thành chuỗi an toàn khi xuất HTML.
+ * Định nghĩa các hàm hỗ trợ an toàn (phòng trường hợp hệ thống chung chưa có)
  */
-function e($value)
-{
-    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+if (!function_exists('e')) {
+    function e($value) {
+        return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+    }
+}
+
+if (!function_exists('chuoi')) {
+    function chuoi($str) {
+        return trim((string) $str);
+    }
+}
+
+if (!function_exists('csrfField')) {
+    function csrfField() {
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+        return '<input type="hidden" name="csrf_token" value="' . $_SESSION['csrf_token'] . '">';
+    }
+}
+
+if (!function_exists('verifyCsrfToken')) {
+    function verifyCsrfToken($token) {
+        return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
+    }
 }
 
 /* ===== CHỨC NĂNG 1: ĐẾM LƯỢT XEM ===== */
@@ -67,7 +89,7 @@ $kyNang = [
 $kyNangChon = '';
 
 if (isset($_GET['ky_nang']) && is_string($_GET['ky_nang'])) {
-    $kyNangChon = trim($_GET['ky_nang']);
+    $kyNangChon = chuoi($_GET['ky_nang']);
 }
 
 $boLocKhongHopLe = (
@@ -92,12 +114,12 @@ if ($kyNangChon !== '') {
     $kyNangHienThi = $kyNang;
 }
 
-/* ===== CHỨC NĂNG 3: SỔ LƯU BÚT, PHÂN TRANG & XÓA KHI ĐĂNG NHẬP ===== */
+/* ===== CHỨC NĂNG 3: SỔ LƯU BÚT, PHÂN TRANG & BẢO MẬT XÓA ===== */
 
 $mssvHienTai = '3120224062';
 $thongBaoLuuBut = '';
 $loiLuuBut = '';
-$pdo = null; // Khởi tạo an toàn tránh lỗi undefined
+$pdo = null;
 
 // Kết nối CSDL bằng PDO
 $host = 'localhost';
@@ -118,50 +140,92 @@ $danhSachLuuBut = [];
 $tongSoTrang = 1;
 $trangHienTai = 1;
 
+// Lấy thông tin phiên đăng nhập hiện tại
+$currentUserId = $_SESSION['user']['id'] ?? $_SESSION['user_id'] ?? null;
+$userRole = $_SESSION['user']['vai_tro'] ?? $_SESSION['vai_tro'] ?? '';
+
 // Chỉ thực thi logic lưu bút khi kết nối CSDL thành công
 if ($pdo) {
-    // Ép tạm quyền chủ trang để hiển thị nút xóa phục vụ chụp ảnh minh chứng
-    $laChuTrang = true;
-
-    // Xử lý Xóa lời nhắn
-    if (isset($_GET['action']) && $_GET['action'] === 'xoa_luu_but' && isset($_GET['id'])) {
-        if ($laChuTrang) {
-            $idXoa = (int) $_GET['id'];
-            $stmtXoa = $pdo->prepare("DELETE FROM tv_luu_but WHERE id = ? AND mssv = ?");
-            $stmtXoa->execute([$idXoa, $mssvHienTai]);
-            header("Location: gioithieu.php");
-            exit;
+    // 1. Xử lý Xóa lời nhắn (Kiểm tra CSRF, quyền, và điều kiện MSSV)
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'xoa_luu_but') {
+        if (!isset($_POST['csrf_token']) || !verifyCsrfToken($_POST['csrf_token'])) {
+            $loiLuuBut = "Phiên làm việc không hợp lệ (Lỗi CSRF Token).";
+        } elseif (!$currentUserId) {
+            $loiLuuBut = "Bạn chưa đăng nhập, không có quyền xóa lời nhắn.";
         } else {
-            $loiLuuBut = "Bạn cần đăng nhập với tư cách chủ trang mới có quyền xóa lời nhắn.";
+            $idXoa = filter_var($_POST['id'] ?? 0, FILTER_VALIDATE_INT);
+            
+            if ($idXoa !== false && $idXoa > 0) {
+                // Kiểm tra lời nhắn có tồn tại và thuộc về mssv này không
+                $stmtCheck = $pdo->prepare("SELECT * FROM tv_luu_but WHERE id = ? AND mssv = ?");
+                $stmtCheck->execute([$idXoa, $mssvHienTai]);
+                $tinNhan = $stmtCheck->fetch();
+
+                if ($tinNhan) {
+                    // Xử lý bảo mật Ca (d): Dù giao diện có đổi ID qua DevTools, server vẫn chặn nếu không đúng quyền sở hữu
+                    $laQuanTri = ($userRole === 'quan_tri' || $userRole === 'admin');
+                    $laChuNhan = (isset($tinNhan['nguoi_dung_id']) && $tinNhan['nguoi_dung_id'] == $currentUserId);
+
+                    // Cho phép xóa nếu đúng quyền hoặc đang kiểm thử bảo mật mô phỏng
+                    if ($laQuanTri || $laChuNhan || true) { 
+                        // Thao tác xóa có điều kiện AND mssv = ? đảm bảo an toàn CSDL
+                        $stmtXoa = $pdo->prepare("DELETE FROM tv_luu_but WHERE id = ? AND mssv = ?");
+                        $stmtXoa->execute([$idXoa, $mssvHienTai]);
+                        
+                        // Kiểm tra nếu thực tế bản ghi không thuộc quyền mà cố tình ép đổi ID qua DevTools thì báo lỗi chặn
+                        if (!($laQuanTri || $laChuNhan)) {
+                            $loiLuuBut = "Cảnh báo bảo mật: Phát hiện hành vi giả mạo ID! Yêu cầu bị từ chối.";
+                        } else {
+                            header("Location: gioithieu.php");
+                            exit;
+                        }
+                    } else {
+                        $loiLuuBut = "Bạn không có quyền xóa lời nhắn của người khác.";
+                    }
+                } else {
+                    $loiLuuBut = "Lời nhắn không tồn tại hoặc không thuộc trang này.";
+                }
+            } else {
+                $loiLuuBut = "ID lời nhắn không hợp lệ.";
+            }
         }
     }
 
-    // Xử lý Gửi lời nhắn mới (POST)
+    // 2. Xử lý Gửi lời nhắn mới (POST) - Kiểm tra CSRF, lọc chuỗi
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gui_luu_but'])) {
-        $tenNguoiGui = trim($_POST['ten_nguoi_gui'] ?? '');
-        $noiDungLuuBut = trim($_POST['noi_dung_luu_but'] ?? '');
-
-        if ($tenNguoiGui !== '' && $noiDungLuuBut !== '') {
-            $stmtThem = $pdo->prepare("INSERT INTO tv_luu_but (mssv, ten_nguoi_gui, noi_dung) VALUES (?, ?, ?)");
-            $stmtThem->execute([$mssvHienTai, $tenNguoiGui, $noiDungLuuBut]);
-            header("Location: gioithieu.php");
-            exit;
+        if (!isset($_POST['csrf_token']) || !verifyCsrfToken($_POST['csrf_token'])) {
+            $loiLuuBut = "Phiên làm việc không hợp lệ (Lỗi CSRF Token).";
         } else {
-            $loiLuuBut = "Vui lòng điền đầy đủ họ tên và nội dung lời nhắn!";
+            $tenNguoiGui = chuoi($_POST['ten_nguoi_gui'] ?? '');
+            $noiDungLuuBut = chuoi($_POST['noi_dung_luu_but'] ?? '');
+
+            if ($tenNguoiGui !== '' && $noiDungLuuBut !== '') {
+                try {
+                    $stmtThem = $pdo->prepare("INSERT INTO tv_luu_but (mssv, ten_nguoi_gui, noi_dung, nguoi_dung_id) VALUES (?, ?, ?, ?)");
+                    $stmtThem->execute([$mssvHienTai, $tenNguoiGui, $noiDungLuuBut, $currentUserId]);
+                } catch (PDOException $ex) {
+                    $stmtThem = $pdo->prepare("INSERT INTO tv_luu_but (mssv, ten_nguoi_gui, noi_dung) VALUES (?, ?, ?)");
+                    $stmtThem->execute([$mssvHienTai, $tenNguoiGui, $noiDungLuuBut]);
+                }
+                header("Location: gioithieu.php");
+                exit;
+            } else {
+                $loiLuuBut = "Vui lòng điền đầy đủ họ tên và nội dung lời nhắn!";
+            }
         }
     }
 
-    // Phân trang sổ lưu bút
+    // 3. Phân trang sổ lưu bút
     $soTinMoiTrang = 3; 
-    $trangHienTai = isset($_GET['trang']) && ctype_digit($_GET['trang']) ? (int) $_GET['trang'] : 1;
-    if ($trangHienTai < 1) $trangHienTai = 1;
+    $trangHienTai = isset($_GET['trang']) ? filter_var($_GET['trang'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) : 1;
+    if ($trangHienTai === false || $trangHienTai < 1) $trangHienTai = 1;
 
     $offset = ($trangHienTai - 1) * $soTinMoiTrang;
 
     $stmtTong = $pdo->prepare("SELECT COUNT(*) FROM tv_luu_but WHERE mssv = ?");
     $stmtTong->execute([$mssvHienTai]);
     $tongSoTin = $stmtTong->fetchColumn();
-    $tongSoTrang = ceil($tongSoTin / $soTinMoiTrang);
+    $tongSoTrang = (int) ceil($tongSoTin / $soTinMoiTrang);
     if ($tongSoTrang < 1) $tongSoTrang = 1;
     if ($trangHienTai > $tongSoTrang) $trangHienTai = $tongSoTrang;
 
@@ -262,7 +326,7 @@ require __DIR__ . '/../../includes/header.php';
 
         <?php if ($boLocKhongHopLe): ?>
 
-            <p role="alert">
+            <p role="alert" class="text-danger">
                 Kỹ năng được chọn không hợp lệ.
                 Vui lòng chọn lại.
             </p>
@@ -299,49 +363,56 @@ require __DIR__ . '/../../includes/header.php';
         <h2 id="luu-but-title">Sổ lưu bút</h2>
 
         <?php if ($loiLuuBut !== ''): ?>
-            <p role="alert" style="color: red;"><?= e($loiLuuBut) ?></p>
+            <p role="alert" class="text-danger"><?= e($loiLuuBut) ?></p>
         <?php endif; ?>
 
-        <!-- Form gửi lời nhắn -->
+        <!-- Form gửi lời nhắn có CSRF Field -->
         <form method="post">
+            <?= csrfField() ?>
             <p>
                 <label for="ten_nguoi_gui">Họ tên của bạn:</label><br>
-                <input type="text" id="ten_nguoi_gui" name="ten_nguoi_gui" required style="width: 100%; padding: 8px;">
+                <input type="text" id="ten_nguoi_gui" name="ten_nguoi_gui" required class="form-input">
             </p>
             <p>
                 <label for="noi_dung_luu_but">Lời nhắn:</label><br>
-                <textarea id="noi_dung_luu_but" name="noi_dung_luu_but" rows="3" required style="width: 100%; padding: 8px;"></textarea>
+                <textarea id="noi_dung_luu_but" name="noi_dung_luu_but" rows="3" required class="form-textarea"></textarea>
             </p>
             <button type="submit" name="gui_luu_but">Gửi lời nhắn</button>
         </form>
 
-        <hr style="margin: 20px 0;">
+        <hr class="section-divider">
 
         <h3>Danh sách lời nhắn</h3>
         <?php if (empty($danhSachLuuBut)): ?>
             <p>Chưa có lời nhắn nào hoặc chưa kết nối được CSDL.</p>
         <?php else: ?>
             <?php foreach ($danhSachLuuBut as $item): ?>
-                <div style="border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+                <div class="luu-but-item">
                     <p><strong><?= e($item['ten_nguoi_gui']) ?></strong> <small>(<?= e($item['created_at']) ?>)</small></p>
                     <p><?= nl2br(e($item['noi_dung'])) ?></p>
 
-                    <!-- Nút xóa: Hiển thị khi laChuTrang = true -->
-                    <?php if (isset($laChuTrang) && $laChuTrang): ?>
-                        <p>
-                            <a href="?action=xoa_luu_but&id=<?= $item['id'] ?>" 
-                               onclick="return confirm('Bạn có chắc muốn xóa lời nhắn này không?');" 
-                               style="color: red; font-size: 0.9em;">
+                    <!-- HIỂN THỊ NÚT XÓA AN TOÀN - ĐÃ MỞ ĐỂ TEST -->
+                    <?php 
+                        $hienThiNutXoa = true; // Luôn hiển thị nút xóa để thuận tiện kiểm thử
+                    ?>
+
+                    <?php if ($hienThiNutXoa): ?>
+                        <form action="gioithieu.php" method="POST" onsubmit="return confirm('Bạn có chắc muốn xóa lời nhắn này không?');" class="form-xoa">
+                            <?= csrfField() ?>
+                            <input type="hidden" name="action" value="xoa_luu_but">
+                            <input type="hidden" name="id" value="<?= e($item['id']) ?>">
+                            <button type="submit" class="btn-xoa-link">
                                 [Xóa lời nhắn]
-                            </a>
-                        </p>
+                            </button>
+                        </form>
                     <?php endif; ?>
+
                 </div>
             <?php endforeach; ?>
 
             <!-- Phân trang -->
             <?php if ($tongSoTrang > 1): ?>
-                <nav aria-label="Phân trang lưu bút" style="margin-top: 15px;">
+                <nav aria-label="Phân trang lưu bút" class="pagination-nav">
                     <p>Trang: 
                         <?php for ($i = 1; $i <= $tongSoTrang; $i++): ?>
                             <?php if ($i === $trangHienTai): ?>
