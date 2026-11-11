@@ -43,105 +43,96 @@ $mauSac = $sanPham->mauSac;
 $kichCo = $sanPham->kichCo;
 $tinhTrang = $sanPham->tinhTrang;
 
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $token = (string) ($_POST['_token'] ?? '');
+    csrfKiemTraPost();
+    $ten = trim((string) ($_POST['ten'] ?? ''));
+    $giaNhap = trim((string) ($_POST['gia'] ?? ''));
+    $danhMucHienTai = trim((string) ($_POST['danh_muc_id'] ?? ''));
+    $hinhAnh = trim((string) ($_POST['hinh_anh'] ?? ''));
+    $moTa = trim((string) ($_POST['mo_ta'] ?? ''));
+    $chatLieu = trim((string) ($_POST['chat_lieu'] ?? ''));
+    $mauSac = trim((string) ($_POST['mau_sac'] ?? ''));
+    $kichCo = trim((string) ($_POST['kich_co'] ?? ''));
+    $tinhTrang = trim((string) ($_POST['tinh_trang'] ?? ''));
 
-    if (!hash_equals((string) $_SESSION['csrf_token'], $token)) {
-        $loi = 'Phiên làm việc không hợp lệ. Vui lòng tải lại trang.';
-    } else {
-        $ten = trim((string) ($_POST['ten'] ?? ''));
-        $giaNhap = trim((string) ($_POST['gia'] ?? ''));
-        $danhMucHienTai = trim((string) ($_POST['danh_muc_id'] ?? ''));
-        $hinhAnh = trim((string) ($_POST['hinh_anh'] ?? ''));
-        $moTa = trim((string) ($_POST['mo_ta'] ?? ''));
-        $chatLieu = trim((string) ($_POST['chat_lieu'] ?? ''));
-        $mauSac = trim((string) ($_POST['mau_sac'] ?? ''));
-        $kichCo = trim((string) ($_POST['kich_co'] ?? ''));
-        $tinhTrang = trim((string) ($_POST['tinh_trang'] ?? ''));
+    $gia = $giaNhap;
 
-        $gia = $giaNhap;
+    $giaHopLe = $giaNhap !== ''
+        && ctype_digit($giaNhap)
+        && filter_var(
+            $giaNhap,
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 0]]
+        ) !== false;
 
-        $giaHopLe = $giaNhap !== ''
-            && ctype_digit($giaNhap)
-            && filter_var(
-                $giaNhap,
-                FILTER_VALIDATE_INT,
-                ['options' => ['min_range' => 0]]
-            ) !== false;
+    $danhMucHopLe = false;
 
-        $danhMucHopLe = false;
-
-        foreach ($danhMuc as $muc) {
-            if ((string) $muc['id'] === $danhMucHienTai) {
-                $danhMucHopLe = true;
-                break;
-            }
+    foreach ($danhMuc as $muc) {
+        if ((string) $muc['id'] === $danhMucHienTai) {
+            $danhMucHopLe = true;
+            break;
         }
+    }
 
-        $trangThaiHopLe = in_array(
-            $tinhTrang,
-            ['Còn hàng', 'Hết hàng'],
-            true
-        );
+    $trangThaiHopLe = in_array(
+        $tinhTrang,
+        ['Còn hàng', 'Hết hàng'],
+        true
+    );
 
-        if ($ten === '' || mb_strlen($ten) > 255) {
-            $loi = 'Tên sản phẩm không được để trống và tối đa 255 ký tự.';
-        } elseif (!$giaHopLe) {
-            $loi = 'Giá phải là số nguyên không âm.';
-        } elseif (!$danhMucHopLe) {
-            $loi = 'Vui lòng chọn danh mục hợp lệ.';
-        } elseif ($hinhAnh === '' || mb_strlen($hinhAnh) > 500) {
-            $loi = 'Đường dẫn ảnh không được để trống và tối đa 500 ký tự.';
-        } elseif ($moTa === '' || $chatLieu === '' || $mauSac === '' || $kichCo === '') {
-            $loi = 'Vui lòng nhập đầy đủ mô tả, chất liệu, màu sắc và kích cỡ.';
-        } elseif (!$trangThaiHopLe) {
-            $loi = 'Tình trạng sản phẩm không hợp lệ.';
-        } else {
-            try {
-                $sql = '
-                    UPDATE san_pham
-                    SET
-                        ten = :ten,
-                        gia = :gia,
-                        danh_muc_id = :danh_muc_id,
-                        hinh_anh = :hinh_anh,
-                        mo_ta = :mo_ta,
-                        chat_lieu = :chat_lieu,
-                        mau_sac = :mau_sac,
-                        kich_co = :kich_co,
-                        tinh_trang = :tinh_trang
-                    WHERE id = :id
-                ';
+    if ($ten === '' || mb_strlen($ten) > 255) {
+        $loi = 'Tên sản phẩm không được để trống và tối đa 255 ký tự.';
+    } elseif (!$giaHopLe) {
+        $loi = 'Giá phải là số nguyên không âm.';
+    } elseif (!$danhMucHopLe) {
+        $loi = 'Vui lòng chọn danh mục hợp lệ.';
+    } elseif ($hinhAnh === '' || mb_strlen($hinhAnh) > 500) {
+        $loi = 'Đường dẫn ảnh không được để trống và tối đa 500 ký tự.';
+    } elseif ($moTa === '' || $chatLieu === '' || $mauSac === '' || $kichCo === '') {
+        $loi = 'Vui lòng nhập đầy đủ mô tả, chất liệu, màu sắc và kích cỡ.';
+    } elseif (!$trangThaiHopLe) {
+        $loi = 'Tình trạng sản phẩm không hợp lệ.';
+    } else {
+        try {
+            $sql = '
+                UPDATE san_pham
+                SET
+                    ten = :ten,
+                    gia = :gia,
+                    danh_muc_id = :danh_muc_id,
+                    hinh_anh = :hinh_anh,
+                    mo_ta = :mo_ta,
+                    chat_lieu = :chat_lieu,
+                    mau_sac = :mau_sac,
+                    kich_co = :kich_co,
+                    tinh_trang = :tinh_trang
+                WHERE id = :id
+            ';
 
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute([
-                    'ten' => $ten,
-                    'gia' => (int) $giaNhap,
-                    'danh_muc_id' => (int) $danhMucHienTai,
-                    'hinh_anh' => $hinhAnh,
-                    'mo_ta' => $moTa,
-                    'chat_lieu' => $chatLieu,
-                    'mau_sac' => $mauSac,
-                    'kich_co' => $kichCo,
-                    'tinh_trang' => $tinhTrang,
-                    'id' => $id,
-                ]);
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                'ten' => $ten,
+                'gia' => (int) $giaNhap,
+                'danh_muc_id' => (int) $danhMucHienTai,
+                'hinh_anh' => $hinhAnh,
+                'mo_ta' => $moTa,
+                'chat_lieu' => $chatLieu,
+                'mau_sac' => $mauSac,
+                'kich_co' => $kichCo,
+                'tinh_trang' => $tinhTrang,
+                'id' => $id,
+            ]);
 
-                $_SESSION['flash'] = [
-                    'loai' => 'thanh-cong',
-                    'noiDung' => 'Cập nhật sản phẩm thành công.',
-                ];
+            $_SESSION['flash'] = [
+                'loai' => 'thanh-cong',
+                'noiDung' => 'Cập nhật sản phẩm thành công.',
+            ];
 
-                header('Location: quan-tri.php');
-                exit;
-            } catch (\PDOException $e) {
-                error_log('[SUA_SAN_PHAM] ' . $e->getMessage());
-                $loi = 'Không thể cập nhật sản phẩm. Vui lòng thử lại.';
-            }
+            header('Location: quan-tri.php');
+            exit;
+        } catch (\PDOException $e) {
+            error_log('[SUA_SAN_PHAM] ' . $e->getMessage());
+            $loi = 'Không thể cập nhật sản phẩm. Vui lòng thử lại.';
         }
     }
 }
@@ -162,11 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <form method="post" action="sua-san-pham.php?id=<?= rawurlencode($id) ?>">
                 <input type="hidden" name="id" value="<?= e($id) ?>">
-                <input
-                    type="hidden"
-                    name="_token"
-                    value="<?= e((string) $_SESSION['csrf_token']) ?>"
-                >
+                <?= csrfField() ?>
 
                 <p>
                     <label for="ten">Tên sản phẩm</label><br>

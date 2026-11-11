@@ -7,84 +7,79 @@
 
 require_once __DIR__ . '/inc/config.php';
 
-$laTrangYeuThich = isset($_GET['yeuthich']) && $_GET['yeuthich'] == '1';
+// Trang yêu thích giữ nguyên: cần toàn bộ sản phẩm để JS đọc localStorage.
+$laTrangYeuThich = chuoi($_GET, 'yeuthich') === '1';
 
 $tieuDe = $laTrangYeuThich ? 'Sản phẩm yêu thích - StyleHub' : 'Danh sách sản phẩm - StyleHub';
 $trang = 'danh-sach';
 $goc = './';
-
+$cssBoSung = 'css/danh-sach-bo-sung.css';
 $khoSanPham = new \App\Data\KhoSanPham();
 
-$tuKhoa = trim(
-    (string) ($_GET['q'] ?? '')
-);
+// chuoi() chống Array Injection như ?q[]=abc, ?sx[]=abc.
+$tuKhoa = chuoi($_GET, 'q', 200);
+$danhMuc = chuoi($_GET, 'dm', 100) ?: 'tat-ca';
+$sapXep = chuoi($_GET, 'sx', 30) ?: 'mac-dinh';
+$danhMucChoPhep = $khoSanPham->danhMuc();
+$sapXepChoPhep = ['mac-dinh', 'gia-tang', 'gia-giam', 'ten-a-z', 'ten-z-a'];
 
-$danhMuc = trim(
-    (string) ($_GET['dm'] ?? 'tat-ca')
-);
-
-$sapXep = trim(
-    (string) ($_GET['sx'] ?? 'mac-dinh')
-);
-
-
-/*
- * Danh sách giá trị được phép.
- */
-
-$danhMucChoPhep =
-    $khoSanPham->danhMuc();
-
-$sapXepChoPhep = [
-    'mac-dinh',
-    'gia-tang',
-    'gia-giam',
-    'ten-a-z',
-    'ten-z-a',
-];
-
-
-/*
- * Kiểm tra danh mục.
- */
-
-if (
-    $danhMuc !== 'tat-ca' &&
-    !in_array(
-        $danhMuc,
-        $danhMucChoPhep,
-        true
-    )
-) {
+if ($danhMuc !== 'tat-ca' && !in_array($danhMuc, $danhMucChoPhep, true)) {
     $danhMuc = 'tat-ca';
 }
-
-
-/*
- * Kiểm tra kiểu sắp xếp.
- */
-
-if (
-    !in_array(
-        $sapXep,
-        $sapXepChoPhep,
-        true
-    )
-) {
+if (!in_array($sapXep, $sapXepChoPhep, true)) {
     $sapXep = 'mac-dinh';
 }
 
-
-/*
- * Lấy kết quả từ lớp dữ liệu.
- */
-
-$danhSachSanPham =
-    $khoSanPham->timKiem(
-        $tuKhoa,
-        $danhMuc,
-        $sapXep
+// Giá tối đa tùy chọn. Giá âm, mảng và chuỗi sai định dạng đều không gây lỗi 500.
+$giaToiDaNhap = chuoi($_GET, 'gia_max', 20);
+$giaToiDa = null;
+$loiGia = '';
+if ($giaToiDaNhap !== '') {
+    $giaDuocKiemTra = filter_var(
+        $giaToiDaNhap,
+        FILTER_VALIDATE_INT,
+        ['options' => ['min_range' => 0]]
     );
+    if ($giaDuocKiemTra === false) {
+        $loiGia = 'Giá tối đa phải là số nguyên không âm.';
+    } else {
+        $giaToiDa = $giaDuocKiemTra;
+    }
+}
+
+// Phân trang phía CSDL: 10 sản phẩm/trang.
+$soMoiTrang = 10;
+$thamSoTrang = $_GET['trang'] ?? '1';
+$trangHienTai = is_string($thamSoTrang)
+    ? filter_var($thamSoTrang, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]])
+    : false;
+$trangHienTai = $trangHienTai === false ? 1 : $trangHienTai;
+
+if ($laTrangYeuThich) {
+    $danhSachSanPham = $khoSanPham->timKiem();
+    $tongSanPham = count($danhSachSanPham);
+    $tongTrang = 1;
+    $trangHienTai = 1;
+} else {
+    $tongSanPham = $khoSanPham->demTimKiem($tuKhoa, $danhMuc, $giaToiDa);
+    $tongTrang = max(1, (int) ceil($tongSanPham / $soMoiTrang));
+    $trangHienTai = min($trangHienTai, $tongTrang);
+    $danhSachSanPham = $khoSanPham->timKiem(
+        $tuKhoa, $danhMuc, $sapXep, $giaToiDa, $trangHienTai, $soMoiTrang
+    );
+}
+
+// Giữ nguyên mọi bộ lọc khi nhấn chuyển trang.
+$duongDanTrang = static function (int $soTrang) use (
+    $tuKhoa, $danhMuc, $sapXep, $giaToiDaNhap
+): string {
+    $params = ['q' => $tuKhoa, 'dm' => $danhMuc, 'sx' => $sapXep];
+    if ($giaToiDaNhap !== '') {
+        $params['gia_max'] = $giaToiDaNhap;
+    }
+    $params['trang'] = $soTrang;
+    return 'danh-sach.php?' . http_build_query($params);
+};
 ?>
 
 <?php require __DIR__ . '/inc/header.php'; ?>
@@ -170,6 +165,22 @@ $danhSachSanPham =
 
                     <div class="nhom-cong-cu">
 
+                        <label for="gia-toi-da">Giá tối đa (VNĐ)</label>
+                        <input
+                            type="number"
+                            id="gia-toi-da"
+                            name="gia_max"
+                            min="0"
+                            step="1"
+                            value="<?= e($giaToiDaNhap) ?>"
+                            placeholder="Ví dụ: 500000"
+                            aria-describedby="goi-y-gia"
+                        >
+                        <small id="goi-y-gia">Để trống nếu không giới hạn giá.</small>
+                    </div>
+
+                    <div class="nhom-cong-cu">
+
                         <label for="sap-xep">
                             Sắp xếp
                         </label>
@@ -249,6 +260,9 @@ $danhSachSanPham =
                 </div>
 
             </form>
+            <?php if ($loiGia !== ''): ?>
+                <p class="th6-loc-loi" role="alert"><?= e($loiGia) ?></p>
+            <?php endif; ?>
 
         </section>
         <?php endif; ?>
@@ -269,8 +283,8 @@ $danhSachSanPham =
                     class="so-luong-ket-qua"
                     aria-live="polite"
                 >
-                    <?= count($danhSachSanPham) ?>
-                    sản phẩm
+                    <?= $tongSanPham ?>
+                    sản phẩm<?= !$laTrangYeuThich && $tongSanPham > 0 ? ' · Trang ' . $trangHienTai . '/' . $tongTrang : '' ?>
                 </p>
 
             </div>
@@ -278,28 +292,25 @@ $danhSachSanPham =
             <p
                 id="thong-bao-rong-yeu-thich"
                 class="trang-thai-danh-sach"
-                style="display: none;"
+                hidden
                 role="status"
             >
                 Bạn chưa có sản phẩm nào trong danh sách yêu thích.
             </p>
 
-            <?php if ($danhSachSanPham === []): ?>
+            <!-- Khung kết quả luôn tồn tại, kể cả khi tìm kiếm ban đầu không ra sản phẩm. -->
+            <p
+                id="thong-bao-khong-co-san-pham"
+                class="trang-thai-danh-sach"
+                role="status"
+                <?= $danhSachSanPham !== [] ? 'hidden' : '' ?>
+            >
+                Không tìm thấy sản phẩm phù hợp với điều kiện tìm kiếm.
+            </p>
 
-                <p
-                    class="trang-thai-danh-sach"
-                    role="status"
-                    aria-live="polite"
-                >
-                    Không tìm thấy sản phẩm phù hợp với điều kiện tìm kiếm.
-                </p>
+            <p id="trang-thai-fetch" class="trang-thai-danh-sach" role="status" aria-live="polite" hidden></p>
 
-            <?php else: ?>
-
-                <div
-                    id="danh-sach-san-pham"
-                    class="luoi-danh-sach"
-                >
+            <div id="danh-sach-san-pham" class="luoi-danh-sach">
 
                     <?php foreach (
                         $danhSachSanPham
@@ -336,7 +347,7 @@ $danhSachSanPham =
                                     <?= vnd($sanPham->gia) ?>
                                 </p>
 
-                                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                <div class="nhom-hanh-dong-san-pham">
                                     <a
                                         class="nut"
                                         href="chi-tiet.php?id=<?= urlencode($sanPham->id) ?>"
@@ -361,6 +372,30 @@ $danhSachSanPham =
 
                 </div>
 
+
+
+            <?php if (!$laTrangYeuThich && $tongTrang > 1): ?>
+                <nav class="th6-phan-trang-danh-sach" aria-label="Phân trang sản phẩm">
+                    <?php if ($trangHienTai > 1): ?>
+                        <a href="<?= e($duongDanTrang($trangHienTai - 1)) ?>">← Trước</a>
+                    <?php else: ?>
+                        <span class="th6-trang-vo-hieu">← Trước</span>
+                    <?php endif; ?>
+
+                    <?php for ($soTrang = 1; $soTrang <= $tongTrang; $soTrang++): ?>
+                        <?php if ($soTrang === $trangHienTai): ?>
+                            <span class="th6-trang-hien-tai" aria-current="page"><?= $soTrang ?></span>
+                        <?php else: ?>
+                            <a href="<?= e($duongDanTrang($soTrang)) ?>"><?= $soTrang ?></a>
+                        <?php endif; ?>
+                    <?php endfor; ?>
+
+                    <?php if ($trangHienTai < $tongTrang): ?>
+                        <a href="<?= e($duongDanTrang($trangHienTai + 1)) ?>">Tiếp →</a>
+                    <?php else: ?>
+                        <span class="th6-trang-vo-hieu">Tiếp →</span>
+                    <?php endif; ?>
+                </nav>
             <?php endif; ?>
 
         </section>
@@ -380,53 +415,7 @@ $danhSachSanPham =
 ></script>
 
 <?php if ($laTrangYeuThich): ?>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const isYeuThichPage = new URLSearchParams(window.location.search).get('yeuthich') === '1';
-    if (!isYeuThichPage) return;
-
-    const luoiSanPham = document.getElementById('danh-sach-san-pham');
-    const thongBaoRong = document.getElementById('thong-bao-rong-yeu-thich');
-    const soLuongText = document.getElementById('so-luong-ket-qua');
-    if (!luoiSanPham) return;
-
-    const filterYeuThich = () => {
-        const rawData = localStorage.getItem('stylehubYeuThich');
-        let dsYeuThich = [];
-        try {
-            dsYeuThich = JSON.parse(rawData) || [];
-        } catch (e) {
-            dsYeuThich = [];
-        }
-
-        const cacTheSanPham = luoiSanPham.querySelectorAll('.the-san-pham[data-id-san-pham]');
-        let count = 0;
-
-        cacTheSanPham.forEach(the => {
-            const id = the.getAttribute('data-id-san-pham');
-            if (dsYeuThich.includes(id)) {
-                the.style.display = '';
-                count++;
-            } else {
-                the.style.display = 'none';
-            }
-        });
-
-        if (soLuongText) {
-            soLuongText.textContent = `${count} sản phẩm`;
-        }
-
-        if (count === 0) {
-            if (thongBaoRong) thongBaoRong.style.display = 'block';
-        } else {
-            if (thongBaoRong) thongBaoRong.style.display = 'none';
-        }
-    };
-
-    filterYeuThich();
-    window.addEventListener('stylehub:yeu-thich-thay-doi', filterYeuThich);
-});
-</script>
+<script type="module" src="js/trang-yeu-thich.js"></script>
 <?php endif; ?>
 
 <?php require __DIR__ . '/inc/footer.php'; ?>

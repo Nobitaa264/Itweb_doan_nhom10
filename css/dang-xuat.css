@@ -1,0 +1,43 @@
+/* TH7 - Hien thi ten tai khoan va nut dang xuat tren menu nen toi.
+   Dang xuat van su dung form POST va ma CSRF trong inc/menu.php. */
+
+/* Ten nguoi dung la span, khong phai the a nen can mau chu rieng. */
+.menu-chinh__danh-sach > li > span {
+    display: block;
+    padding: 10px 12px;
+    color: var(--mau-nen, #fff);
+    white-space: nowrap;
+}
+
+/* Giu form dang xuat can hang voi cac muc dieu huong. */
+.menu-chinh__danh-sach .form-dang-xuat {
+    display: flex;
+    align-items: stretch;
+    margin: 0;
+    padding: 0;
+}
+
+/* Nut button khong tu nhan mau trang tu quy tac .menu-chinh a. */
+.menu-chinh__danh-sach .nut-dang-xuat {
+    display: block;
+    appearance: none;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--mau-nen, #fff);
+    font: inherit;
+    line-height: inherit;
+    padding: 10px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.menu-chinh__danh-sach .nut-dang-xuat:hover {
+    color: var(--mau-nen, #fff);
+    background: var(--mau-chinh, #2563eb);
+}
+
+.menu-chinh__danh-sach .nut-dang-xuat:focus-visible {
+    outline: 3px solid var(--mau-nen, #fff);
+    outline-offset: 2px;
+}

@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 /**
- * dang-nhap.php
- * Xác thực tài khoản bằng MySQL và password_verify().
+ * dang-nhap.php - Xac thuc MySQL, CSRF, gioi han thu sai va ghi nhat ky TH7.
+ * Giu nguyen form HTML, Session, CSP va chuyen trang cua StyleHub.
  */
-
 require_once __DIR__ . '/inc/config.php';
+require_once __DIR__ . '/inc/chong-brute-force.php';
 
 use App\Config\Database;
 
@@ -17,10 +17,7 @@ $goc = './';
 
 $loi = '';
 $flash = null;
-
-$tenDangNhap = trim(
-    (string) ($_POST['ten-dang-nhap'] ?? '')
-);
+$tenDangNhap = chuoi($_POST['ten-dang-nhap'] ?? '', 100);
 
 if (isset($_SESSION['flash'])) {
     $flash = $_SESSION['flash'];
@@ -28,91 +25,94 @@ if (isset($_SESSION['flash'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $matKhau = (string) ($_POST['mat-khau'] ?? '');
+    // inc/config.php da kiem tra CSRF; giu lan kiem tra tai trang dang nhap.
+    csrfKiemTraPost();
+
+    $matKhauGuiLen = $_POST['mat-khau'] ?? '';
+    $matKhau = is_string($matKhauGuiLen) ? $matKhauGuiLen : '';
 
     if ($tenDangNhap === '' || $matKhau === '') {
         $loi = 'Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.';
     } else {
+        $ip = th7LoginIp();
         try {
-            $pdo = Database::connect();
+            // Dat cho mot lan thu truoc khi kiem tra mat khau.
+            // 5 luot / tai khoan hoac 15 luot / IP trong 15 phut.
+            $choGiay = th7LoginBatDauThu($tenDangNhap, $ip);
 
-            $stmt = $pdo->prepare(
-                'SELECT id, ten, ten_dang_nhap, email, mat_khau, vai_tro
-                 FROM nguoi_dung
-                 WHERE ten_dang_nhap = :ten_dang_nhap
-                 LIMIT 1'
-            );
-
-            $stmt->execute([
-                'ten_dang_nhap' => $tenDangNhap,
-            ]);
-
-            $taiKhoan = $stmt->fetch();
-
-            $hopLe = is_array($taiKhoan)
-                && password_verify(
-                    $matKhau,
-                    (string) $taiKhoan['mat_khau']
-                );
-
-            if (!$hopLe) {
-                error_log(
-                    sprintf(
-                        '[LOGIN_FAIL] Dang nhap that bai | IP: %s',
-                        $_SERVER['REMOTE_ADDR'] ?? 'unknown'
-                    )
-                );
-
-                $loi = 'Sai tên đăng nhập hoặc mật khẩu.';
+            if ($choGiay > 0) {
+                http_response_code(429);
+                header('Retry-After: ' . $choGiay);
+                header('Cache-Control: no-store');
+                th7LoginGhiNhatKy('login_blocked', $tenDangNhap, $ip);
+                $loi = 'Đăng nhập đang bị giới hạn tạm thời. Vui lòng thử lại sau ít phút.';
             } else {
-                // Cập nhật hash nếu thuật toán/cấu hình đã thay đổi.
-                if (password_needs_rehash(
-                    (string) $taiKhoan['mat_khau'],
-                    PASSWORD_DEFAULT
-                )) {
-                    $hashMoi = password_hash(
-                        $matKhau,
+                $pdo = Database::connect();
+                $stmt = $pdo->prepare(
+                    'SELECT id, ten, ten_dang_nhap, email, mat_khau, vai_tro
+                     FROM nguoi_dung
+                     WHERE ten_dang_nhap = :ten_dang_nhap
+                     LIMIT 1'
+                );
+                $stmt->execute(['ten_dang_nhap' => $tenDangNhap]);
+                $taiKhoan = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                // Xac minh hash gia lap neu khong ton tai tai khoan de
+                // giam khac biet thoi gian phan hoi, khong lo username ton tai.
+                $hashGia = '$2y$10$UrmUvJLJFIWJKarMqkjrX.hSgmmdrdxtZ01/qusZ5/izj13b8yKfK';
+                $hashDeKiemTra = is_array($taiKhoan)
+                    ? (string) $taiKhoan['mat_khau']
+                    : $hashGia;
+                $hopLe = password_verify($matKhau, $hashDeKiemTra)
+                    && is_array($taiKhoan);
+
+                if (!$hopLe) {
+                    th7LoginGhiNhatKy('login_failed', $tenDangNhap, $ip);
+                    $loi = 'Sai tên đăng nhập hoặc mật khẩu.';
+                } else {
+                    // Bao toan chuc nang cap nhat password hash hien tai.
+                    if (password_needs_rehash(
+                        (string) $taiKhoan['mat_khau'],
                         PASSWORD_DEFAULT
-                    );
+                    )) {
+                        $hashMoi = password_hash($matKhau, PASSWORD_DEFAULT);
+                        $update = $pdo->prepare(
+                            'UPDATE nguoi_dung SET mat_khau = :mat_khau WHERE id = :id'
+                        );
+                        $update->execute([
+                            'mat_khau' => $hashMoi,
+                            'id' => $taiKhoan['id'],
+                        ]);
+                    }
 
-                    $update = $pdo->prepare(
-                        'UPDATE nguoi_dung
-                         SET mat_khau = :mat_khau
-                         WHERE id = :id'
-                    );
+                    th7LoginThanhCong($tenDangNhap);
+                    th7LoginGhiNhatKy('login_success', $tenDangNhap, $ip);
+                    if (!session_regenerate_id(true)) {
+                        throw new RuntimeException('Khong the tao phien dang nhap moi.');
+                    }
+                    $_SESSION['uid'] = (int) $taiKhoan['id'];
+                    $_SESSION['flash'] = [
+                        'loai' => 'thanh-cong',
+                        'noiDung' => 'Đăng nhập thành công.',
+                    ];
 
-                    $update->execute([
-                        'mat_khau' => $hashMoi,
-                        'id' => $taiKhoan['id'],
-                    ]);
+                    if ($taiKhoan['vai_tro'] === 'quan_tri' || $taiKhoan['vai_tro'] === 'admin') {
+                        header('Location: quan-tri.php');
+                    } else {
+                        header('Location: index.php');
+                    }
+                    exit;
                 }
-
-                session_regenerate_id(true);
-
-                // Chỉ lưu thông tin cần thiết vào session.
-                $_SESSION['nguoi_dung'] = [
-                    'id' => (int) $taiKhoan['id'],
-                    'tenDangNhap' => (string) $taiKhoan['ten_dang_nhap'],
-                    'ten' => (string) $taiKhoan['ten'],
-                    'vaiTro' => (string) $taiKhoan['vai_tro'],
-                ];
-
-                $_SESSION['flash'] = [
-                    'loai' => 'thanh-cong',
-                    'noiDung' => 'Đăng nhập thành công.',
-                ];
-
-                if ($taiKhoan['vai_tro'] === 'quan_tri' || $taiKhoan['vai_tro'] === 'admin') {
-    header('Location: quan-tri.php');
-} else {
-    header('Location: index.php');
-}
-
-                exit;
             }
-        } catch (\Throwable $e) {
-            error_log('[LOGIN_ERROR] ' . $e->getMessage());
-
+        } catch (Throwable $e) {
+            // Khong cho phep dang nhap neu he thong gioi han/log bi loi.
+            error_log('[LOGIN_SECURITY_ERROR] ' . get_class($e) . ': ' . $e->getMessage());
+            try {
+                th7LoginGhiNhatKy('login_error', $tenDangNhap, $ip);
+            } catch (Throwable $loiGhiLog) {
+                // Neu storage mat quyen ghi, van tu choi dang nhap (fail closed).
+                error_log('[LOGIN_SECURITY_LOG_ERROR] ' . get_class($loiGhiLog));
+            }
             $loi = 'Hệ thống chưa thể đăng nhập lúc này. Vui lòng thử lại.';
         }
     }
@@ -156,6 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 method="post"
                 action="dang-nhap.php"
             >
+                <?= csrfField() ?>
 
                 <div class="nhom-form">
 
@@ -199,7 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             </form>
 
-            <p class="chuyen-trang" style="margin-top: 15px;">
+            <p class="chuyen-trang chuyen-trang--dang-nhap">
                 Chưa có tài khoản? <a href="dang-ky.php">Đăng ký ngay</a>
             </p>
 

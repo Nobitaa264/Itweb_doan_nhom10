@@ -2609,3 +2609,52 @@ body.index .danh-muc-home {
     font-size: 0.84rem;
   }
 }
+
+/* ==================================================
+   TH6 - PHÂN TRANG SẢN PHẨM TRONG TRANG QUẢN TRỊ
+   ================================================== */
+body.quan-tri .th6-phan-trang-thong-ke {
+  color: #4b5563;
+  margin: 12px 0 16px;
+  font-size: 0.95rem;
+}
+body.quan-tri .th6-phan-trang {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 20px 0 4px;
+}
+body.quan-tri .th6-phan-trang a,
+body.quan-tri .th6-phan-trang span {
+  display: inline-flex;
+  min-width: 40px;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  text-decoration: none;
+}
+body.quan-tri .th6-phan-trang a:hover,
+body.quan-tri .th6-phan-trang a:focus-visible {
+  border-color: #2563eb;
+  background-color: #eff6ff;
+}
+body.quan-tri .th6-phan-trang .th6-trang-hien-tai {
+  color: #ffffff;
+  background-color: #2563eb;
+  border-color: #2563eb;
+  font-weight: 700;
+}
+body.quan-tri .th6-phan-trang .th6-trang-vo-hieu {
+  opacity: 0.48;
+}
+body.quan-tri .th6-phan-trang .th6-trang-dau-ba-cham {
+  min-width: auto;
+  padding: 8px 4px;
+  border: 0;
+}

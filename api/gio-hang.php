@@ -2,156 +2,97 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../inc/config.php';
-require_once __DIR__ . '/../inc/db.php';
+
+use App\Data\KhoSanPham;
+use App\Services\GioHang;
 
 header('Content-Type: application/json; charset=utf-8');
 
-// Đăng ký Handler trả lỗi 500 đúng chuẩn
-set_exception_handler(function ($e) {
-    error_log('[API_GIO_HANG] ' . $e->getMessage());
-    http_response_code(500);
-    echo json_encode(['loi' => 'Lỗi máy chủ'], JSON_UNESCAPED_UNICODE);
+function phanHoiGioHang(array $duLieu, int $ma = 200): never
+{
+    http_response_code($ma);
+    echo json_encode($duLieu, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     exit;
-});
-
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
 }
 
-$method = $_SERVER['REQUEST_METHOD'];
-
-// Đồng bộ key Session duy nhất là $_SESSION['gio_hang']
-if (!isset($_SESSION['gio_hang'])) {
-    $_SESSION['gio_hang'] = [];
+$phuongThuc = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+if (!in_array($phuongThuc, ['GET', 'POST'], true)) {
+    header('Allow: GET, POST');
+    phanHoiGioHang(['loi' => 'Phương thức không được hỗ trợ'], 405);
 }
 
-// 1. GET: Lấy danh sách sản phẩm trong giỏ hàng
-if ($method === 'GET') {
-    $gioHang = $_SESSION['gio_hang'];
-    
-    if (empty($gioHang)) {
-        echo json_encode([
-            'cacMuc' => [],
-            'tongSoLuong' => 0,
-            'tongTien' => 0
-        ], JSON_UNESCAPED_UNICODE);
-        exit;
-    }
+$kho = new KhoSanPham();
+$gio = new GioHang(); // Sử dụng cùng khóa session 'gio' với gio-hang.php.
 
-    $pdo = db();
-    $ids = array_keys($gioHang);
-    $placeholders = implode(',', array_fill(0, count($ids), '?'));
-    
-    $stmt = $pdo->prepare("SELECT id, ten, gia, hinh_anh, tinh_trang FROM san_pham WHERE id IN ($placeholders)");
-    $stmt->execute(array_values($ids));
-    $sanPhams = $stmt->fetchAll();
-
+if ($phuongThuc === 'GET') {
     $cacMuc = [];
-    $tongSoLuong = 0;
-    $tongTien = 0;
-
-    foreach ($sanPhams as $sp) {
-        $spId = $sp['id'];
-        $soLuong = (int) ($gioHang[$spId] ?? 0);
-        $thanhTien = (int)$sp['gia'] * $soLuong;
-
-        $tongSoLuong += $soLuong;
-        $tongTien += $thanhTien;
-
+    foreach ($gio->cacMuc($kho) as $muc) {
+        $sp = $muc['sanPham'];
         $cacMuc[] = [
-            'id' => $sp['id'],
-            'ten' => $sp['ten'],
-            'gia' => (int)$sp['gia'],
-            'hinhAnh' => $sp['hinh_anh'],
-            'soLuong' => $soLuong,
-            'thanhTien' => $thanhTien
+            'id' => $sp->id,
+            'ten' => $sp->ten,
+            'gia' => $sp->gia,
+            'hinhAnh' => $sp->hinhAnh,
+            'soLuong' => $muc['soLuong'],
+            'thanhTien' => $muc['thanhTien'],
         ];
     }
-
-    echo json_encode([
+    phanHoiGioHang([
         'cacMuc' => $cacMuc,
-        'tongSoLuong' => $tongSoLuong,
-        'tongTien' => $tongTien
-    ], JSON_UNESCAPED_UNICODE);
-    exit;
+        'tongSoLuong' => $gio->soMon(),
+        'tongTien' => $gio->tongTien($kho),
+    ]);
 }
 
-// 2. POST: Thêm, Xóa, Cập nhật giỏ hàng qua JSON Body
-if ($method === 'POST') {
-    $rawInput = file_get_contents('php://input');
-    $data = json_decode($rawInput, true);
+// TH7: từ chối POST thiếu/sai token trước khi đọc JSON hoặc thay đổi giỏ hàng.
+// csrfKiemTraPost() trả HTTP 403 + JSON {"loi": "..."} cho đường dẫn api/.
+csrfKiemTraPost();
 
-    if (json_last_error() !== JSON_ERROR_NONE || !is_array($data)) {
-        http_response_code(400);
-        echo json_encode(['loi' => 'Thân yêu cầu phải là dữ liệu JSON hợp lệ'], JSON_UNESCAPED_UNICODE);
-        exit;
-    }
+$raw = file_get_contents('php://input');
+$data = json_decode($raw !== false ? $raw : '', true);
+if (!is_array($data) || json_last_error() !== JSON_ERROR_NONE) {
+    phanHoiGioHang(['loi' => 'Thân yêu cầu phải là dữ liệu JSON hợp lệ'], 400);
+}
 
-    $hanhDong = $data['hanh_dong'] ?? $data['hanh-dong'] ?? 'them';
-    $sanPhamId = trim((string)($data['san_pham_id'] ?? $data['id'] ?? ''));
+$hanhDong = chuoi($data['hanh_dong'] ?? $data['hanh-dong'] ?? 'them');
+$id = trim(chuoi($data['san_pham_id'] ?? $data['id'] ?? ''));
+if ($id === '') {
+    phanHoiGioHang(['loi' => 'Thiếu mã sản phẩm'], 404);
+}
 
-    // XỬ LÝ HÀNH ĐỘNG XÓA
-    if ($hanhDong === 'xoa') {
-        if ($sanPhamId === '') {
-            http_response_code(404);
-            echo json_encode(['loi' => 'Thiếu mã sản phẩm'], JSON_UNESCAPED_UNICODE);
-            exit;
-        }
-
-        unset($_SESSION['gio_hang'][$sanPhamId]);
-
-        echo json_encode([
-            'thanhCong' => true,
-            'thongBao' => 'Đã xóa sản phẩm khỏi giỏ hàng',
-            'tongSoLuong' => array_sum($_SESSION['gio_hang'])
-        ], JSON_UNESCAPED_UNICODE);
-        exit;
-    }
-
-    // XỬ LÝ HÀNH ĐỘNG THÊM
-    $soLuong = filter_var($data['so_luong'] ?? $data['sl'] ?? 1, FILTER_VALIDATE_INT);
-
-    if ($sanPhamId === '') {
-        http_response_code(404);
-        echo json_encode(['loi' => 'Thiếu mã sản phẩm'], JSON_UNESCAPED_UNICODE);
-        exit;
-    }
-
-    if ($soLuong === false || $soLuong <= 0) {
-        http_response_code(422);
-        echo json_encode(['loi' => 'Số lượng sản phẩm không hợp lệ'], JSON_UNESCAPED_UNICODE);
-        exit;
-    }
-
-    $pdo = db();
-    $stmt = $pdo->prepare("SELECT id, ten, gia, tinh_trang FROM san_pham WHERE id = ?");
-    $stmt->execute([$sanPhamId]);
-    $sp = $stmt->fetch();
-
-    if (!$sp) {
-        http_response_code(404);
-        echo json_encode(['loi' => 'Sản phẩm không tồn tại'], JSON_UNESCAPED_UNICODE);
-        exit;
-    }
-
-    if (isset($sp['tinh_trang']) && $sp['tinh_trang'] === 'Hết hàng') {
-        http_response_code(422);
-        echo json_encode(['loi' => 'Sản phẩm này hiện đã hết hàng'], JSON_UNESCAPED_UNICODE);
-        exit;
-    }
-
-    $soLuongHienTai = $_SESSION['gio_hang'][$sanPhamId] ?? 0;
-    $_SESSION['gio_hang'][$sanPhamId] = $soLuongHienTai + $soLuong;
-
-    echo json_encode([
+if ($hanhDong === 'xoa') {
+    $gio->xoa($id);
+    phanHoiGioHang([
         'thanhCong' => true,
-        'thongBao' => 'Đã thêm sản phẩm vào giỏ hàng',
-        'tongSoLuong' => array_sum($_SESSION['gio_hang'])
-    ], JSON_UNESCAPED_UNICODE);
-    exit;
+        'thongBao' => 'Đã xóa sản phẩm khỏi giỏ hàng',
+        'tongSoLuong' => $gio->soMon(),
+    ]);
 }
 
-// Các phương thức không hợp lệ
-http_response_code(405);
-header('Allow: GET, POST');
-echo json_encode(['loi' => 'Phương thức không được hỗ trợ'], JSON_UNESCAPED_UNICODE);
+if (!in_array($hanhDong, ['them', 'cap-nhat'], true)) {
+    phanHoiGioHang(['loi' => 'Thao tác giỏ hàng không hợp lệ'], 422);
+}
+
+$sl = filter_var($data['so_luong'] ?? $data['sl'] ?? 1, FILTER_VALIDATE_INT);
+if ($sl === false || $sl < 1 || $sl > 99) {
+    phanHoiGioHang(['loi' => 'Số lượng phải từ 1 đến 99'], 422);
+}
+
+try {
+    if ($kho->trangThaiTonKho($id) === null) {
+        phanHoiGioHang(['loi' => 'Sản phẩm không tồn tại'], 404);
+    }
+    if ($hanhDong === 'them') {
+        $gio->them($id, $kho, (int) $sl);
+    } else {
+        $gio->capNhat($id, (int) $sl, $kho);
+    }
+    phanHoiGioHang([
+        'thanhCong' => true,
+        'thongBao' => 'Đã cập nhật giỏ hàng',
+        'tongSoLuong' => $gio->soMon(),
+        'tongTien' => $gio->tongTien($kho),
+    ]);
+} catch (DomainException $loi) {
+    phanHoiGioHang(['loi' => $loi->getMessage()], 422);
+}

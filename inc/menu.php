@@ -7,7 +7,7 @@
 $goc = $goc ?? './';
 $trang = $trang ?? '';
 
-$nguoiDung = $_SESSION['nguoi_dung'] ?? null;
+$nguoiDung = nguoiDungHienTai();
 
 function mucDangChon(string $tenTrang, string $trangHienTai): string
 {
@@ -105,7 +105,7 @@ function ariaCurrent(string $tenTrang, string $trangHienTai): string
                     aria-label="Xem giỏ hàng"
                 >
                     Giỏ hàng
-                    (<span><?= e($soMonGio ?? 0) ?></span>)
+                    (<span class="so-luong-gio-hang" aria-live="polite"><?= e($soMonGio ?? 0) ?></span>)
                 </a>
             </li>
 
@@ -141,9 +141,11 @@ if ($vaiTroCurrent === 'quan_tri' || $vaiTroCurrent === 'admin'): ?>
                 </li>
 
                 <li>
-                    <a href="<?= e($goc) ?>dang-xuat.php">
-                        Đăng xuất
-                    </a>
+                    <form class="form-dang-xuat" method="post"
+                          action="<?= e($goc) ?>dang-xuat.php">
+                        <?= csrfField() ?>
+                        <button class="nut-dang-xuat" type="submit">Đăng xuất</button>
+                    </form>
                 </li>
 
             <?php else: ?>

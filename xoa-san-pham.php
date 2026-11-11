@@ -2,28 +2,18 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/inc/config.php';
-// Yêu cầu quyền admin để chỉnh sửa sản phẩm
-$user = yeuCauQuyen('admin');
 use App\Config\Database;
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+// Không cho phép xóa sản phẩm bằng GET, kể cả khi đã đăng nhập Admin.
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
     http_response_code(405);
     header('Allow: POST');
     exit('Phương thức không được hỗ trợ.');
 }
 
-$token = (string) ($_POST['_token'] ?? '');
-$tokenSession = (string) ($_SESSION['csrf_token'] ?? '');
-
-if ($tokenSession === '' || !hash_equals($tokenSession, $token)) {
-    $_SESSION['flash'] = [
-        'loai' => 'loi',
-        'noiDung' => 'Phiên làm việc không hợp lệ. Vui lòng thử lại.',
-    ];
-
-    header('Location: quan-tri.php');
-    exit;
-}
+// Yêu cầu đúng quyền Admin và CSRF hợp lệ, không chỉ dựa vào token.
+$user = yeuCauQuyen('admin');
+csrfKiemTraPost();
 
 $id = trim((string) ($_POST['id'] ?? ''));
 

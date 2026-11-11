@@ -6,21 +6,17 @@ namespace App\Config;
 
 use PDO;
 
+/**
+ * Tuong thich voi cac trang cu dang goi Database::connect().
+ * Tat ca ket noi MySQL deu di qua ham db() trong inc/db.php,
+ * de dung chung phpdotenv, tai khoan va mot ket noi PDO moi request.
+ */
 final class Database
 {
     public static function connect(): PDO
     {
-        $host = getenv('DB_HOST') ?: '127.0.0.1';
-        $name = getenv('DB_NAME') ?: 'ltweb_nhom10';
-        $user = getenv('DB_USER') ?: 'root';
-        $pass = getenv('DB_PASS') ?: '';
+        require_once dirname(__DIR__, 2) . '/inc/db.php';
 
-        $dsn = "mysql:host={$host};dbname={$name};charset=utf8mb4";
-
-        return new PDO($dsn, $user, $pass, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-        ]);
+        return \db();
     }
 }

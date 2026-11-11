@@ -13,7 +13,7 @@ $trang = $trang ?? '';
 $gioHang = new GioHang();
 $soMonGio = $gioHang->soMon();
 
-$nguoiDung = $_SESSION['nguoi_dung'] ?? null;
+$nguoiDung = nguoiDungHienTai();
 ?>
 
 <!doctype html>
@@ -34,6 +34,9 @@ $nguoiDung = $_SESSION['nguoi_dung'] ?? null;
 
     <title><?= e($tieuDe) ?></title>
 
+    <!-- Mã CSRF dùng cho các yêu cầu fetch POST cùng nguồn. -->
+    <meta name="csrf-token" content="<?= e(csrfToken()) ?>">
+
     <link
         rel="icon"
         href="data:,"
@@ -43,6 +46,11 @@ $nguoiDung = $_SESSION['nguoi_dung'] ?? null;
         rel="stylesheet"
         href="<?= e($goc) ?>css/style.css"
     >
+    <link rel="stylesheet" href="<?= e($goc) ?>css/dang-xuat.css">
+    <link rel="stylesheet" href="<?= e($goc) ?>css/csp-no-inline.css">
+<?php if (!empty($cssBoSung)): ?>
+    <link rel="stylesheet" href="<?= e($goc . $cssBoSung) ?>">
+<?php endif; ?>
 </head>
 
 <body class="<?= e($trang) ?>">

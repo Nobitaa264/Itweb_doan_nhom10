@@ -14,12 +14,13 @@ use App\Services\GioHang;
 $tieuDe = 'Chi tiết sản phẩm - StyleHub';
 $trang = 'chi-tiet';
 $goc = './';
+$cssBoSung = 'css/chi-tiet-lien-quan.css';
 
 $khoSanPham = new KhoSanPham();
 
-$id = trim(
-    (string) ($_GET['id'] ?? '')
-);
+// Chỉ chấp nhận ID dạng chuỗi, tránh Warning khi id[]=...
+$idNhap = $_GET['id'] ?? '';
+$id = is_string($idNhap) ? trim($idNhap) : '';
 
 /*
  * Kiểm tra ID.
@@ -39,6 +40,15 @@ if ($sanPham === null) {
     exit;
 }
 
+// Bốn sản phẩm khác trong cùng danh mục, lấy trực tiếp từ CSDL.
+$sanPhamLienQuan = $khoSanPham->cungDanhMuc($sanPham->id, 4);
+
+// Trạng thái tồn kho lấy trực tiếp từ CSDL, không chỉ dựa trên nhãn tình trạng.
+$thongTinKho = $khoSanPham->trangThaiTonKho($sanPham->id);
+$tonKho = $thongTinKho['ton_kho'] ?? 0;
+$tinhTrangHienTai = $thongTinKho['tinh_trang'] ?? 'Hết hàng';
+$coTheMua = $tinhTrangHienTai === 'Còn hàng' && $tonKho > 0;
+
 /*
  * Xử lý thêm vào giỏ trước khi có output.
  */
@@ -46,6 +56,9 @@ if (
     $_SERVER['REQUEST_METHOD'] === 'POST' &&
     ($_POST['hanh_dong'] ?? '') === 'them-gio'
 ) {
+    // Form thêm giỏ cũng cần mã CSRF; sẽ tích hợp kiểm tra tập trung ở TH7.
+    kiemTraCsrf();
+
     $soLuong = filter_var(
         $_POST['so-luong'] ?? null,
         FILTER_VALIDATE_INT
@@ -186,13 +199,28 @@ $danhSachDaXem = array_slice(
 
                     <p>
                         <strong>Tình trạng:</strong>
-                        <?= e($sanPham->tinhTrang) ?>
+                        <?= e($tinhTrangHienTai) ?>
                     </p>
 
+                    <?php if (!$coTheMua): ?>
+                        <p class="thong-bao-het-hang" role="status">
+                            Sản phẩm hiện đã hết hàng, không thể thêm vào giỏ.
+                        </p>
+                    <?php else: ?>
+                        <p class="so-luong-ton">Còn <?= e($tonKho) ?> sản phẩm trong kho.</p>
+                    <?php endif; ?>
+
                     <form
+                        class="form-them-gio-hang"
                         action="chi-tiet.php?id=<?= urlencode($sanPham->id) ?>"
                         method="post"
                     >
+                        <?= csrfField() ?>
+                        <input
+                            type="hidden"
+                            name="san_pham_id"
+                            value="<?= e($sanPham->id) ?>"
+                        >
                         <input
                             type="hidden"
                             name="hanh_dong"
@@ -210,18 +238,20 @@ $danhSachDaXem = array_slice(
                                 name="so-luong"
                                 value="1"
                                 min="1"
-                                max="99"
+                                max="<?= e(min(99, max(1, $tonKho))) ?>"
                                 required
+                                <?= $coTheMua ? '' : 'disabled' ?>
                             >
                         </div>
 
                         <!-- CỤM NÚT HÀNH ĐỘNG CÓ NÚT YÊU THÍCH -->
-                        <div class="nhom-nut-hanh-dong" style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
+                        <div class="nhom-nut-hanh-dong">
                             <button
                                 class="nut"
                                 type="submit"
+                                <?= $coTheMua ? '' : 'disabled aria-disabled="true"' ?>
                             >
-                                Thêm vào giỏ
+                                <?= $coTheMua ? 'Thêm vào giỏ' : 'Hết hàng' ?>
                             </button>
 
                             <button
@@ -234,7 +264,15 @@ $danhSachDaXem = array_slice(
                         </div>
                     </form>
 
-                    <p style="margin-top: 15px;">
+                    <p
+                        id="thong-bao-gio-hang"
+                        class="thong-bao-gio-hang"
+                        role="status"
+                        aria-live="polite"
+                        hidden
+                    ></p>
+
+                    <p class="quay-lai-danh-sach">
                         <a
                             class="nut"
                             href="danh-sach.php"
@@ -322,7 +360,7 @@ $danhSachDaXem = array_slice(
                                         Tình trạng
                                     </th>
                                     <td>
-                                        <?= e($sanPham->tinhTrang) ?>
+                                        <?= e($tinhTrangHienTai) ?>
                                     </td>
                                 </tr>
 
@@ -337,6 +375,38 @@ $danhSachDaXem = array_slice(
             </aside>
 
         </article>
+
+        <section class="san-pham-lien-quan" aria-labelledby="tieu-de-san-pham-lien-quan">
+            <h2 id="tieu-de-san-pham-lien-quan">Sản phẩm cùng danh mục</h2>
+            <p>Khám phá thêm các sản phẩm thuộc danh mục <?= e($sanPham->danhMuc) ?>.</p>
+
+            <?php if ($sanPhamLienQuan === []): ?>
+                <p role="status">Hiện chưa có sản phẩm khác trong danh mục này.</p>
+            <?php else: ?>
+                <div class="luoi-san-pham-lien-quan">
+                    <?php foreach ($sanPhamLienQuan as $sanPhamKhac): ?>
+                        <article class="the-san-pham">
+                            <a class="lien-ket-anh-lien-quan"
+                               href="chi-tiet.php?id=<?= urlencode($sanPhamKhac->id) ?>"
+                               aria-label="Xem chi tiết <?= e($sanPhamKhac->ten) ?>">
+                                <img class="the-san-pham__anh"
+                                     src="<?= e($sanPhamKhac->hinhAnh) ?>"
+                                     alt="<?= e($sanPhamKhac->ten) ?>"
+                                     width="300" height="300" loading="lazy">
+                            </a>
+                            <div class="the-san-pham__noi-dung">
+                                <p class="ma-san-pham"><?= e($sanPhamKhac->id) ?></p>
+                                <h3><?= e($sanPhamKhac->ten) ?></h3>
+                                <p class="gia"><?= vnd($sanPhamKhac->gia) ?></p>
+                                <a class="nut" href="chi-tiet.php?id=<?= urlencode($sanPhamKhac->id) ?>">
+                                    Xem chi tiết
+                                </a>
+                            </div>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </section>
 
     </section>
 

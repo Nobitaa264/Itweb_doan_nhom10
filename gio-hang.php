@@ -18,6 +18,7 @@ use App\Services\GioHang;
 $tieuDe = 'Giỏ hàng - StyleHub';
 $trang = 'gio-hang';
 $goc = './';
+$cssBoSung = 'css/chi-tiet-lien-quan.css';
 
 $khoSanPham = new KhoSanPham();
 $gioHang = new GioHang();
@@ -26,10 +27,10 @@ $gioHang = new GioHang();
  * Xử lý POST trước khi xuất HTML.
  */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Bảo vệ mọi thao tác cập nhật/xóa giỏ hàng trước khi thay đổi session.
+    csrfKiemTraPost();
 
-    $hanhDong = trim(
-        (string) ($_POST['hanh-dong'] ?? '')
-    );
+    $hanhDong = chuoi($_POST['hanh-dong'] ?? '');
 
     try {
 
@@ -54,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          */
         if ($hanhDong === 'xoa') {
 
-            $id = trim((string) ($_POST['id'] ?? ''));
+            $id = trim(chuoi($_POST['id'] ?? ''));
 
             if ($id === '') {
                 throw new DomainException(
@@ -122,12 +123,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $duLieuHopLe[$id] = $soLuong;
             }
 
+            // Kiểm tra toàn bộ số lượng trước khi thay đổi giỏ hàng.
             foreach ($duLieuHopLe as $id => $soLuong) {
-                $gioHang->capNhat(
-                    $id,
-                    $soLuong,
-                    $khoSanPham
-                );
+                $thongTinKho = $khoSanPham->trangThaiTonKho($id);
+                if ($thongTinKho === null || $thongTinKho['ton_kho'] === 0 ||
+                    $thongTinKho['tinh_trang'] !== 'Còn hàng' ||
+                    $soLuong > $thongTinKho['ton_kho']) {
+                    throw new DomainException('Sản phẩm ' . $id .
+                        ' hết hàng hoặc không đủ số lượng trong kho.');
+                }
+            }
+
+            $gioTruocCapNhat = $_SESSION['gio'] ?? [];
+            try {
+                foreach ($duLieuHopLe as $id => $soLuong) {
+                    $gioHang->capNhat(
+                        $id,
+                        $soLuong,
+                        $khoSanPham
+                    );
+                }
+            } catch (DomainException $ngoaiLe) {
+                $_SESSION['gio'] = $gioTruocCapNhat;
+                throw $ngoaiLe;
             }
 
             $_SESSION['flash'] = [
@@ -227,6 +245,7 @@ $soMon = $gioHang->soMon();
                 method="post"
                 action="gio-hang.php"
             >
+                    <?= csrfField() ?>
 
                 <input
                     type="hidden"
@@ -279,6 +298,17 @@ $soMon = $gioHang->soMon();
                                         Đơn giá:
                                         <?= vnd($sanPham->gia) ?>
                                     </p>
+
+                                    <?php $thongTinKho = $khoSanPham->trangThaiTonKho($sanPham->id); ?>
+                                    <?php if ($thongTinKho === null || $thongTinKho['tinh_trang'] !== 'Còn hàng' || $thongTinKho['ton_kho'] === 0): ?>
+                                        <p role="status" class="thong-bao-het-hang">
+                                            Sản phẩm đã hết hàng. Hãy xóa khỏi giỏ để đặt hàng khác.
+                                        </p>
+                                    <?php elseif ($soLuong > $thongTinKho['ton_kho']): ?>
+                                        <p role="status" class="thong-bao-het-hang">
+                                            Chỉ còn <?= e($thongTinKho['ton_kho']) ?> chiếc. Hãy giảm số lượng trước khi đặt.
+                                        </p>
+                                    <?php endif; ?>
 
                                     <div class="nhom-form">
 
@@ -364,6 +394,7 @@ $soMon = $gioHang->soMon();
                     method="post"
                     action="gio-hang.php"
                 >
+                    <?= csrfField() ?>
 
                     <input
                         type="hidden"
@@ -388,6 +419,7 @@ $soMon = $gioHang->soMon();
                     method="post"
                     action="gio-hang.php"
                 >
+                    <?= csrfField() ?>
 
                     <input
                         type="hidden"
