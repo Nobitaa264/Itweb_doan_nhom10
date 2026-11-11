@@ -34,29 +34,25 @@ $trangThaiDonHang = [
     'da_huy' => 'Đã hủy',
 ];
 
+// Mọi POST tới trang quản trị đều phải có CSRF hợp lệ trước khi xử lý.
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    csrfKiemTraPost();
+}
+
 // Xử lý cập nhật trạng thái đơn hàng.
 if (
     $_SERVER['REQUEST_METHOD'] === 'POST'
     && ($_POST['hanh_dong'] ?? '') === 'cap_nhat_don_hang'
 ) {
-    $tokenGuiLen = (string) ($_POST['_token'] ?? '');
-    $tokenTrongSession = (string) ($_SESSION['csrf_token'] ?? '');
-
-    if (
-        $tokenTrongSession === ''
-        || !hash_equals($tokenTrongSession, $tokenGuiLen)
-    ) {
-        http_response_code(403);
-        exit('Yêu cầu không hợp lệ. Vui lòng tải lại trang.');
-    }
-
     $idDonHang = filter_input(
         INPUT_POST,
         'don_hang_id',
         FILTER_VALIDATE_INT
     );
 
-    $trangThaiMoi = (string) ($_POST['trang_thai'] ?? '');
+    // Chống dữ liệu dạng mảng như trang_thai[]=... gây PHP Warning.
+    $trangThaiNhap = $_POST['trang_thai'] ?? '';
+    $trangThaiMoi = is_string($trangThaiNhap) ? $trangThaiNhap : '';
 
     if (
         !$idDonHang
@@ -128,7 +124,22 @@ if (
 $khoSanPham = new KhoSanPham();
 
 $danhSachLienHe = $khoLienHe->tatCa();
-$danhSachSanPham = $khoSanPham->tatCa();
+
+// TH6 – Phân trang sản phẩm ở quản trị (10 sản phẩm/trang).
+// Tránh TypeError khi người dùng gửi ?trang_sp[]=1 hoặc chuỗi không hợp lệ.
+$soMoiTrang = 10;
+$tongSanPham = $khoSanPham->dem();
+$tongSoTrang = max(1, (int) ceil($tongSanPham / $soMoiTrang));
+$thamSoTrang = $_GET['trang_sp'] ?? '1';
+$trangSanPham = is_string($thamSoTrang)
+    ? filter_var($thamSoTrang, FILTER_VALIDATE_INT, [
+        'options' => ['min_range' => 1],
+    ])
+    : false;
+$trangSanPham = $trangSanPham === false ? 1 : min($trangSanPham, $tongSoTrang);
+$danhSachSanPham = $khoSanPham->trang($trangSanPham, $soMoiTrang);
+$viTriBatDau = $tongSanPham === 0 ? 0 : (($trangSanPham - 1) * $soMoiTrang + 1);
+$viTriKetThuc = min($trangSanPham * $soMoiTrang, $tongSanPham);
 
 $pdo = Database::connect();
 
@@ -163,7 +174,7 @@ foreach ($danhSachChiTiet as $chiTiet) {
 }
 
 
-$nguoiDung = $_SESSION['nguoi_dung'] ?? null;
+$nguoiDung = nguoiDungHienTai();
 
 $flash = null;
 
@@ -292,8 +303,7 @@ if (isset($_SESSION['flash'])) {
                                             value="cap_nhat_don_hang">
                                         <input type="hidden" name="don_hang_id"
                                             value="<?= $idDonHang ?>">
-                                        <input type="hidden" name="_token"
-                                            value="<?= e((string) ($_SESSION['csrf_token'] ?? '')) ?>">
+                                        <?= csrfField() ?>
 
                                         <label for="trang-thai-<?= $idDonHang ?>">
                                             Trạng thái mới
@@ -441,7 +451,7 @@ if (isset($_SESSION['flash'])) {
 
         </section>
         
-        <section class="khu-vuc">
+        <section class="khu-vuc" id="danh-sach-san-pham">
             <h2>Danh sách sản phẩm</h2>
 
             <p>
@@ -451,6 +461,11 @@ if (isset($_SESSION['flash'])) {
             <?php if ($danhSachSanPham === []): ?>
                 <p>Chưa có sản phẩm nào.</p>
             <?php else: ?>
+                <p class="th6-phan-trang-thong-ke">
+                    Hiển thị <?= $viTriBatDau ?>–<?= $viTriKetThuc ?>
+                    trong tổng số <?= $tongSanPham ?> sản phẩm
+                    (trang <?= $trangSanPham ?>/<?= $tongSoTrang ?>).
+                </p>
                 <div class="bang-cuon">
                     <table class="bang-san-pham">
                         <caption>Danh sách sản phẩm trong hệ thống</caption>
@@ -483,11 +498,11 @@ if (isset($_SESSION['flash'])) {
     </a>
     |
     <form method="post" action="xoa-san-pham.php"
-        class="form-xoa-san-pham">
+        class="form-xoa-san-pham"
+        data-ten-san-pham="<?= e($sanPham->ten) ?>">
         <input type="hidden" name="id"
             value="<?= e($sanPham->id) ?>">
-        <input type="hidden" name="_token"
-            value="<?= e((string) ($_SESSION['csrf_token'] ?? '')) ?>">
+        <?= csrfField() ?>
         <button type="submit" class="nut nut-phu">
             Xóa
         </button>
@@ -499,10 +514,68 @@ if (isset($_SESSION['flash'])) {
                         </tbody>
                     </table>
                 </div>
+
+                <?php if ($tongSoTrang > 1): ?>
+                    <nav class="th6-phan-trang" aria-label="Phân trang sản phẩm quản trị">
+                        <?php if ($trangSanPham > 1): ?>
+                            <a href="?trang_sp=<?= $trangSanPham - 1 ?>#danh-sach-san-pham">
+                                &laquo; Trước
+                            </a>
+                        <?php else: ?>
+                            <span class="th6-trang-vo-hieu" aria-disabled="true">&laquo; Trước</span>
+                        <?php endif; ?>
+
+                        <?php
+                        $trangDauHienThi = max(1, $trangSanPham - 2);
+                        $trangCuoiHienThi = min($tongSoTrang, $trangSanPham + 2);
+                        ?>
+
+                        <?php if ($trangDauHienThi > 1): ?>
+                            <a href="?trang_sp=1#danh-sach-san-pham" aria-label="Trang 1">1</a>
+                            <?php if ($trangDauHienThi > 2): ?>
+                                <span class="th6-trang-dau-ba-cham" aria-hidden="true">…</span>
+                            <?php endif; ?>
+                        <?php endif; ?>
+
+                        <?php for ($soTrang = $trangDauHienThi; $soTrang <= $trangCuoiHienThi; $soTrang++): ?>
+                            <?php if ($soTrang === $trangSanPham): ?>
+                                <span class="th6-trang-hien-tai" aria-current="page">
+                                    <?= $soTrang ?>
+                                </span>
+                            <?php else: ?>
+                                <a href="?trang_sp=<?= $soTrang ?>#danh-sach-san-pham"
+                                    aria-label="Trang <?= $soTrang ?>">
+                                    <?= $soTrang ?>
+                                </a>
+                            <?php endif; ?>
+                        <?php endfor; ?>
+
+                        <?php if ($trangCuoiHienThi < $tongSoTrang): ?>
+                            <?php if ($trangCuoiHienThi < $tongSoTrang - 1): ?>
+                                <span class="th6-trang-dau-ba-cham" aria-hidden="true">…</span>
+                            <?php endif; ?>
+                            <a href="?trang_sp=<?= $tongSoTrang ?>#danh-sach-san-pham"
+                                aria-label="Trang cuối <?= $tongSoTrang ?>">
+                                <?= $tongSoTrang ?>
+                            </a>
+                        <?php endif; ?>
+
+                        <?php if ($trangSanPham < $tongSoTrang): ?>
+                            <a href="?trang_sp=<?= $trangSanPham + 1 ?>#danh-sach-san-pham">
+                                Tiếp &raquo;
+                            </a>
+                        <?php else: ?>
+                            <span class="th6-trang-vo-hieu" aria-disabled="true">Tiếp &raquo;</span>
+                        <?php endif; ?>
+                    </nav>
+                <?php endif; ?>
             <?php endif; ?>
         </section>
 
     </div>
 </main>
+
+<!-- JavaScript xác nhận trước khi xóa sản phẩm (không dùng onclick nội tuyến). -->
+<script src="js/xac-nhan-xoa.js" defer></script>
 
 <?php require __DIR__ . '/inc/footer.php'; ?>

@@ -3,6 +3,12 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/inc/config.php';
 
+// TH7: kiểm tra CSRF ngay sau khi tải cấu hình, trước mọi xử lý POST.
+// Áp dụng cả với form multipart/form-data có ảnh đính kèm.
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    csrfKiemTraPost();
+}
+
 $tieuDe = 'Liên hệ - StyleHub';
 $trang = 'lien-he';
 $goc = './';
@@ -39,7 +45,15 @@ $danhSachSanPham = $khoSanPham->tatCa();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Đọc dữ liệu và giữ lại giá trị để hiển thị khi có lỗi.
     foreach ($du as $truong => $giaTri) {
-        $du[$truong] = trim((string) ($_POST[$truong] ?? ''));
+        // Tranh PHP Warning khi nhan ten_truong[]=... (Array Injection).
+        $giaTriGuiLen = $_POST[$truong] ?? '';
+        if (!is_string($giaTriGuiLen)) {
+            $du[$truong] = '';
+            $loi[$truong] = 'Dữ liệu gửi lên không hợp lệ.';
+            continue;
+        }
+
+        $du[$truong] = trim($giaTriGuiLen);
     }
 
     // 1. Họ tên.
@@ -102,7 +116,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (is_array($tepAnh) &&
         ($tepAnh['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
 
-        if (($tepAnh['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+        // Từ chối cấu trúc upload dạng mảng/không hợp lệ trước khi gọi hàm file.
+        if (
+            !is_int($tepAnh['error'] ?? null) ||
+            !is_int($tepAnh['size'] ?? null) ||
+            !is_string($tepAnh['tmp_name'] ?? null)
+        ) {
+            $loi['anh'] = 'Dữ liệu ảnh tải lên không hợp lệ.';
+        } elseif (($tepAnh['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
             $loi['anh'] = 'Tải ảnh lên thất bại.';
         } elseif (($tepAnh['size'] ?? 0) <= 0) {
             $loi['anh'] = 'Ảnh không hợp lệ.';
@@ -219,6 +240,7 @@ unset($_SESSION['flash']);
                     method="post"
                     enctype="multipart/form-data"
                 >
+                    <?= csrfField() ?>
                     <div class="nhom-form">
                         <label for="ho-ten">Họ và tên *</label>
                         <input

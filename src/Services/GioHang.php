@@ -31,75 +31,62 @@ final class GioHang
     /**
      * Thêm sản phẩm vào giỏ.
      */
-    public function them(
-    string $id,
-    KhoSanPham $kho,
-    int $soLuong = 1
-): void {
+    public function them(string $id, KhoSanPham $kho, int $soLuong = 1): void
+    {
         $id = trim($id);
-
         if ($id === '') {
-            throw new DomainException(
-                'ID sản phẩm không được để trống.'
-            );
+            throw new DomainException('ID sản phẩm không được để trống.');
+        }
+        if ($soLuong < self::SO_LUONG_TOI_THIEU || $soLuong > self::SO_LUONG_TOI_DA) {
+            throw new DomainException('Số lượng phải từ 1 đến 99.');
         }
 
-        if (
-            $soLuong < self::SO_LUONG_TOI_THIEU ||
-            $soLuong > self::SO_LUONG_TOI_DA
-        ) {
-            throw new DomainException(
-                'Số lượng phải từ 1 đến 99.'
-            );
-        }
-
-        if ($kho->timTheoId($id) === null) {
-            throw new DomainException(
-                'Sản phẩm không tồn tại.'
-            );
-        }
-
-        $soLuongCu = (int) (
-            $_SESSION[self::TEN_SESSION][$id] ?? 0
-        );
-
+        $soLuongCu = (int) ($_SESSION[self::TEN_SESSION][$id] ?? 0);
         $soLuongMoi = $soLuongCu + $soLuong;
-
         if ($soLuongMoi > self::SO_LUONG_TOI_DA) {
-            throw new DomainException(
-                'Số lượng sản phẩm trong giỏ vượt quá 99.'
-            );
+            throw new DomainException('Số lượng sản phẩm trong giỏ vượt quá 99.');
         }
 
+        // Bảo vệ ở phía server, kể cả khi gửi POST thủ công hoặc gọi API.
+        $this->kiemTraTonKho($id, $soLuongMoi, $kho);
         $_SESSION[self::TEN_SESSION][$id] = $soLuongMoi;
     }
 
     /**
-     * Cập nhật số lượng một sản phẩm.
+     * Cập nhật số lượng một sản phẩm; không chấp nhận vượt tồn kho.
      */
-    public function capNhat(
-        string $id,
-        int $soLuong,
-        KhoSanPham $kho
-    ): void {
+    public function capNhat(string $id, int $soLuong, KhoSanPham $kho): void
+    {
         $id = trim($id);
-
-        if ($kho->timTheoId($id) === null) {
-            throw new DomainException(
-                'Sản phẩm không tồn tại.'
-            );
+        if ($id === '') {
+            throw new DomainException('ID sản phẩm không hợp lệ.');
+        }
+        if ($soLuong < self::SO_LUONG_TOI_THIEU || $soLuong > self::SO_LUONG_TOI_DA) {
+            throw new DomainException('Số lượng phải từ 1 đến 99.');
         }
 
-        if (
-            $soLuong < self::SO_LUONG_TOI_THIEU ||
-            $soLuong > self::SO_LUONG_TOI_DA
-        ) {
-            throw new DomainException(
-                'Số lượng phải từ 1 đến 99.'
-            );
-        }
-
+        $this->kiemTraTonKho($id, $soLuong, $kho);
         $_SESSION[self::TEN_SESSION][$id] = $soLuong;
+    }
+
+    /**
+     * Kiểm tra tồn kho mới nhất ở máy chủ, không tin giá trị từ trình duyệt.
+     */
+    private function kiemTraTonKho(string $id, int $soLuongMoi, KhoSanPham $kho): void
+    {
+        $trangThai = $kho->trangThaiTonKho($id);
+        if ($trangThai === null) {
+            throw new DomainException('Sản phẩm không tồn tại.');
+        }
+        if ($trangThai['tinh_trang'] !== 'Còn hàng' || $trangThai['ton_kho'] === 0) {
+            throw new DomainException('Sản phẩm đã hết hàng, không thể thêm vào giỏ.');
+        }
+        if ($soLuongMoi > $trangThai['ton_kho']) {
+            throw new DomainException(
+                'Sản phẩm chỉ còn ' . $trangThai['ton_kho'] .
+                ' chiếc. Giỏ hàng đang yêu cầu ' . $soLuongMoi . ' chiếc.'
+            );
+        }
     }
 
     /**

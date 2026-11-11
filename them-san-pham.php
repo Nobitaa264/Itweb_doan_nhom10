@@ -32,19 +32,12 @@ $stmtDanhMuc = $pdo->query(
 $danhMuc = $stmtDanhMuc->fetchAll(PDO::FETCH_ASSOC);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    csrfKiemTraPost();
+
     foreach ($duLieu as $truong => $macDinh) {
         if (isset($_POST[$truong]) && is_string($_POST[$truong])) {
             $duLieu[$truong] = trim($_POST[$truong]);
         }
-    }
-
-    $token = (string) ($_POST['_token'] ?? '');
-    if (
-        empty($_SESSION['_token']) ||
-        !is_string($_SESSION['_token']) ||
-        !hash_equals($_SESSION['_token'], $token)
-    ) {
-        $loi[] = 'Phiên biểu mẫu không hợp lệ. Vui lòng tải lại trang.';
     }
 
     if (!preg_match('/^[A-Z]{2}[0-9]{3}$/', $duLieu['id'])) {
@@ -149,9 +142,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-if (empty($_SESSION['_token'])) {
-    $_SESSION['_token'] = bin2hex(random_bytes(32));
-}
 ?>
 
 <?php require __DIR__ . '/inc/header.php'; ?>
@@ -175,7 +165,7 @@ if (empty($_SESSION['_token'])) {
 
         <section class="khu-vuc-form">
             <form method="post" action="them-san-pham.php">
-                <input type="hidden" name="_token" value="<?= e($_SESSION['_token']) ?>">
+                <?= csrfField() ?>
 
                 <div class="nhom-form">
                     <label for="id">Mã sản phẩm</label>
