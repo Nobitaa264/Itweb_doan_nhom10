@@ -105,21 +105,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         } catch (Throwable $e) {
-            // Khong cho phep dang nhap neu he thong gioi han/log bi loi.
-            error_log('[LOGIN_SECURITY_ERROR] ' . get_class($e) . ': ' . $e->getMessage());
-            try {
-                th7LoginGhiNhatKy('login_error', $tenDangNhap, $ip);
-            } catch (Throwable $loiGhiLog) {
-                // Neu storage mat quyen ghi, van tu choi dang nhap (fail closed).
-                error_log('[LOGIN_SECURITY_LOG_ERROR] ' . get_class($loiGhiLog));
-            }
-            $loi = 'Hệ thống chưa thể đăng nhập lúc này. Vui lòng thử lại.';
+            // Hien thi loi chi tiet de debug truc quan tren man hinh
+            $loi = 'Lỗi chi tiết: ' . $e->getMessage() . ' (Tại dòng ' . $e->getLine() . ')';
         }
     }
 }
 ?>
-
-
 
 <?php require __DIR__ . '/inc/header.php'; ?>
 <?php require __DIR__ . '/inc/menu.php'; ?>
@@ -130,27 +121,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             Đăng nhập
         </h1>
 
-        
-
         <section class="khu-vuc-form">
             
-<?php if ($flash !== null): ?>
-    <p role="status" aria-live="polite">
-        <?= e($flash['noiDung'] ?? '') ?>
-    </p>
-<?php endif; ?>
-
-<?php if ($loi !== ''): ?>
-    <p role="alert">
-        <?= e($loi) ?>
-    </p>
-<?php endif; ?>
-
-
             <h2 class="tieu-de-trang">Chào mừng trở lại</h2>
-<p class="mo-ta-dang-nhap">
-    Đăng nhập vào tài khoản StyleHub của bạn.
-</p>
+            <p class="mo-ta-dang-nhap">
+                Đăng nhập vào tài khoản StyleHub của bạn.
+            </p>
+
+            <?php if ($flash !== null): ?>
+                <p role="status" aria-live="polite">
+                    <?= e($flash['noiDung'] ?? '') ?>
+                </p>
+            <?php endif; ?>
+
+            <?php if ($loi !== ''): ?>
+                <p role="alert" style="color: red; font-weight: bold;">
+                    <?= e($loi) ?>
+                </p>
+            <?php endif; ?>
 
             <form
                 method="post"
@@ -205,8 +193,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </p>
 
             <a class="lien-ket-trang-chu" href="index.php">
-    ← Quay lại trang chủ
-</a>
+                ← Quay lại trang chủ
+            </a>
 
         </section>
 
