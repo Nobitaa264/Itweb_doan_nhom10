@@ -8,41 +8,15 @@ declare(strict_types=1);
  * Thử: gửi lịch hợp lệ / trùng, làm trắc nghiệm, xem lịch sử, F5 và tắt JS.
  */
 
+// Cấu hình chung khởi tạo phiên, PDO và kiểm tra CSRF tập trung.
 require_once __DIR__ . '/../../inc/config.php';
-if (is_file(__DIR__ . '/../../inc/db.php')) {
-    require_once __DIR__ . '/../../inc/db.php';
-}
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
-}
 
 const SON_MSSV = '3120224123';
 
-// Tương thích với hàm db() của nhóm; dự phòng cho môi trường XAMPP.
+// Chỉ sử dụng kết nối được cấu hình bởi website, không dùng root dự phòng.
 function sonPdo(): PDO
 {
-    static $ketNoi = null;
-    if ($ketNoi instanceof PDO) {
-        return $ketNoi;
-    }
-    if (function_exists('db')) {
-        $ketNoi = db();
-        if (!$ketNoi instanceof PDO) {
-            throw new RuntimeException('Hàm db() phải trả về đối tượng PDO.');
-        }
-        return $ketNoi;
-    }
-    $ketNoi = new PDO(
-        'mysql:host=127.0.0.1;dbname=ltweb_nhom10;charset=utf8mb4',
-        'root',
-        '',
-        [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-        ]
-    );
-    return $ketNoi;
+    return db();
 }
 
 function sonH(mixed $giaTri): string
