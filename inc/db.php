@@ -3,11 +3,7 @@ declare(strict_types=1);
 
 /**
  * TH7 - Ket noi MySQL bang file .env rieng tu.
- *
- * File cau hinh:
- * D:\StyleHub_private\.env
- *
- * Khong luu mat khau MySQL trong ma nguon.
+ * Tu dong ho tro nhieu duong dan linh hoat tren may ca nhan.
  */
 function db(): PDO
 {
@@ -19,15 +15,28 @@ function db(): PDO
 
     require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-    // Duong dan co dinh ben ngoai web root.
-    // Hoat dong ca voi PHP Development Server va Apache.
-    $thuMucCauHinh = 'D:' . DIRECTORY_SEPARATOR
-        . 'StyleHub_private';
+    // Danh sach cac duong dan tiem nang chua file .env de phong thich nghi cao nhat
+    $cacThuMucThu = [
+        'D:' . DIRECTORY_SEPARATOR . 'qlcsdl' . DIRECTORY_SEPARATOR . 'htdocs' . DIRECTORY_SEPARATOR . 'StyleHub_private' . DIRECTORY_SEPARATOR . 'security',
+        'D:' . DIRECTORY_SEPARATOR . 'qlcsdl' . DIRECTORY_SEPARATOR . 'htdocs' . DIRECTORY_SEPARATOR . 'StyleHub_private',
+        dirname(__DIR__) . DIRECTORY_SEPARATOR . 'StyleHub_private' . DIRECTORY_SEPARATOR . 'security',
+        'D:' . DIRECTORY_SEPARATOR . 'StyleHub_private',
+        dirname(__DIR__) // Thu muc goc du an (phong khi de .env tai goc)
+    ];
 
-    $tepEnv = $thuMucCauHinh
-        . DIRECTORY_SEPARATOR . '.env';
+    $thuMucCauHinh = null;
+    $tepEnv = null;
 
-    if (!is_file($tepEnv) || !is_readable($tepEnv)) {
+    foreach ($cacThuMucThu as $thuMuc) {
+        $duongDan = $thuMuc . DIRECTORY_SEPARATOR . '.env';
+        if (is_file($duongDan) && is_readable($duongDan)) {
+            $thuMucCauHinh = $thuMuc;
+            $tepEnv = $duongDan;
+            break;
+        }
+    }
+
+    if (!$tepEnv || !$thuMucCauHinh) {
         throw new RuntimeException(
             'Khong tim thay hoac khong doc duoc file .env rieng tu.'
         );
