@@ -17,27 +17,63 @@ require_once __DIR__ . '/../../inc/config.php';
 $mssv = '3120224028';
 $hoTen = 'Nguyễn Đình Minh Đạt';
 
-if (!function_exists('e')) {
-    function e($string) {
-        return htmlspecialchars((string)$string, ENT_QUOTES, 'UTF-8');
+// Xử lý ghi nhận lượt xem bằng POST có CSRF
+if (
+    $_SERVER['REQUEST_METHOD'] === 'POST' &&
+    isset($_POST['tang_luot_xem'])
+) {
+    $pdo = db();
+
+    $sqlTangLuotXem = "
+        INSERT INTO tv_luot_xem (mssv, ngay, so_luot)
+        VALUES (?, CURDATE(), 1)
+        ON DUPLICATE KEY UPDATE so_luot = so_luot + 1
+    ";
+
+    $stmtTang = $pdo->prepare($sqlTangLuotXem);
+    $stmtTang->execute([$mssv]);
+
+    // Đánh dấu đã ghi nhận lượt xem để tránh gửi POST lặp lại
+    $_SESSION['vua_tang_luot_xem'] = true;
+
+    // Chuyển hướng về trang cá nhân
+    $duongDan = 'gioithieu.php';
+
+    if (!empty($_GET)) {
+        $duongDan .= '?' . http_build_query($_GET);
     }
+
+    header('Location: ' . $duongDan);
+    exit;
 }
 
 // Xử lý Form Tính điểm học phần (Giữ nguyên PRG cũ)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tinh_diem'])) {
-    $a1 = isset($_POST['a1']) ? (float)$_POST['a1'] : -1;
-    $a2 = isset($_POST['a2']) ? (float)$_POST['a2'] : -1;
-    $a3 = isset($_POST['a3']) ? (float)$_POST['a3'] : -1;
+    $a1 = filter_var(is_string($_POST['a1'] ?? null) ? $_POST['a1'] : null, FILTER_VALIDATE_FLOAT);
+$a2 = filter_var(is_string($_POST['a2'] ?? null) ? $_POST['a2'] : null, FILTER_VALIDATE_FLOAT);
+$a3 = filter_var(is_string($_POST['a3'] ?? null) ? $_POST['a3'] : null, FILTER_VALIDATE_FLOAT);
 
-    if ($a1 >= 0 && $a1 <= 10 && $a2 >= 0 && $a2 <= 10 && $a3 >= 0 && $a3 <= 10) {
-        $diemTongKet = 0.2 * $a1 + 0.3 * $a2 + 0.5 * $a3;
-        $_SESSION['ketQuaDiem'] = round($diemTongKet, 2);
-    } else {
-        $_SESSION['loiDiem'] = "Vui lòng nhập điểm hợp lệ từ 0 đến 10.";
-    }
+if (
+    $a1 !== false && $a2 !== false && $a3 !== false &&
+    $a1 >= 0 && $a1 <= 10 &&
+    $a2 >= 0 && $a2 <= 10 &&
+    $a3 >= 0 && $a3 <= 10
+) {
+    $diemTongKet = 0.2 * $a1 + 0.3 * $a2 + 0.5 * $a3;
+    $_SESSION['ketQuaDiem'] = round($diemTongKet, 2);
+} else {
+    $_SESSION['loiDiem'] = "Vui lòng nhập điểm hợp lệ từ 0 đến 10.";
+}
     
     header("Location: gioithieu.php");
     exit;
+}
+
+// Kiểm soát việc gửi POST tăng lượt xem
+$hienThiFormTangLuotXem = empty($_SESSION['vua_tang_luot_xem']);
+
+if (!$hienThiFormTangLuotXem) {
+    unset($_SESSION['vua_tang_luot_xem']);
 }
 
 $ketQuaDiem = isset($_SESSION['ketQuaDiem']) ? $_SESSION['ketQuaDiem'] : "";
@@ -53,8 +89,14 @@ $danhSachKyNang = [
     ['ten' => 'Git và GitHub', 'loai' => 'khac']
 ];
 
-$loaiLoc = isset($_GET['loc']) ? (string)$_GET['loc'] : 'tatca';
+$loaiLoc = chuoi($_GET, 'loc', 20);
 $kyNangHienThi = [];
+
+$cacLoaiKyNang = ['tatca', 'frontend', 'backend', 'khac'];
+
+if (!in_array($loaiLoc, $cacLoaiKyNang, true)) {
+    $loaiLoc = 'tatca';
+}
 
 foreach ($danhSachKyNang as $kn) {
     if ($loaiLoc === 'tatca' || $kn['loai'] === $loaiLoc) {
@@ -68,15 +110,6 @@ foreach ($danhSachKyNang as $kn) {
 $thongKeLuotXem = [];
 try {
     $pdo = db();
-    // Ghi nhận lượt xem ngày hôm nay
-    $sqlTangLuotXem = "
-        INSERT INTO tv_luot_xem (mssv, ngay, so_luot) 
-        VALUES (?, CURDATE(), 1)
-        ON DUPLICATE KEY UPDATE so_luot = so_luot + 1
-    ";
-    $stmtTang = $pdo->prepare($sqlTangLuotXem);
-    $stmtTang->execute([$mssv]);
-
     // Lấy thống kê 7 ngày gần nhất
     $sqlLuotXem = "
         SELECT ngay, so_luot 
@@ -95,12 +128,11 @@ try {
 // CHỨC NĂNG CSDL 2: TRUY VẤN DỰ ÁN CÁ NHÂN (TÌM KIẾM & LỌC TRONG CSDL)
 // ============================================================================
 $danhSachDuAnCSDL = [];
-$timKiemDuAn = trim((string)($_GET['q_duan'] ?? ''));
-$loaiDuAnFilter = trim((string)($_GET['loai_duan'] ?? ''));
-
+$timKiemDuAn = chuoi($_GET, 'q_duan', 100);
+$loaiDuAnFilter = chuoi($_GET, 'loai_duan', 50);
 try {
     $pdo = db();
-    $sqlDuAn = "SELECT id, ten_du_an, loai_du_an, mo_ta, created_at FROM tv_du_an WHERE mssv = ?";
+    $sqlDuAn = "SELECT id, ten_du_an, loai_du_an, mo_ta, link_demo, created_at FROM tv_du_an WHERE mssv = ?";
     $paramsDuAn = [$mssv];
 
     if ($loaiDuAnFilter !== '') {
@@ -131,11 +163,12 @@ require_once __DIR__ . '/../../inc/header.php';
 <!-- Bỏ dấu / ở cuối thẻ link -->
 <link rel="stylesheet" href="style.css">
 
-<nav class="navigation-back" style="margin: 20px 0; display: flex; gap: 12px; align-items: center;">
-    <a href="<?php echo $goc; ?>index.php" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background-color: #007bff; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; transition: background-color 0.2s ease;">
+<nav class="navigation-back">
+    <a href="<?php echo $goc; ?>index.php">
         &larr; Trang chủ
     </a>
-    <a href="<?php echo $goc; ?>gioi-thieu.php" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background-color: #6c757d; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; transition: background-color 0.2s ease;">
+
+    <a href="<?php echo $goc; ?>gioi-thieu.php">
         &larr; Trang Giới thiệu
     </a>
 </nav>
@@ -189,13 +222,13 @@ require_once __DIR__ . '/../../inc/header.php';
   <p>Trong môn Thiết kế và Lập trình Web, tôi cùng các thành viên trong nhóm thực hiện dự án website bán hàng quần áo.</p>
   
   <h3>Kỹ năng (Lọc từ mảng PHP)</h3>
-  <div style="margin-bottom: 15px;">
-      <strong>Lọc theo: </strong>
-      <a href="?loc=tatca">Tất cả</a> | 
-      <a href="?loc=frontend">Front-end</a> | 
-      <a href="?loc=backend">Back-end</a> | 
-      <a href="?loc=khac">Khác</a>
-  </div>
+  <div class="skill-filter">
+    <strong>Lọc theo: </strong>
+    <a href="?loc=tatca">Tất cả</a> |
+    <a href="?loc=frontend">Front-end</a> |
+    <a href="?loc=backend">Back-end</a> |
+    <a href="?loc=khac">Khác</a>
+</div>
   <ul class="skills" aria-label="Danh sách kỹ năng">
     <?php foreach ($kyNangHienThi as $kn): ?>
         <li><?php echo e($kn['ten']); ?></li>
@@ -211,29 +244,48 @@ require_once __DIR__ . '/../../inc/header.php';
 <!-- ============================================================================ -->
 <section>
     <h2>Quản lý dự án cá nhân (CSDL)</h2>
-    <form method="GET" style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
-        <input type="text" name="q_duan" value="<?php echo e($timKiemDuAn); ?>" placeholder="Tìm tên dự án, từ khóa..." style="padding: 6px 12px; border: 1px solid #ccc; border-radius: 4px;">
-        <select name="loai_duan" style="padding: 6px 12px; border: 1px solid #ccc; border-radius: 4px;">
-            <option value="">-- Tất cả loại dự án --</option>
-            <option value="Web" <?php echo $loaiDuAnFilter === 'Web' ? 'selected' : ''; ?>>Web</option>
-            <option value="App Mobile" <?php echo $loaiDuAnFilter === 'App Mobile' ? 'selected' : ''; ?>>App Mobile</option>
-<option value="AI / Trí tuệ nhân tạo" <?php echo $loaiDuAnFilter === 'AI / Trí tuệ nhân tạo' ? 'selected' : ''; ?>>AI / Trí tuệ nhân tạo</option>
-        </select>
-        <button type="submit" style="padding: 6px 16px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">Tìm / Lọc</button>
-        <a href="gioithieu.php" style="padding: 6px 16px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px;">Làm mới</a>
-    </form>
+    <form method="GET" class="project-filter">
+    <input
+        type="text"
+        name="q_duan"
+        value="<?php echo e($timKiemDuAn); ?>"
+        placeholder="Tìm tên dự án, từ khóa..."
+    >
+
+    <select name="loai_duan">
+        <option value="">-- Tất cả loại dự án --</option>
+        <option value="Web" <?php echo $loaiDuAnFilter === 'Web' ? 'selected' : ''; ?>>Web</option>
+        <option value="App Mobile" <?php echo $loaiDuAnFilter === 'App Mobile' ? 'selected' : ''; ?>>App Mobile</option>
+        <option value="AI / Trí tuệ nhân tạo" <?php echo $loaiDuAnFilter === 'AI / Trí tuệ nhân tạo' ? 'selected' : ''; ?>>AI / Trí tuệ nhân tạo</option>
+    </select>
+
+    <button type="submit">Tìm / Lọc</button>
+
+    <a href="gioithieu.php" class="btn-reset">Làm mới</a>
+</form>
 
     <?php if (empty($danhSachDuAnCSDL)): ?>
         <p>Không tìm thấy dự án nào trong CSDL.</p>
     <?php else: ?>
-        <div style="display: grid; gap: 12px;">
-            <?php foreach ($danhSachDuAnCSDL as $da): ?>
-                <div style="border: 1px solid #e0e0e0; border-radius: 6px; padding: 12px; background-color: #f9f9f9;">
-                    <h3 style="margin-top: 0; color: #007bff;"><?php echo e($da['ten_du_an']); ?> <small style="color: #6c757d;">(<?php echo e($da['loai_du_an']); ?>)</small></h3>
-                    <p style="margin: 6px 0;"><?php echo nl2br(e($da['mo_ta'])); ?></p>
-                    <?php if (!empty($da['link_dem'])): ?>
-    <a href="<?php echo e($da['link_dem']); ?>" target="_blank" rel="noopener">
-        Xem chi tiết dự án &rarr;
+        <div class="project-list">
+    <?php foreach ($danhSachDuAnCSDL as $da): ?>
+        <div class="project-card">
+            <h3>
+                <?php echo e($da['ten_du_an']); ?>
+                <small>(<?php echo e($da['loai_du_an']); ?>)</small>
+            </h3>
+
+            <p><?php echo nl2br(e($da['mo_ta'])); ?></p>
+                    <?php
+$linkDemo = filter_var($da['link_demo'] ?? '', FILTER_VALIDATE_URL);
+
+if (
+    $linkDemo &&
+    in_array(parse_url($linkDemo, PHP_URL_SCHEME), ['http', 'https'], true)
+):
+?>
+    <a href="<?php echo e($linkDemo); ?>" target="_blank" rel="noopener">
+        Xem dự án
     </a>
 <?php endif; ?>
                 </div>
@@ -246,6 +298,7 @@ require_once __DIR__ . '/../../inc/header.php';
     <h2>Máy tính điểm học phần</h2>
     <!-- Xóa thuộc tính action="" -->
     <form method="POST" class="form-luubut">
+        <?= csrfField() ?>
         <div class="form-group">
             <label for="a1">Điểm A1 (20%):</label>
             <input type="number" step="0.1" name="a1" id="a1" required min="0" max="10" placeholder="0 - 10">
@@ -262,10 +315,14 @@ require_once __DIR__ . '/../../inc/header.php';
     </form>
 
     <?php if ($loiDiem !== ""): ?>
-        <p style="color: red; margin-top: 15px;"><strong>Lỗi:</strong> <?php echo e($loiDiem); ?></p>
+        <p class="message-error">
+    <strong>Lỗi:</strong> <?php echo e($loiDiem); ?>
+</p>
     <?php endif; ?>
     <?php if ($ketQuaDiem !== ""): ?>
-        <p style="color: green; margin-top: 15px; font-size: 1.2em;"><strong>Điểm tổng kết:</strong> <?php echo e($ketQuaDiem); ?></p>
+        <p class="message-success">
+    <strong>Điểm tổng kết:</strong> <?php echo e($ketQuaDiem); ?>
+</p>
     <?php endif; ?>
 </section>
 
@@ -321,6 +378,14 @@ require_once __DIR__ . '/../../inc/header.php';
     </table>
   </div>
 </section>
+
+
+<?php if ($hienThiFormTangLuotXem): ?>
+    <form id="form-tang-luot-xem" method="POST" action="">
+        <?= csrfField() ?>
+        <input type="hidden" name="tang_luot_xem" value="1">
+    </form>
+<?php endif; ?>
 
 <script src="js/canhan.js"></script>
 
