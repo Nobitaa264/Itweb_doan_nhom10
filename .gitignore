@@ -1,0 +1,10 @@
+@'
+# Environment
+.env
+
+# Composer dependencies
+/vendor/
+
+# Log files
+/logs/*.log
+'@ | Set-Content -Path .gitignore -Encoding utf8
