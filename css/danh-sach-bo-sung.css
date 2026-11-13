@@ -1,0 +1,146 @@
+/* Bài TH6 – Bộ lọc giá và phân trang danh sách StyleHub. */
+body.danh-sach .th6-loc-loi {
+    color: #b91c1c;
+    font-weight: 600;
+    margin: 12px 0 0;
+}
+body.danh-sach #goi-y-gia {
+    display: block;
+    margin-top: 6px;
+    color: #64748b;
+}
+body.danh-sach .nhom-hanh-dong-san-pham {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+body.danh-sach .th6-phan-trang-danh-sach {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 20px 0 4px;
+}
+body.danh-sach .th6-phan-trang-danh-sach a,
+body.danh-sach .th6-phan-trang-danh-sach span {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 42px;
+    min-height: 40px;
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    text-decoration: none;
+    background: #fff;
+    color: #1d4ed8;
+    font-weight: 700;
+}
+body.danh-sach .th6-phan-trang-danh-sach a:hover,
+body.danh-sach .th6-phan-trang-danh-sach a:focus-visible {
+    background: #eff6ff;
+    border-color: #2563eb;
+}
+body.danh-sach .th6-phan-trang-danh-sach .th6-trang-hien-tai {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: white;
+}
+body.danh-sach .th6-phan-trang-danh-sach .th6-trang-vo-hieu {
+    color: #94a3b8;
+    background: #f8fafc;
+}
+
+/* ==============================================================
+   TH6 – Chinh can hang cong cu tim kiem, danh muc, gia va nut loc
+   Chi ap dung cho trang danh-sach.php; khong anh huong trang khac.
+   ============================================================== */
+body.danh-sach .cong-cu-san-pham {
+    align-items: start;
+}
+
+body.danh-sach .cong-cu-san-pham > .nhom-cong-cu {
+    align-content: start;
+    min-width: 0;
+}
+
+/* Hai nut can deu nhau, khong bi don vao giua man hinh. */
+body.danh-sach .cong-cu-san-pham > .nhom-cong-cu:nth-child(5) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+body.danh-sach .cong-cu-san-pham > .nhom-cong-cu:nth-child(5) .nut {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 44px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Giao dien may tinh: 3 cot tren cung, hang duoi la sap xep + 2 nut. */
+@media (min-width: 768px) {
+    body.danh-sach .cong-cu-san-pham {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        align-items: start; /* ghi de align-items: end cua style.css */
+        gap: 20px;
+    }
+
+    body.danh-sach .cong-cu-san-pham > .nhom-cong-cu:nth-child(4) {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    body.danh-sach .cong-cu-san-pham > .nhom-cong-cu:nth-child(5) {
+        grid-column: 2 / 4;
+        grid-row: 2;
+        align-self: end; /* nut ngang hang voi o Sap xep */
+    }
+}
+
+/* Dien thoai hep: nut xuong hang de khong tran khung. */
+@media (max-width: 420px) {
+    body.danh-sach .cong-cu-san-pham > .nhom-cong-cu:nth-child(5) {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* TH6 Bước 11: trạng thái và phân trang cho tìm kiếm Fetch API. */
+body.danh-sach #thong-bao-khong-co-san-pham[hidden],
+body.danh-sach #trang-thai-fetch[hidden],
+body.danh-sach .th6-phan-trang-danh-sach[hidden] {
+    display: none;
+}
+body.danh-sach #trang-thai-fetch:not([hidden]) {
+    padding: 8px 0;
+    color: #475569;
+}
+body.danh-sach .th6-phan-trang-danh-sach button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 42px;
+    min-height: 40px;
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #fff;
+    color: #1d4ed8;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+body.danh-sach .th6-phan-trang-danh-sach button:hover:not(:disabled),
+body.danh-sach .th6-phan-trang-danh-sach button:focus-visible {
+    background: #eff6ff;
+    border-color: #2563eb;
+}
+body.danh-sach .th6-phan-trang-danh-sach button:disabled {
+    color: #94a3b8;
+    background: #f8fafc;
+    cursor: not-allowed;
+}

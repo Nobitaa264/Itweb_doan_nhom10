@@ -1,0 +1,15 @@
+
+# TH7 - Bao ve tep va thu muc noi bo StyleHub
+# Khong cho phep liet ke thu muc
+Options -Indexes
+
+# Chan tep va thu muc an, tru .well-known
+RedirectMatch 404 /\.(?!well-known/)
+
+# Chan truy cap cac thu muc noi bo
+RedirectMatch 404 /(inc|includes|src|vendor|database|logs|storage|tests)(/|$)
+
+# Chan cac tep cau hinh, SQL, log va sao luu
+<FilesMatch "\.(sql|log|bak|ini|lock)$|^composer\.json$">
+    Require all denied
+</FilesMatch>
