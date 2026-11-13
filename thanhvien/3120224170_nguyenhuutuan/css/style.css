@@ -7,6 +7,7 @@ Chức năng:
 - Giao diện giới thiệu cá nhân hoàn chỉnh
 - Bố cục lưới (Flexbox/Grid) cho Profile, Kỹ năng, Lưu bút
 - Tách biệt CSS Form Bộ lọc (hàng ngang) và Form Lưu bút (hàng dọc)
+- Tuân thủ CSP (loại bỏ hoàn toàn inline style từ PHP và JS)
 - Responsive chuẩn trên mọi thiết bị
 */
 
@@ -26,7 +27,9 @@ Chức năng:
   --container: 1000px;
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -240,7 +243,7 @@ button:hover,
 ========================= */
 .filter-bar {
   display: flex;
-  flex-direction: row; /* Ép buộc hàng ngang */
+  flex-direction: row;
   flex-wrap: wrap;
   align-items: flex-end;
   gap: 15px;
@@ -293,10 +296,14 @@ button:hover,
   display: none;
 }
 
+.json-box.is-visible {
+  display: block;
+}
+
 /* =========================
    7. FORM SỔ LƯU BÚT (DÀN HÀNG DỌC)
 ========================= */
-#so-luu-but form {
+#so-luu-but form:not(.form-xoa-luu-but) {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -335,10 +342,15 @@ button:hover,
   box-shadow: 0 0 0 3px #dbeafe;
 }
 
-#so-luu-but button[type="submit"] {
+#so-luu-but form:not(.form-xoa-luu-but) button[type="submit"] {
   align-self: flex-start;
   min-width: 150px;
   margin-top: 5px;
+}
+
+.form-xoa-luu-but {
+  margin: 0;
+  flex-shrink: 0;
 }
 
 /* Lời nhắn lưu bút */
@@ -452,6 +464,10 @@ button:hover,
   background: #dbeafe;
 }
 
+.text-left {
+  text-align: left;
+}
+
 /* =========================
    9. ĐỒNG HỒ & TRẠNG THÁI
 ========================= */
@@ -475,7 +491,6 @@ button:hover,
 
 #message {
   margin-top: 15px;
-  color: #15803d;
   font-weight: bold;
 }
 
@@ -489,6 +504,15 @@ button:hover,
   color: #15803d;
   font-weight: 600;
   margin-top: 15px;
+}
+
+/* Hỗ trợ sao chép clipboard ẩn không dùng inline style */
+.sr-only-copy {
+  position: fixed;
+  left: -9999px;
+  top: 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* =========================
@@ -523,17 +547,17 @@ button:hover,
     text-align: center;
   }
   .filter-bar {
-    flex-direction: column; /* Điện thoại thì xếp dọc bộ lọc cho dễ nhìn */
+    flex-direction: column;
     align-items: stretch;
   }
   .filter-group {
     width: 100%;
   }
-  button,
+  button:not(.btn-delete),
   .btn-action {
     width: 100%;
   }
-  #so-luu-but button[type="submit"] {
+  #so-luu-but form:not(.form-xoa-luu-but) button[type="submit"] {
     width: 100%;
   }
 }
