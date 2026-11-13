@@ -1,0 +1,7 @@
+# TH7 - Bao ve thu muc uploads
+Options -Indexes
+
+# Khong cho thuc thi ma PHP trong uploads
+<FilesMatch "\.(php|phtml|phar|php[0-9])$">
+    Require all denied
+</FilesMatch>
