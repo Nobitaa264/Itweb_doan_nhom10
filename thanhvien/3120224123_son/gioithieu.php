@@ -8,41 +8,15 @@ declare(strict_types=1);
  * Thử: gửi lịch hợp lệ / trùng, làm trắc nghiệm, xem lịch sử, F5 và tắt JS.
  */
 
+// Cấu hình chung khởi tạo phiên, PDO và kiểm tra CSRF tập trung.
 require_once __DIR__ . '/../../inc/config.php';
-if (is_file(__DIR__ . '/../../inc/db.php')) {
-    require_once __DIR__ . '/../../inc/db.php';
-}
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
-}
 
 const SON_MSSV = '3120224123';
 
-// Tương thích với hàm db() của nhóm; dự phòng cho môi trường XAMPP.
+// Chỉ sử dụng kết nối được cấu hình bởi website, không dùng root dự phòng.
 function sonPdo(): PDO
 {
-    static $ketNoi = null;
-    if ($ketNoi instanceof PDO) {
-        return $ketNoi;
-    }
-    if (function_exists('db')) {
-        $ketNoi = db();
-        if (!$ketNoi instanceof PDO) {
-            throw new RuntimeException('Hàm db() phải trả về đối tượng PDO.');
-        }
-        return $ketNoi;
-    }
-    $ketNoi = new PDO(
-        'mysql:host=127.0.0.1;dbname=ltweb_nhom10;charset=utf8mb4',
-        'root',
-        '',
-        [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-        ]
-    );
-    return $ketNoi;
+    return db();
 }
 
 function sonH(mixed $giaTri): string
@@ -125,11 +99,8 @@ $cauHoi = [
     ]
 ];
 
-if (!isset($_SESSION['son_csrf'])) {
-    $_SESSION['son_csrf'] = bin2hex(random_bytes(32));
-}
-
-$csrf = $_SESSION['son_csrf'];
+// CSRF sử dụng thống nhất csrfToken()/csrfField() từ inc/ham.php;
+// inc/config.php kiểm tra tập trung mọi yêu cầu POST.
 
 $du = [
     'hoTen' => '',
@@ -168,16 +139,11 @@ $ngayMax = $homNay->modify('+90 days')->format('Y-m-d');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $hanhDong = $_POST['hanh_dong'] ?? '';
-    $token = $_POST['csrf'] ?? '';
+    // inc/config.php đã xác thực CSRF trước khi đến đây.
+    $hanhDongNhap = $_POST['hanh_dong'] ?? '';
+    $hanhDong = is_string($hanhDongNhap) ? $hanhDongNhap : '';
 
-    if (
-        !is_string($token) ||
-        !hash_equals($csrf, $token)
-    ) {
-        http_response_code(400);
-        $thongBao = 'Phiên gửi không hợp lệ. Hãy tải lại trang.';
-    } elseif ($hanhDong === 'lich_hen') {
+    if ($hanhDong === 'lich_hen') {
 
         // ==========================================
         // CHỨC NĂNG PHP 1 - ĐĂNG KÝ LỊCH HẸN
@@ -569,10 +535,7 @@ echo str_replace(
                     name="hanh_dong"
                     value="lich_hen">
 
-                <input
-                    type="hidden"
-                    name="csrf"
-                    value="<?= e($csrf) ?>">
+                <?= csrfField() ?>
 
                 <p>
                     <label for="hoTen">Họ và tên</label>
@@ -692,10 +655,7 @@ echo str_replace(
                     name="hanh_dong"
                     value="trac_nghiem">
 
-                <input
-                    type="hidden"
-                    name="csrf"
-                    value="<?= e($csrf) ?>">
+                <?= csrfField() ?>
 
                 <p>
                     <label for="son-bi-danh">Bí danh (không bắt buộc)</label>

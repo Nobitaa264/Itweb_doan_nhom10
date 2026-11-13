@@ -1,0 +1,108 @@
+
+# ==========================================================
+# TH7 - KIEM THU BAO MAT WEBSITE STYLEHUB - NHOM 10
+# Cong cu: REST Client (VS Code)
+# Chi kiem thu tren localhost cua nhom
+#
+# LUU Y:
+# - Khong luu cookie phien, mat khau hoac CSRF token that.
+# - Cac request POST co CSRF hop le can lay cookie/token
+#   trong phien hien tai va dien vao bien tam khi thu.
+# ==========================================================
+
+@baseUrl = http://127.0.0.1:8000
+
+### 01 - Header bao mat (mong doi 200)
+GET {{baseUrl}}/
+Accept: text/html
+
+### 02 - GET trang ca nhan Son (mong doi 200)
+GET {{baseUrl}}/thanhvien/3120224123_son/gioithieu.php
+
+### 03 - POST dang nhap thieu CSRF (mong doi 403)
+POST {{baseUrl}}/dang-nhap.php
+Content-Type: application/x-www-form-urlencoded
+
+email=test@example.com&mat_khau=matkhau_sai
+
+### 04 - POST dang nhap sai CSRF (mong doi 403)
+POST {{baseUrl}}/dang-nhap.php
+Content-Type: application/x-www-form-urlencoded
+
+email=test@example.com&mat_khau=matkhau_sai&csrf_token=abc
+
+### 05 - POST CSRF dang mang (mong doi 403)
+POST {{baseUrl}}/dang-nhap.php
+Content-Type: application/x-www-form-urlencoded
+
+email=test@example.com&mat_khau=x&csrf_token[]=abc
+
+### 06 - GET dang xuat (mong doi 405)
+GET {{baseUrl}}/dang-xuat.php
+
+### 07 - Truy cap quan tri khi chua dang nhap
+# Mong doi 302 chuyen sang dang-nhap.php
+GET {{baseUrl}}/quan-tri.php
+
+### 08 - Kiem tra tham so mang danh sach
+# Mong doi khong co HTTP 500/Warning
+GET {{baseUrl}}/danh-sach.php?q%5B%5D=ao
+
+### 09 - Kiem tra tham so mang chi tiet
+# Mong doi khong co HTTP 500/Warning
+GET {{baseUrl}}/chi-tiet.php?id%5B%5D=1
+
+### 10 - Kiem tra tham so mang trang Son
+# Mong doi khong co HTTP 500/Warning
+GET {{baseUrl}}/thanhvien/3120224123_son/gioithieu.php?diem_tu%5B%5D=10
+
+### 11 - Truy cap file Composer noi bo (mong doi 403/404)
+GET {{baseUrl}}/composer.json
+
+### 12 - Truy cap file SQL noi bo (mong doi 403/404)
+GET {{baseUrl}}/database/schema.sql
+
+### 13 - Truy cap file .git (mong doi 403/404)
+GET {{baseUrl}}/.git/config
+
+### 14 - Truy cap file log (mong doi 403/404)
+GET {{baseUrl}}/logs/bao-mat.log
+
+### 15 - Truy cap vendor (mong doi 403/404)
+GET {{baseUrl}}/vendor/autoload.php
+
+### 16 - POST lich hen Son thieu CSRF (mong doi 403)
+POST {{baseUrl}}/thanhvien/3120224123_son/gioithieu.php
+Content-Type: application/x-www-form-urlencoded
+
+hanh_dong=lich_hen&hoTen=Nguyen+Van+Test&ngay=2026-12-12&gio=14%3A00&noiDung=Kiem+thu+CSRF+TH7
+
+### 17 - POST trac nghiem Son thieu CSRF (mong doi 403)
+POST {{baseUrl}}/thanhvien/3120224123_son/gioithieu.php
+Content-Type: application/x-www-form-urlencoded
+
+hanh_dong=trac_nghiem&bi_danh=Test
+
+### 18 - API gio hang thieu CSRF (mong doi 403 JSON)
+POST {{baseUrl}}/api/gio-hang.php
+Content-Type: application/json
+Accept: application/json
+
+{"id":1,"so_luong":1}
+
+### 19 - Kiem tra file CSS hop le (mong doi 200)
+GET {{baseUrl}}/css/style.css
+
+### 20 - Kiem tra JavaScript hop le (mong doi 200)
+GET {{baseUrl}}/js/gio-hang.js
+
+# ==========================================================
+# CAN KIEM THU BO SUNG BANG TRINH DUYET / CURL:
+# - POST co CSRF dung va cookie phien hop le.
+# - Quyen cua khach khi xoa san pham.
+# - Session fixation, session timeout.
+# - XSS va CSP trong Console.
+# - Gioi han dang nhap 5 lan / 15 phut.
+# - DROP/CREATE bang tai khoan stylehub_app.
+# - .htaccess tren Apache XAMPP.
+# ==========================================================
