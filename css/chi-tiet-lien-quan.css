@@ -1,0 +1,88 @@
+/* TH6 - Buoc 7: San pham cung danh muc trong chi-tiet.php. */
+
+/* Thay thuoc tinh style noi tuyen cu, chuan bi cho CSP cua TH7. */
+.nhom-nut-hanh-dong {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 10px;
+}
+.quay-lai-danh-sach { margin-top: 15px; }
+
+.san-pham-lien-quan {
+  margin-top: 32px;
+}
+.san-pham-lien-quan > h2 {
+  margin-bottom: 8px;
+  color: var(--mau-chinh);
+}
+.san-pham-lien-quan > p { margin-bottom: 20px; }
+.luoi-san-pham-lien-quan {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+}
+.luoi-san-pham-lien-quan .the-san-pham {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.lien-ket-anh-lien-quan { display: block; }
+.luoi-san-pham-lien-quan .the-san-pham__anh {
+  display: block;
+  width: 100%;
+  height: 210px;
+  object-fit: cover;
+}
+.luoi-san-pham-lien-quan .the-san-pham__noi-dung {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.luoi-san-pham-lien-quan .the-san-pham h3,
+.luoi-san-pham-lien-quan .the-san-pham p { margin: 0; }
+.luoi-san-pham-lien-quan .the-san-pham .nut {
+  margin-top: auto;
+  text-align: center;
+}
+@media (min-width: 650px) {
+  .luoi-san-pham-lien-quan {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1100px) {
+  .luoi-san-pham-lien-quan {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* TH6 - Bước 8.5: hiển thị hết hàng và vô hiệu hoá thao tác thêm giỏ. */
+.thong-bao-het-hang {
+  margin: 12px 0;
+  font-weight: 700;
+  color: #9f1239;
+}
+.so-luong-ton { margin: 10px 0; }
+.nhom-nut-hanh-dong .nut:disabled,
+.nhom-form input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* TH6 – Bước 12: thông báo thêm vào giỏ không chuyển trang. */
+.thong-bao-gio-hang {
+  margin: 12px 0;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #a7e2b2;
+  background-color: #eaf9ee;
+  color: #146c2e;
+}
+.thong-bao-gio-hang[data-loai="loi"] {
+  background-color: #fff0f0;
+  color: #a01424;
+  border-color: #f4b8c0;
+}
+.thong-bao-gio-hang[hidden] { display: none; }

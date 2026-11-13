@@ -1,0 +1,35 @@
+/* Giao diện đơn hàng, tách riêng để không ảnh hưởng các trang khác. */
+.dh-trang { padding-block: 28px 48px; }
+.dh-trang .tieu-de-trang { margin-bottom: 20px; }
+.dh-mo-ta { color: #475569; }
+.dh-danh-sach { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; margin-block: 20px; }
+.dh-the { background: #fff; border: 1px solid #dbe1ea; border-radius: 12px; padding: clamp(16px, 3vw, 26px); margin-block: 16px; min-width: 0; }
+.dh-dau-the { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
+.dh-dau-the h2, .dh-the > h2 { color: #1d4ed8; margin: 0 0 8px; font-size: 1.25rem; }
+.dh-dau-the h2 { margin: 0; }
+.dh-the p { overflow-wrap: anywhere; }
+.dh-trang-thai { display: inline-block; padding: 5px 11px; font-size: .89rem; font-weight: 650; background: #eaf1ff; border: 1px solid #bfdbfe; border-radius: 999px; color: #1e40af; }
+.dh-thong-tin { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; row-gap: 14px; margin: 0; }
+.dh-thong-tin > div { min-width: 0; }
+.dh-thong-tin dt { font-size: .89rem; color: #475569; }
+.dh-thong-tin dd { margin: 3px 0 0; font-weight: 600; overflow-wrap: anywhere; }
+.dh-thong-tin .dh-rong { grid-column: 1 / -1; }
+.dh-lien-ket { display: inline-block; font-weight: 600; }
+.dh-nut-xem { margin-top: 6px; padding: 9px 15px; color: #fff; background: #2563eb; border-radius: 8px; text-decoration: none; }
+.dh-nut-xem:hover, .dh-nut-xem:focus-visible { background: #1d4ed8; color: #fff; }
+.dh-cuon-bang { width: 100%; overflow-x: auto; }
+.dh-bang { border-collapse: collapse; width: 100%; min-width: 520px; }
+.dh-bang th, .dh-bang td { padding: 13px 12px; border-bottom: 1px solid #e2e8f0; text-align: left; vertical-align: top; }
+.dh-bang th { color: #1e3a8a; background: #eff6ff; }
+.dh-bang .dh-so { text-align: right; white-space: nowrap; }
+.dh-bang th:nth-child(n+2) { text-align: right; }
+.dh-ma { display: block; color: #64748b; font-size: .86rem; }
+.dh-tong { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 12px 28px; font-size: 1.1rem; margin: 22px 0 0; }
+.dh-tong strong { color: #1d4ed8; }
+.dh-thong-bao { margin-bottom: 16px; padding: 13px 16px; border: 1px solid; border-radius: 8px; }
+.dh-thanh-cong { background: #ecfdf3; border-color: #86efac; color: #166534; }
+.dh-loi { background: #fff1f2; border-color: #fda4af; color: #9f1239; }
+@media (max-width: 600px) {
+  .dh-thong-tin { grid-template-columns: minmax(0, 1fr); }
+  .dh-tong { justify-content: flex-start; }
+}
